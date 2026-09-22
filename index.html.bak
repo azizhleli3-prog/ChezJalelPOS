@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ChezJalelPOS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ChezJalelPOS</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<style>
+:root{--brand:#c4142c;--dark:#211d16;--bg:#f5efe6;--card:#fffdf9;--muted:#776f67;--danger:#9f1720;--ok:#276749;--line:#ded3c5;--gold:#c49a4a;--wood:#6b302b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#171717;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{min-height:100vh;padding-bottom:86px;background:linear-gradient(rgba(245,239,230,.965),rgba(245,239,230,.985)),url("pattern.jpg") center top/520px auto fixed}.top{position:sticky;top:0;z-index:10;background:rgba(255,253,249,.96);backdrop-filter:blur(14px);color:#241f1b;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:900;color:#fff;overflow:hidden;border:3px solid var(--brand)}.logo img{width:100%;height:100%;object-fit:cover}
+.top h1{font-family:Georgia,serif;color:var(--brand);font-size:19px;margin:0;text-transform:uppercase;letter-spacing:.4px}.top small{color:var(--muted)}.wrap{max-width:1180px;margin:auto;padding:13px}
+.nav{position:fixed;bottom:8px;left:8px;right:8px;z-index:20;background:rgba(255,253,249,.97);backdrop-filter:blur(15px);border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 35px rgba(37,24,15,.14);display:flex;padding:6px 4px env(safe-area-inset-bottom)}
+.nav button{flex:1;border:0;background:none;font-size:11px;padding:7px 2px;color:#555}.nav button.active{color:var(--brand);font-weight:900;background:#f8e4e5;border-radius:14px}.nav i{font-style:normal;font-size:20px;display:block;margin-bottom:2px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.card{background:rgba(255,253,249,.97);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 8px 28px rgba(43,27,17,.08);margin-bottom:11px}
+.stat{min-height:95px}.stat b{font-size:22px;display:block;margin-top:8px}.muted{color:var(--muted);font-size:13px}
+.btn{border:0;border-radius:11px;padding:11px 13px;font-weight:700}.primary{background:var(--brand);color:#fff}.gold{background:var(--gold);color:#fff}.light{background:#eee7dd;color:#302b27}.danger{background:#fee4e2;color:var(--danger)}.success{background:#e4f6eb;color:var(--ok)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.rowtop{align-items:flex-start}
+h2{margin:7px 0 14px;font-size:23px}h3{margin:5px 0 8px}
+.input,.select{width:100%;border:1px solid #d6d3cf;border-radius:10px;padding:11px;background:#fff;outline:none}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.formgrid .full{grid-column:1/-1}
+.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:5px}.tabs button{white-space:nowrap;border:0;border-radius:99px;padding:9px 13px;background:#e9e6e1}.tabs button.on{background:var(--dark);color:#fff}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.product{border:1px solid var(--line);text-align:left;background:#fffdf9;border-radius:16px;padding:0;overflow:hidden;box-shadow:0 3px 12px rgba(35,22,12,.06)}.product .pic{height:105px;background:#e9dfd3;display:grid;place-items:center;overflow:hidden}.product .pic img{width:100%;height:100%;object-fit:cover}.product .placeholder{font-size:32px;color:#b9a99b}.product .pbody{padding:10px}.product b{display:block;font-size:14px}.product span{font-size:13px;color:var(--brand);font-weight:900}
+.cart{position:sticky;bottom:86px;z-index:5}.line{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #eee}.qty{display:flex;align-items:center;gap:6px}.qty button{width:29px;height:29px;border:0;border-radius:8px;background:#eee}
+.badge{padding:4px 8px;border-radius:99px;background:#eee;font-size:12px}.stocklow{color:var(--danger);font-weight:800}.stockok{color:var(--ok);font-weight:700}
+.listrow{padding:11px 0;border-bottom:1px solid #eee}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{padding:9px 7px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap}
+.bar{height:9px;background:#eee;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--brand)}
+.empty{padding:35px 15px;text-align:center;color:#777}.small{font-size:12px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:flex-end}.modal.show{display:flex}.sheet{background:#fff;width:100%;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}
+@media(min-width:760px){.grid4{grid-template-columns:repeat(4,1fr)}.products{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:repeat(4,1fr)}.nav{left:50%;transform:translateX(-50%);max-width:900px;border-radius:16px 16px 0 0}.wrap{padding:20px}}
+@media print{
+@page{size:80mm auto;margin:0}
+html,body{background:#fff!important;margin:0!important;padding:0!important;color:#000!important;font-family:Arial,Helvetica,sans-serif!important}
+.no-print,.nav,.top{display:none!important}.print-hide{display:none!important}
+.print-area{display:block!important;width:80mm!important;margin:0!important;padding:0!important;color:#000!important;background:#fff!important}
+.ticket-print{width:80mm!important;max-width:80mm!important;min-height:105mm!important;margin:0!important;padding:5mm 4mm 6mm!important;font-family:Arial,Helvetica,sans-serif!important;color:#000!important;background:#fff!important;page-break-after:always!important;break-after:page!important;break-inside:avoid!important;overflow:visible!important}
+.ticket-print + .ticket-print{page-break-before:always!important;break-before:page!important}.ticket-print:last-child{page-break-after:auto!important;break-after:auto!important}
+.ticket-print *{box-sizing:border-box!important;color:#000!important;background-color:transparent!important;box-shadow:none!important}
+.ticket-logo{display:block!important;width:28mm!important;height:28mm!important;object-fit:contain!important;filter:grayscale(1) contrast(2)!important;margin:0 auto 1mm!important}
+.ticket-brand{text-align:center!important;font-family:Georgia,serif!important;font-size:8mm!important;font-weight:900!important;line-height:1!important;letter-spacing:-.2mm!important}
+.ticket-sub{text-align:center!important;font-size:3.2mm!important;letter-spacing:1.4mm!important;margin-top:1.8mm!important}
+.ticket-auth{text-align:center!important;font-size:3mm!important;letter-spacing:1.5mm!important;margin-top:2mm!important}
+.ticket-rule{border-top:1px solid #000!important;height:0!important;margin:3mm 0!important}
+.ticket-meta{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4mm!important;font-size:3.4mm!important;font-weight:700!important}
+.ticket-meta span{border:0!important;padding:0!important;white-space:nowrap!important}
+.ticket-meta span:last-child{text-align:right!important}
+.ticket-client-grid{display:grid!important;grid-template-columns:38% 62%!important;border-top:1px solid #000!important;border-bottom:1px solid #000!important;margin-top:2mm!important}
+.ticket-client-left{border-right:1px solid #000!important;text-align:center!important;padding:3mm 1.5mm!important}
+.ticket-client-right{padding:3mm 2mm!important;min-width:0!important}
+.ticket-label{font-size:3.6mm!important;font-weight:900!important;line-height:1.15!important}
+.ticket-big{font-size:16mm!important;font-weight:900!important;line-height:1!important;margin:2.5mm 0!important}
+.ticket-wait{font-size:3.2mm!important;font-weight:900!important;line-height:1.2!important}
+.ticket-lines{width:100%!important}
+.ticket-lines .trow{display:grid!important;grid-template-columns:7mm minmax(0,1fr) 18mm!important;gap:1.5mm!important;align-items:start!important;padding:2.3mm 0!important;border-bottom:1px dashed #000!important;font-size:3.25mm!important;line-height:1.2!important;word-break:normal!important;overflow-wrap:anywhere!important}
+.ticket-lines .trow b:first-child{text-align:center!important}
+.ticket-lines .trow b:last-child{text-align:right!important;white-space:nowrap!important}
+.ticket-lines small{font-size:2.7mm!important;line-height:1.2!important;font-weight:700!important}
+.ticket-total{display:flex!important;justify-content:space-between!important;align-items:center!important;border:1px solid #000!important;padding:2.5mm!important;margin-top:3mm!important;font-size:4mm!important;font-weight:900!important}
+.ticket-phone{text-align:center!important;font-size:5.5mm!important;font-weight:900!important;border-top:1px solid #000!important;border-bottom:1px solid #000!important;padding:2.8mm 0!important;margin-top:3mm!important}
+.ticket-thanks{text-align:center!important;margin-top:4mm!important;font-size:4.5mm!important;font-weight:900!important;direction:rtl!important}
+.ticket-ar{text-align:center!important;font-size:3.7mm!important;margin-top:1.5mm!important;direction:rtl!important}
+.ticket-heart{text-align:center!important;font-size:5mm!important;margin-top:2mm!important}
+.ticket-footer{text-align:center!important;margin-top:3mm!important;font-size:2.8mm!important;letter-spacing:1.1mm!important}
+.cuisine-head{display:grid!important;grid-template-columns:47% 53%!important;align-items:center!important;gap:3mm!important}
+.cuisine-brand{text-align:center!important;border-right:1px solid #000!important;padding-right:3mm!important}
+.cuisine-brand .ticket-logo{width:23mm!important;height:23mm!important}
+.cuisine-brand .ticket-brand{font-size:6.5mm!important}
+.cuisine-brand .ticket-sub{font-size:2.8mm!important;letter-spacing:1.2mm!important}
+.cuisine-title{text-align:center!important}
+.cuisine-title strong{display:block!important;background:#000!important;color:#fff!important;font-size:7mm!important;padding:2.8mm 1mm!important;letter-spacing:.9mm!important}
+.cuisine-title small{display:block!important;font-size:3.1mm!important;letter-spacing:.7mm!important;margin-top:2mm!important;font-weight:800!important}
+.cuisine-date{text-align:left!important;font-size:3.1mm!important;line-height:1.9!important;margin-top:2.5mm!important}
+.cuisine-info{display:grid!important;grid-template-columns:1fr 1fr!important;border-bottom:1px solid #000!important;border-top:1px solid #000!important;margin-top:3mm!important}
+.cuisine-box{text-align:center!important;padding:3mm 1mm!important}
+.cuisine-box:first-child{border-right:1px solid #000!important}
+.cuisine-box .num{font-size:12mm!important;font-weight:900!important;line-height:1!important;margin-top:2mm!important}
+.cuisine-box .serve{font-size:3.2mm!important;font-weight:900!important;margin-top:2mm!important}
+.cuisine-items{margin-top:3mm!important;border-top:1px solid #000!important}
+.cuisine-table-head,.cuisine-item{display:grid!important;grid-template-columns:15% 48% 37%!important;gap:0!important}
+.cuisine-table-head{background:#000!important;color:#fff!important;font-weight:900!important;font-size:3.35mm!important;padding:2.4mm 0!important}
+.cuisine-table-head>div,.cuisine-item>div{padding:0 1.8mm!important}
+.cuisine-item{border-bottom:1px dashed #000!important;font-size:3.45mm!important;min-height:10mm!important;align-items:center!important;line-height:1.2!important}
+.cuisine-item .qty{text-align:center!important;font-size:4.5mm!important;font-weight:900!important}
+.cuisine-item .name{font-weight:900!important;overflow-wrap:anywhere!important}
+.cuisine-item .note{font-size:3.1mm!important;overflow-wrap:anywhere!important}
+.cuisine-total{border:1px solid #000!important;margin-top:4mm!important;padding:2.8mm!important;font-size:3.8mm!important;font-weight:900!important}
+.cuisine-footer{text-align:center!important;margin-top:4mm!important;font-size:3.3mm!important;letter-spacing:1.1mm!important;font-weight:800!important}
+}
+
+
+.app-signature{margin-top:22px;text-align:center;font-family:"Brush Script MT","Segoe Script",cursive;font-size:17px;font-style:italic;font-weight:600;letter-spacing:.2px;color:#8f8a84;opacity:.9}.app-signature::before{content:"";display:block;width:54px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#c9c1b7,transparent)}
+.lock{position:fixed;inset:0;background:rgba(33,29,22,.72);backdrop-filter:blur(12px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}.lock.show{display:flex}.lockbox{width:min(420px,100%);background:#fffdf9;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 80px #0005}.locklogo{width:90px;height:90px;border-radius:50%;object-fit:cover;border:5px solid var(--brand);margin-bottom:10px}.rolechip{display:inline-block;background:#f8e4e5;color:var(--brand);font-weight:800;border-radius:99px;padding:6px 10px;font-size:12px;margin:5px}.readonly{opacity:.62;pointer-events:none}.audit{font-size:12px;color:#665f57;padding:7px 0;border-bottom:1px dashed #ddd}.cloudbox{border-left:4px solid var(--brand);padding-left:12px}.image-preview{width:84px;height:84px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
+.note-input{width:100%;border:1px dashed #cfc6bb;border-radius:8px;padding:7px;background:#fff;font-size:12px;margin-top:6px}.wait-badge{background:#111;color:#fff;font-weight:900}.product .pbody{min-height:65px}.modalhead{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:var(--card);padding-bottom:10px;z-index:2}.modalhead h2{margin:0}.modalhead .btn{white-space:nowrap}
+/* V10 professional UI */
+:root{--brand:#c4142c;--dark:#211d16;--bg:#f5efe6;--card:#fffdf9;--muted:#776f67;--danger:#9f1720;--ok:#276749;--line:#ded3c5;--gold:#c49a4a;--wood:#6b302b;--surface:#fffdf9;--text:#171717;--soft:#eee7dd}
+html[data-theme="dark"]{--bg:#101112;--card:#181a1c;--surface:#181a1c;--text:#f5f5f5;--muted:#a8aaad;--line:#303236;--soft:#25272b;--dark:#f1f1f1}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+html[data-theme="dark"] .app{background:linear-gradient(rgba(16,17,18,.94),rgba(16,17,18,.97)),url("pattern.jpg") center top/520px auto fixed}
+html[data-theme="dark"] .top{background:rgba(24,26,28,.94);color:var(--text);border-bottom-color:var(--line)}
+html[data-theme="dark"] .card,html[data-theme="dark"] .product,html[data-theme="dark"] .sheet,html[data-theme="dark"] .nav,html[data-theme="dark"] .modalhead{background:rgba(24,26,28,.97);color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] .input,html[data-theme="dark"] .select,html[data-theme="dark"] .note-input{background:#111315;color:var(--text);border-color:#3b3d41}
+html[data-theme="dark"] .light,html[data-theme="dark"] .qty button,html[data-theme="dark"] .tabs button{background:#292b2f;color:#f4f4f4}
+html[data-theme="dark"] .nav button{color:#b8b8b8}
+html[data-theme="dark"] .nav button.active{background:#3a2024;color:#ff6a7d}
+html[data-theme="dark"] .product .pic{background:#25272b}
+.top{min-height:74px;padding:10px 14px calc(10px + env(safe-area-inset-top));border-bottom:1px solid var(--line);box-shadow:0 3px 18px rgba(0,0,0,.06)}
+.brand-block{min-width:0}.top h1{font-size:20px}.top small{display:block;margin-top:2px;font-size:11px;letter-spacing:.3px}
+.header-actions{display:flex;align-items:center;gap:6px;margin-left:auto}.header-chip{display:flex;align-items:center;gap:5px;background:var(--soft);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800}
+.theme-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text);font-size:18px}.theme-switch{display:flex;align-items:center;background:var(--soft);border:1px solid var(--line);padding:3px;border-radius:12px;gap:2px}.theme-switch button{width:31px;height:31px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:15px}.theme-switch button.active{background:var(--surface);color:var(--text);box-shadow:0 2px 7px rgba(0,0,0,.12)}
+.wrap{padding:18px 14px 100px}.page-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:4px 0 16px}.page-head h2{margin:0;font-size:28px;letter-spacing:-.5px}.page-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.page-head .page-meta{font-size:12px;color:var(--muted);white-space:nowrap}
+.card{border-radius:20px;box-shadow:0 8px 28px rgba(43,27,17,.06)}
+.nav{bottom:10px;border-radius:22px;padding:6px 5px env(safe-area-inset-bottom);box-shadow:0 12px 40px rgba(0,0,0,.16)}
+.nav button{border-radius:15px;min-height:54px}.nav i{font-size:18px}
+.section-title{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:900;margin:18px 2px 9px}
+.modal{background:rgba(0,0,0,.62);backdrop-filter:blur(5px)}.sheet{max-height:92vh;border-radius:24px 24px 0 0;background:var(--surface);color:var(--text);padding:20px}.modalhead{padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:14px}
+@media(max-width:759px){.header-chip.role-text{display:none}.top h1{font-size:18px}.logo{width:46px;height:46px}.wrap{padding-top:15px}.page-head h2{font-size:25px}}
+
+/* V12 responsive UI + professional category header */
+.lock{background:#121212 url("pattern.jpg") center/cover fixed!important;align-items:center!important;justify-content:center!important;padding:18px!important}
+.lock:before{content:"";position:absolute;inset:-30px;background:inherit;filter:blur(12px);transform:scale(1.08);opacity:.52}
+.lock:after{content:"";position:absolute;inset:0;background:rgba(8,8,8,.78)}
+.lockbox{position:relative;z-index:2;width:min(390px,94vw)!important;background:rgba(24,24,24,.94)!important;color:#fff!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:30px!important;padding:30px 24px 24px!important;box-shadow:0 30px 100px rgba(0,0,0,.6)!important;backdrop-filter:blur(18px)!important}
+.lockbox .locklogo{width:92px!important;height:92px!important;border:4px solid #c4142c!important;margin-bottom:16px!important}
+.lockbox h2{color:#fff!important;font-family:Georgia,serif!important;font-size:30px!important;letter-spacing:.2px!important}
+.lockbox .muted,.lockbox p{color:#a8a8a8!important}
+.lockbox .tabs{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin:20px 0 12px!important}
+.lockbox .tabs button{height:58px!important;border:1px solid #3b3b3b!important;background:#242424!important;color:#ddd!important;border-radius:16px!important;font-size:15px!important;font-weight:800!important}
+.lockbox .tabs button.on{background:#c4142c!important;border-color:#c4142c!important;color:#fff!important}
+.lockbox .input{background:#101010!important;color:#fff!important;border:1px solid #414141!important;border-radius:14px!important;height:56px!important;font-size:18px!important}
+.lockbox .input::placeholder{color:#777!important}
+.lockbox .primary{height:56px!important;border-radius:14px!important;background:#c4142c!important;font-size:17px!important}
+.lockbox .small{color:#888!important}
+.lockbox .rolechip{background:#2d2d2d!important;color:#eee!important;border:1px solid #414141!important;padding:7px 13px!important}
+/* cleaner owner/staff headers */
+.staff-mode .top{padding:10px 14px!important}
+.staff-mode .top .brand-block h1{font-size:18px!important}
+.staff-mode .header-actions .theme-switch{display:none!important}
+.staff-mode .wrap{max-width:680px!important}
+.staff-mode .nav{max-width:620px!important}
+.staff-mode .nav button{min-height:60px!important;font-size:12px!important}
+.staff-mode .nav i{font-size:21px!important}
+.staff-command-access{margin:0 0 14px;padding:14px;border:1px solid rgba(196,20,44,.22);border-radius:20px;background:var(--card);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.staff-command-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:900;color:var(--text)}
+.staff-command-title small{font-size:11px;color:var(--muted);font-weight:700}
+.staff-command-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.staff-command-btn{display:flex;align-items:center;gap:10px;text-align:left;min-height:76px;padding:12px 13px;border-radius:17px;background:#17191b;border:1px solid rgba(255,255,255,.08);color:#fff;cursor:pointer;box-shadow:0 7px 18px rgba(0,0,0,.12)}
+.staff-command-btn.create{border-color:rgba(196,20,44,.55);background:linear-gradient(135deg,#c4142c,#8e0d20)}
+.staff-command-btn.edit{background:#202225;border-color:rgba(196,20,44,.30)}
+.staff-command-btn .scb-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.10);font-size:22px;flex:0 0 38px}
+.staff-command-btn b{display:block;font-size:14px}
+.staff-command-btn small{display:block;margin-top:3px;color:rgba(255,255,255,.72);font-size:10px}
+.staff-command-btn .scb-arrow{margin-left:auto;font-size:24px;opacity:.65}
+html[data-theme="light"] .staff-command-access{background:#fff;border-color:#ead7da}
+html[data-theme="light"] .staff-command-btn.edit{background:#fff;color:#202225;border-color:#ead7da}
+html[data-theme="light"] .staff-command-btn.edit small{color:#777}
+@media(max-width:520px){.staff-command-buttons{grid-template-columns:1fr}.staff-command-btn{min-height:68px}}
+.staff-hero{background:linear-gradient(135deg,#c4142c,#8e0d20);color:#fff;border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:0 14px 35px rgba(196,20,44,.22)}
+.staff-hero h2{margin:0 0 5px;color:#fff}.staff-hero .muted{color:#f5dfe2}
+.server-hero-alert{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;background:#fff;color:#8e0d20;border:0;border-radius:999px;padding:9px 15px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.server-hero-alert:active{transform:scale(.98)}
+.server-hero-alert.pulse{animation:orderPulse .7s ease}
+@media(max-width:520px){.server-hero-alert{font-size:14px;padding:8px 13px}}
+.staff-quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.staff-quick button{min-height:92px;border:1px solid var(--line);border-radius:18px;background:var(--card);font-weight:900;font-size:15px;color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,.06)}
+html[data-theme="dark"] .staff-quick button{background:#181a1c;border-color:#34373a;color:#fff}
+
+
+/* V12 responsive + professional category header */
+:root{--header-h:74px}
+html,body{width:100%;min-height:100%;overflow-x:hidden}
+body{overscroll-behavior-y:none}
+.app{width:100%;min-height:100svh}
+.top{width:100%;position:sticky;top:0;z-index:30}
+.wrap{width:100%;max-width:1400px;margin:0 auto}
+.header-actions{flex-wrap:nowrap}
+.pos-shell{width:100%}
+.category-header{position:sticky;top:74px;z-index:24;margin:-4px -14px 16px;padding:10px 14px 12px;background:color-mix(in srgb,var(--surface) 94%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(18px);box-shadow:0 5px 18px rgba(0,0,0,.06)}
+.category-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.category-title{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
+.category-count{font-size:11px;color:var(--muted);white-space:nowrap}
+.category-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 1px 3px}
+.category-scroll::-webkit-scrollbar{display:none}
+.cat-btn{flex:0 0 auto;min-width:96px;border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:14px;padding:9px 12px;text-align:center;font-weight:850;font-size:12px;box-shadow:0 2px 7px rgba(0,0,0,.04)}
+.cat-btn .cat-icon{display:block;font-size:20px;line-height:1;margin-bottom:5px}
+.cat-btn.on{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 7px 18px rgba(196,20,44,.2)}
+.category-search{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:12px;padding:9px 11px;margin-top:8px;outline:none}
+.category-search::placeholder{color:var(--muted)}
+@media(max-width:759px){
+  .top{min-height:68px;padding:9px 11px calc(9px + env(safe-area-inset-top))}
+  .top h1{font-size:17px}.top small{font-size:10px}.logo{width:44px;height:44px}
+  .header-chip{padding:6px 8px;font-size:11px}.header-actions{gap:5px}.theme-switch{display:none}
+  .wrap{padding:14px 12px 102px}.category-header{top:68px;margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
+  .category-scroll{margin-right:-12px;padding-right:12px}.cat-btn{min-width:90px}
+}
+@media(min-width:760px){
+  .top{padding-left:max(18px,calc((100vw - 1400px)/2 + 18px));padding-right:max(18px,calc((100vw - 1400px)/2 + 18px))}
+  .wrap{padding-left:24px;padding-right:24px}
+  .category-header{margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px}
+}
+@media(orientation:landscape) and (max-height:600px){
+  .lock{padding:14px!important;align-items:center!important}
+  .lockbox{width:min(760px,calc(100vw - 28px))!important;max-height:calc(100vh - 28px);overflow:auto;padding:18px 26px!important;border-radius:24px!important}
+  .lockbox .locklogo{width:64px!important;height:64px!important;margin-bottom:6px!important}
+  .lockbox h2{font-size:25px!important;margin:2px 0!important}
+  .lockbox .rolechip{margin:2px!important;padding:5px 10px!important}
+  .lockbox .tabs{margin:10px 0 8px!important;gap:8px!important}
+  .lockbox .tabs button{height:48px!important}
+  .lockbox .input{height:48px!important}
+  .lockbox .primary{height:48px!important}
+  .lockbox #firstSetup{display:none!important}
+}
+@media(min-width:900px){
+  .products{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .category-header{top:74px}
+}
+html[data-theme="dark"] .category-header{background:rgba(24,26,28,.94);box-shadow:0 5px 18px rgba(0,0,0,.22)}
+html[data-theme="dark"] .cat-btn{background:#25272b;color:#f4f4f4;border-color:#34373a}
+html[data-theme="dark"] .category-search{background:#111315}
+
+/* V13: waiter/serveur role + full viewport login */
+html,body{background:#121212!important;min-height:100%;width:100%;}
+#lock{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100svh!important;overflow:auto!important;background:#121212 url("pattern.jpg") center/cover fixed!important;}
+#lock:before,#lock:after{position:fixed!important;inset:0!important;pointer-events:none!important;}
+.serveur-mode .nav{display:none!important}
+.serveur-mode .wrap{max-width:760px!important;padding-bottom:28px!important}
+.serveur-hero{background:linear-gradient(135deg,#c4142c,#8e0d20);color:#fff;border-radius:24px;padding:20px;margin-bottom:14px;box-shadow:0 16px 38px rgba(196,20,44,.2)}
+.serveur-hero h2{margin:0 0 4px;color:#fff}
+.serveur-table{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.serveur-table .input{min-height:52px}
+.serveur-send{position:sticky;bottom:12px;z-index:6;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.serveur-sync{font-size:12px;color:#ddd;margin-top:8px}
+.server-home{display:grid;gap:14px;max-width:760px;margin:0 auto}
+.server-add{min-height:110px;border:0;border-radius:24px;background:linear-gradient(135deg,#c4142c,#8e0d20);color:#fff;font-size:24px;font-weight:900;box-shadow:0 16px 36px rgba(196,20,44,.22);cursor:pointer}
+.server-add small{display:block;font-size:13px;font-weight:700;opacity:.85;margin-top:5px}
+.server-card{background:rgba(255,255,255,.96);border:1px solid #eee;border-radius:22px;padding:14px;box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.server-tables{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:10px}
+.server-table-btn{height:54px;border:1px solid #ddd;border-radius:15px;background:#fafafa;font-size:17px;font-weight:900;cursor:pointer}
+.server-table-btn.on{background:#c4142c;color:#fff;border-color:#c4142c}
+.server-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.server-product{min-height:58px;border:1px solid #ddd;border-radius:16px;background:#fff;text-align:left;padding:10px;cursor:pointer}
+.server-product b{display:block;font-size:14px}.server-product span{font-size:12px;color:#777}
+.server-cart-line{display:flex;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dashed #ddd}
+.server-cart-line>div:first-child{flex:1}
+.server-accept{position:sticky;bottom:10px;width:100%;min-height:56px;font-size:18px;font-weight:900;z-index:7}
+.new-order-alert{position:fixed;left:12px;right:12px;top:82px;z-index:250;background:#111;color:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 16px 50px rgba(0,0,0,.35);display:none;border:2px solid #c4142c}
+.new-order-alert.show{display:block;animation:orderPulse .7s ease}
+.new-order-alert .alert-title{font-size:18px;font-weight:900}.new-order-alert .alert-sub{font-size:13px;opacity:.82;margin-top:3px}
+.server-header-btn{display:none!important;border:1px solid #e5e5e5;background:#fff;border-radius:12px;padding:8px 11px;font-weight:900;cursor:pointer;position:relative;display:none;white-space:nowrap}.server-header-btn.show{display:inline-flex;align-items:center;gap:6px}.server-bell{width:28px;height:28px;border-radius:9px;border:1px solid #e5e5e5;background:#fff;cursor:pointer;position:relative;font-size:16px}.server-bell .server-count{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#c4142c;color:#fff;font-size:11px;line-height:19px;font-weight:900;display:none;box-shadow:0 2px 7px #0003}.server-bell .server-count.show{display:block;animation:orderPulse .7s ease}.server-orders-list{display:grid;gap:10px}.server-order-item{border:1px solid #eee;border-left:4px solid #c4142c;border-radius:16px;padding:13px;background:#fff}.server-order-item.new{box-shadow:0 0 0 2px #c4142c22}.server-order-item .so-lines{margin-top:8px;display:grid;gap:4px}.server-order-item .so-line{display:flex;justify-content:space-between;gap:8px}.server-order-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.server-order-empty{padding:28px;text-align:center;color:#777}
+@keyframes orderPulse{0%{transform:scale(.96);opacity:.2}100%{transform:scale(1);opacity:1}}
+@media(max-width:520px){.server-tables{grid-template-columns:repeat(4,1fr)}.server-menu{grid-template-columns:1fr}}
+html[data-theme="dark"] .server-card{background:#1b1d20;border-color:#303236}.dark .server-product{background:#202226;color:#fff}
+
+@media(max-width:520px){.serveur-table{grid-template-columns:1fr}.serveur-hero{padding:16px}}
+
+/* V18 — premium branded header */
+.professional-top{min-height:78px!important;padding:calc(10px + env(safe-area-inset-top)) 16px 10px!important;background:rgba(18,20,22,.96)!important;color:#fff!important;border-bottom:1px solid rgba(255,255,255,.08)!important;box-shadow:0 8px 28px rgba(0,0,0,.28)!important;display:flex!important;align-items:center!important;gap:14px!important;backdrop-filter:blur(18px)!important}
+.top-left{display:flex;align-items:center;gap:11px;min-width:0}
+.top-menu{width:48px;height:48px;border:1px solid rgba(255,255,255,.10);border-radius:15px;background:#202327;color:#fff;font-size:25px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.professional-top .logo{width:54px!important;height:54px!important;border:0!important;border-radius:50%!important;background:transparent!important;box-shadow:none!important;flex:0 0 auto;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important}.professional-top .logo img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;background:transparent!important}
+.professional-top .brand-block h1{margin:0;font-family:Georgia,serif;font-size:21px!important;letter-spacing:.4px;color:#f2f2f2!important;line-height:1.05}
+.professional-top .brand-block h1::first-letter{color:#c4142c}
+.professional-top .brand-block small{color:#aeb1b5!important;font-size:10px!important;letter-spacing:1.6px!important;margin-top:5px!important;font-weight:700}
+.professional-top .header-actions{margin-left:auto;display:flex;align-items:center;gap:8px!important}
+.top-status{height:48px;padding:0 12px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:#202327;color:#f4f4f4;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;white-space:nowrap}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#39c96e;box-shadow:0 0 9px rgba(57,201,110,.7)}
+.top-icon-btn{width:48px;height:48px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:#202327;color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.top-icon-btn .icon{font-size:21px;line-height:1}
+.professional-top .server-header-btn{display:none!important}
+.professional-top .server-bell{display:none}
+.professional-top .server-bell .server-count{top:-5px;right:-4px;min-width:20px;height:20px;line-height:20px;background:#e01b32;color:#fff;border:2px solid #121416;font-size:11px;box-shadow:none}
+.professional-top .header-chip{display:none!important}
+.top-ticket{height:48px;padding:0 13px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:#202327;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:850;font-size:13px;white-space:nowrap}
+.top-lock{width:48px!important;height:48px!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:15px!important;background:#202327!important;color:#fff!important;font-size:21px!important}
+html[data-theme="light"] .professional-top{background:#17191b!important;color:#fff!important}
+@media(max-width:760px){
+  .professional-top{min-height:68px!important;padding:calc(8px + env(safe-area-inset-top)) 10px 8px!important;gap:8px!important}
+  .top-menu{width:44px;height:44px;border-radius:14px;font-size:23px}
+  .professional-top .logo{width:48px!important;height:48px!important;border:0!important;background:transparent!important;box-shadow:none!important}.professional-top .logo img{width:100%!important;height:100%!important;object-fit:contain!important}
+  .professional-top .brand-block h1{font-size:18px!important}
+  .professional-top .brand-block small{font-size:8px!important;letter-spacing:1.1px!important}
+  .top-status{width:44px;height:44px;padding:0;justify-content:center;border-radius:14px}
+  .top-status .status-label{display:none}
+  .top-icon-btn,.top-ticket,.top-lock{height:44px!important}
+  .top-icon-btn,.top-lock{width:44px!important}
+  .top-ticket{padding:0 10px;font-size:12px}
+  .professional-top .header-actions{gap:5px!important}
+}
+@media(max-width:520px){
+  .top-menu{display:none}
+  .professional-top .brand-block small{display:block}
+  .professional-top .logo{width:45px!important;height:45px!important;border-width:3px!important}.professional-top .logo img{width:100%!important;height:100%!important}
+  .professional-top .brand-block h1{font-size:17px!important}
+  .top-ticket{padding:0 8px;font-size:11px}
+  .top-status{width:40px;height:40px}
+  .top-icon-btn,.top-lock{width:40px!important;height:40px!important}
+}
+
+
+/* V23 Owner profile / left header drawer */
+.owner-drawer{position:fixed;inset:0;z-index:100;display:none}
+.owner-drawer.show{display:block}
+.owner-drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.52);backdrop-filter:blur(3px)}
+.owner-drawer-panel{position:absolute;left:0;top:0;bottom:0;width:min(360px,88vw);background:var(--surface,#fff);color:var(--text,#171717);box-shadow:18px 0 45px rgba(0,0,0,.28);overflow:auto;animation:ownerDrawerIn .22s ease-out}
+@keyframes ownerDrawerIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+.owner-drawer-head{padding:calc(16px + env(safe-area-inset-top)) 18px 16px;background:linear-gradient(135deg,#c4142c,#8e0d20);color:#fff;display:flex;align-items:center;gap:12px}
+.owner-drawer-head img{width:52px;height:52px;object-fit:cover;border-radius:50%;border:2px solid rgba(255,255,255,.8);background:#fff}
+.owner-drawer-head .od-title{font-weight:900;font-size:18px}.owner-drawer-head small{display:block;opacity:.82;margin-top:3px}
+.owner-drawer-close{margin-left:auto;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.16);color:#fff;border-radius:12px;width:40px;height:40px;font-size:20px}
+.owner-drawer-section{padding:12px 12px 5px;color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.owner-drawer-list{padding:4px 10px 16px}.owner-drawer-item{width:100%;display:flex;align-items:center;gap:12px;border:0;background:transparent;color:var(--text);padding:13px 12px;border-radius:14px;text-align:left;font-weight:800;font-size:14px;margin:2px 0}.owner-drawer-item:hover,.owner-drawer-item:active{background:rgba(196,20,44,.09)}.owner-drawer-item .od-icon{width:30px;text-align:center;font-size:19px}.owner-drawer-item .od-arrow{margin-left:auto;color:var(--muted);font-size:16px}
+html[data-theme="dark"] .owner-drawer-panel{background:#181a1c;color:#f4f4f4}html[data-theme="dark"] .owner-drawer-item{color:#f4f4f4}
+@media(min-width:760px){.owner-drawer-panel{width:380px}}
+/* V24 — Owner drawer premium Chez Jalel */
+.owner-drawer-panel{
+  width:min(390px,92vw)!important;
+  background:linear-gradient(180deg,#171819 0%,#111213 100%)!important;
+  color:#f7f1e7!important;
+  border-right:1px solid rgba(196,20,44,.28);
+  box-shadow:24px 0 60px rgba(0,0,0,.48)!important;
+}
+.owner-drawer-head{
+  position:relative;
+  padding:calc(20px + env(safe-area-inset-top)) 18px 20px!important;
+  background:linear-gradient(135deg,#b80f28 0%,#8f0c20 62%,#6d0918 100%)!important;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+.owner-drawer-head:after{content:"";position:absolute;left:18px;right:18px;bottom:0;height:2px;background:linear-gradient(90deg,#d7a84b,#c4142c,#f4e5c5);opacity:.85}
+.owner-drawer-head img{width:58px!important;height:58px!important;border-radius:50%!important;border:3px solid #f4e5c5!important;box-shadow:0 4px 16px rgba(0,0,0,.28)!important}
+.owner-drawer-head .od-title{font-family:Georgia,serif;font-size:20px!important;letter-spacing:.2px}
+.owner-drawer-head small{color:#f8e9d5!important;opacity:.9!important}
+.owner-drawer-close{background:rgba(20,12,8,.24)!important;border-color:rgba(255,255,255,.30)!important;width:42px!important;height:42px!important}
+.owner-drawer-section{padding:18px 18px 8px!important;color:#caa95f!important;font-size:10px!important;letter-spacing:1.5px!important}
+.owner-drawer-list{padding:3px 12px 10px!important}
+.owner-drawer-item{
+  position:relative;width:100%;display:flex;align-items:center;gap:13px!important;
+  border:1px solid transparent!important;background:transparent!important;color:#f4eee5!important;
+  padding:12px 13px!important;border-radius:15px!important;text-align:left;font-weight:800;font-size:14px!important;
+  margin:3px 0!important;transition:.16s ease;overflow:hidden;
+}
+.owner-drawer-item:before{content:"";width:3px;height:0;border-radius:3px;background:#c4142c;position:absolute;left:0;top:50%;transform:translateY(-50%);transition:.16s ease}
+.owner-drawer-item:hover,.owner-drawer-item:active{background:linear-gradient(90deg,rgba(196,20,44,.16),rgba(196,20,44,.04))!important;border-color:rgba(196,20,44,.18)!important;transform:translateX(2px)}
+.owner-drawer-item:hover:before,.owner-drawer-item:active:before{height:24px}
+.owner-drawer-item .od-icon{width:34px!important;height:34px;border-radius:11px;background:#24201d;display:flex;align-items:center;justify-content:center;font-size:17px!important;border:1px solid rgba(215,168,75,.12)}
+.owner-drawer-item .od-arrow{margin-left:auto;color:#a99d91!important;font-size:20px!important;font-weight:400}
+.owner-drawer-item:last-child{color:#f1b2ba!important}
+.owner-drawer-item:last-child .od-icon{background:rgba(196,20,44,.12);border-color:rgba(196,20,44,.22)}
+html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#171819 0%,#111213 100%)!important;color:#f7f1e7!important}
+@media(max-width:520px){.owner-drawer-panel{width:88vw!important}.owner-drawer-head{padding-left:16px!important;padding-right:14px!important}.owner-drawer-list{padding-left:9px!important;padding-right:9px!important}}
+
+
+
+/* V25.1 — final visual cleanup requested by Aziz */
+/* No gold: Chez Jalel identity is red / black / white only. */
+.owner-drawer-section{color:#c4142c!important}
+.owner-drawer-panel{background:linear-gradient(180deg,#17191b 0%,#101112 100%)!important;color:#fff!important;border-right:1px solid rgba(196,20,44,.22)}
+.owner-drawer-head{background:linear-gradient(135deg,#c4142c 0%,#8f0f20 100%)!important}
+.owner-drawer-head:after{background:linear-gradient(90deg,transparent,#c4142c,transparent)!important}
+.owner-drawer-head img{border:2px solid rgba(255,255,255,.92)!important;box-shadow:0 5px 18px rgba(0,0,0,.25)!important}
+.owner-drawer-item .od-icon{background:#202225!important;border-color:rgba(196,20,44,.24)!important}
+.owner-drawer-item:hover,.owner-drawer-item:active{background:linear-gradient(90deg,rgba(196,20,44,.20),rgba(196,20,44,.05))!important;border-color:rgba(196,20,44,.22)!important}
+.owner-drawer-item:before{background:#c4142c!important}
+/* Keep the real logo artwork; never crop it or add a second circle/frame. */
+.professional-top .logo{width:76px!important;height:54px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;padding:0!important}
+.professional-top .logo img{width:100%!important;height:100%!important;object-fit:contain!important;border:0!important;border-radius:0!important;background:transparent!important}
+.lockbox .locklogo{object-fit:contain!important;border:0!important;background:transparent!important;border-radius:0!important}
+/* One clean header theme switch, always visible for every role. */
+.top-theme-toggle{height:48px;min-width:82px;padding:0 10px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:#202327;color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
+.top-theme-toggle span:first-child{font-size:17px}
+/* Bottom navigation is intentionally removed; navigation lives in the header drawer. */
+.nav{display:none!important}
+@media(max-width:760px){
+ .professional-top .logo{width:66px!important;height:46px!important}
+ .top-theme-toggle{height:44px;min-width:44px;width:44px;padding:0;border-radius:14px}
+ .top-theme-toggle .theme-label{display:none}
+}
+@media(max-width:520px){
+ .top-menu{display:flex!important;width:40px;height:40px;border-radius:12px;font-size:20px}
+ .professional-top .logo{width:58px!important;height:42px!important}
+ .top-status{width:40px!important;height:40px!important}
+ .top-icon-btn,.top-lock,.top-ticket{height:40px!important}
+ .top-icon-btn,.top-lock{width:40px!important}
+ .top-ticket{padding:0 7px;font-size:10px}
+ .top-theme-toggle{width:40px!important;height:40px!important}
+ .professional-top .header-actions{gap:4px!important}
+}
+
+
+/* V26 FIX — final Chez Jalel brand polish */
+.professional-top{min-height:76px!important;padding:max(9px,env(safe-area-inset-top)) 14px 9px!important;gap:12px!important;background:#151719!important;color:#fff!important;border-bottom:1px solid rgba(196,20,44,.22)!important;box-shadow:0 6px 22px rgba(0,0,0,.30)!important}
+.professional-top .top-left{gap:10px!important;min-width:0;flex:1}
+.professional-top .top-menu{width:44px;height:44px;border-radius:13px;background:#202225;border:1px solid rgba(196,20,44,.25);color:#fff;font-size:22px}
+.professional-top .logo{width:54px!important;height:54px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:hidden!important;padding:0!important}
+.professional-top .logo img{width:100%!important;height:100%!important;object-fit:cover!important;border:0!important;border-radius:0!important;background:transparent!important;display:block!important}
+.professional-top .brand-block{min-width:0}
+.professional-top .brand-block h1{font-family:Georgia,serif!important;font-size:21px!important;font-weight:800!important;letter-spacing:.35px!important;color:#f3f3f3!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.professional-top .brand-block small{font-size:9px!important;letter-spacing:1.4px!important;color:#a9adb2!important}
+.professional-top .header-actions{gap:7px!important;flex:0 0 auto}
+.top-status,.top-ticket,.top-lock,.top-theme-toggle,.top-icon-btn{background:#202225!important;border:1px solid rgba(255,255,255,.09)!important;color:#fff!important;box-shadow:none!important}
+.top-theme-toggle{cursor:pointer!important}
+@media(max-width:760px){.professional-top{min-height:66px!important;padding:max(7px,env(safe-area-inset-top)) 9px 7px!important}.professional-top .top-menu{display:flex!important;width:40px;height:40px;font-size:21px}.professional-top .logo{width:46px!important;height:46px!important}.professional-top .brand-block h1{font-size:17px!important}.professional-top .brand-block small{font-size:7px!important;letter-spacing:1px!important}.top-status{width:40px!important;height:40px!important;padding:0!important}.top-icon-btn,.top-ticket,.top-lock,.top-theme-toggle{height:40px!important}.top-icon-btn,.top-lock,.top-theme-toggle{width:40px!important}.top-ticket{padding:0 8px!important;font-size:10px!important}.top-theme-toggle .theme-label{display:none!important}}
+@media(max-width:520px){.professional-top .top-menu{display:flex!important}.professional-top .logo{width:42px!important;height:42px!important}.professional-top .brand-block h1{font-size:15px!important}.professional-top .brand-block small{display:block!important;font-size:6.5px!important}.professional-top .header-actions{gap:4px!important}.top-status{display:none!important}.top-ticket{font-size:9px!important;padding:0 7px!important}.top-icon-btn,.top-lock,.top-theme-toggle{width:38px!important;height:38px!important}}
+/* Owner drawer: Chez Jalel red / black / white only — no gold */
+.owner-drawer-panel{background:linear-gradient(180deg,#17191b 0%,#0f1011 100%)!important;border-right:1px solid rgba(196,20,44,.28)!important;color:#fff!important}
+.owner-drawer-head{background:linear-gradient(135deg,#c4142c 0%,#8f0f20 100%)!important;border-bottom:1px solid rgba(255,255,255,.12)!important;box-shadow:0 10px 28px rgba(0,0,0,.25)!important}
+.owner-drawer-head:after{background:linear-gradient(90deg,transparent,#c4142c,transparent)!important}
+.owner-drawer-head img{border:0!important;box-shadow:none!important;background:transparent!important}
+.owner-drawer-head .od-title{font-family:Georgia,serif!important;color:#fff!important}
+.owner-drawer-head small{color:#fff!important;opacity:.82!important}
+.owner-drawer-section{color:#e04a5d!important}
+.owner-drawer-item{color:#f5f5f5!important;border:1px solid transparent!important}
+.owner-drawer-item .od-icon{background:#202225!important;border-color:rgba(196,20,44,.28)!important;color:#fff!important}
+.owner-drawer-item .od-arrow{color:#8f949a!important}
+.owner-drawer-item:hover,.owner-drawer-item:active{background:rgba(196,20,44,.13)!important;border-color:rgba(196,20,44,.25)!important;transform:translateX(2px)}
+.owner-drawer-item:before{background:#c4142c!important}
+.owner-drawer-close{background:#202225!important;border-color:rgba(255,255,255,.14)!important}
+/* Theme button must work directly; remove legacy injected duplicate toggle */
+.themeToggle{display:none!important}
+
+
+/* V31 — header logo: real Chez Jalel mark, circular, no white square frame */
+.professional-top .logo{width:58px!important;height:58px!important;border:0!important;border-radius:50%!important;background:transparent!important;box-shadow:none!important;overflow:hidden!important;padding:0!important;flex:0 0 auto!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.professional-top .logo img{width:100%!important;height:100%!important;object-fit:cover!important;border:0!important;border-radius:50%!important;background:transparent!important;display:block!important}
+@media(max-width:760px){.professional-top .logo{width:50px!important;height:50px!important}}
+@media(max-width:520px){.professional-top .logo{width:46px!important;height:46px!important}}
+
+/* V34 — polished ChezJalel login */
+.lock{background:rgba(10,10,10,.82)!important;backdrop-filter:blur(16px)!important;padding:18px!important}
+.lockbox{width:min(470px,100%)!important;max-height:calc(100vh - 28px);overflow:auto;background:linear-gradient(180deg,rgba(24,24,24,.98),rgba(14,14,14,.98))!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:28px!important;padding:26px 22px 20px!important;color:#fff!important;box-shadow:0 28px 90px rgba(0,0,0,.65)!important}
+.lockbox .login-brand-logo{width:126px!important;height:126px!important;display:block!important;margin:2px auto 14px!important;border-radius:50%!important;object-fit:cover!important;object-position:center!important;border:4px solid #fff!important;background:#c4142c!important;box-shadow:0 0 0 2px rgba(196,20,44,.9),0 12px 35px rgba(196,20,44,.28)!important}
+.lockbox .login-title{font-family:Georgia,serif!important;letter-spacing:2px!important;text-align:center!important;font-size:31px!important;margin:0!important;color:#fff!important}
+.lockbox .login-title::first-letter{color:#c4142c}
+.lockbox .login-subtitle{text-align:center!important;color:#aaa!important;letter-spacing:5px!important;font-size:11px!important;margin:5px 0 12px!important;font-weight:800!important}
+.lockbox .login-welcome{text-align:center!important;font-size:21px!important;color:#fff!important;margin:8px 0 2px!important;font-weight:700!important}
+.lockbox .login-caption{text-align:center!important;color:#aaa!important;margin:0 0 18px!important}
+.lockbox .login-label{color:#fff!important;font-weight:700!important;font-size:15px!important;margin:12px 2px 8px!important;display:block!important}
+.lockbox .tabs{background:rgba(255,255,255,.045)!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:20px!important;padding:7px!important;gap:8px!important}
+.lockbox .tabs button{background:#191919!important;border:1px solid #343434!important;color:#ddd!important;border-radius:15px!important;min-height:72px!important;font-weight:800!important;font-size:14px!important;transition:.18s!important}
+.lockbox .tabs button.on{background:linear-gradient(135deg,#d51b35,#a80e22)!important;border-color:#ff3049!important;color:#fff!important;box-shadow:0 8px 22px rgba(196,20,44,.25)!important}
+.lockbox .input{background:#151515!important;border:1px solid #3a3a3a!important;color:#fff!important;border-radius:15px!important;height:54px!important;text-align:center!important;letter-spacing:7px!important;font-size:21px!important}
+.lockbox .input:focus{outline:none!important;border-color:#c4142c!important;box-shadow:0 0 0 3px rgba(196,20,44,.14)!important}
+.lockbox .login-submit{width:100%!important;margin-top:12px!important;height:56px!important;border:0!important;border-radius:16px!important;background:linear-gradient(135deg,#d51b35,#b10f25)!important;color:#fff!important;font-size:17px!important;font-weight:900!important;box-shadow:0 10px 26px rgba(196,20,44,.22)!important}
+.lockbox .login-footer{margin:18px 0 0!important;text-align:center!important;color:#8e8e8e!important;font-size:12px!important;letter-spacing:1px!important}
+.lockbox .app-signature{color:#ddd!important;margin-top:7px!important;font-size:12px!important}
+@media(max-width:500px){.lockbox{padding:22px 15px 16px!important;border-radius:24px!important}.lockbox .login-brand-logo{width:104px!important;height:104px!important}.lockbox .login-title{font-size:26px!important}.lockbox .tabs button{min-height:64px!important;font-size:12px!important}}
+</style>
+<style id="v25-final-fixes">:root{--brand:#c4142c!important}.btn.gold{background:#c4142c!important;color:#fff!important;border-color:#c4142c!important}.mini-bar{height:6px;background:rgba(196,20,44,.12);border-radius:99px;overflow:hidden;margin-top:7px}.mini-bar i{display:block;height:100%;background:#c4142c;border-radius:99px}.top-theme-toggle{touch-action:manipulation;pointer-events:auto}.top-theme-toggle:active{transform:scale(.96)}.header-brand img{object-fit:cover;object-position:center;border-radius:0!important;background:transparent!important;box-shadow:none!important}@media(max-width:680px){.header-brand{min-width:0!important;flex:1}.header-brand img{width:58px!important;height:58px!important}.header-brand .brand-name{max-width:125px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.header-actions{flex-shrink:0!important}.top-theme-toggle{width:46px!important;min-width:46px!important;padding:0!important}}</style>
+<style id="v28-home-fix">
+#app{display:block!important;visibility:visible!important;min-height:20px}
+/* Navigation is intentionally only in the Owner drawer/header. */
+.nav{display:none!important}
+</style>
+
+<style id="v33-final-logo-nav">
+/* V33: clean original Chez Jalel mark in the header; transparent outside the circle. */
+.professional-top .logo{width:52px!important;height:52px!important;border:0!important;border-radius:50%!important;background:transparent!important;box-shadow:none!important;overflow:hidden!important;padding:0!important;flex:0 0 52px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.professional-top .logo img{width:100%!important;height:100%!important;object-fit:cover!important;border:0!important;border-radius:50%!important;background:transparent!important;display:block!important}
+@media(max-width:760px){.professional-top .logo{width:48px!important;height:48px!important;flex-basis:48px!important}}
+@media(max-width:520px){.professional-top .logo{width:44px!important;height:44px!important;flex-basis:44px!important}}
+/* Staff/server can always return to their home screen from the header. */
+.staff-mode .top-menu,.serveur-mode .top-menu{display:flex!important}
+.staff-mode .top-menu:after{content:'⌂';font-size:0}.staff-mode .top-menu:after{font-size:20px}
+</style>
+
+<style id="v43-splash">
+#cjSplash{position:fixed;inset:0;z-index:100000;background:radial-gradient(circle at 50% 35%,#252525 0%,#111 48%,#090909 100%);display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
+#cjSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.cj-splash-inner{width:min(390px,88vw);display:flex;flex-direction:column;align-items:center}
+.cj-splash-logo{width:142px;height:142px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 0 0 2px rgba(196,20,44,.9),0 18px 55px rgba(196,20,44,.25);animation:cjLogoIn .85s cubic-bezier(.2,.8,.2,1) both}
+.cj-splash-title{margin:22px 0 0;font-family:Georgia,serif;letter-spacing:4px;font-size:30px;font-weight:800;animation:cjTextIn .7s .25s ease both}
+.cj-splash-welcome{margin:10px 0 0;color:#eee;font-size:18px;font-weight:700;animation:cjTextIn .7s .45s ease both}
+.cj-splash-msg{margin:8px 0 0;color:#aaa;font-size:13px;line-height:1.6;max-width:320px;animation:cjTextIn .7s .58s ease both}
+.cj-splash-rights{margin-top:34px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);width:100%;color:#888;font-size:11px;letter-spacing:.5px;animation:cjTextIn .7s .72s ease both}
+.cj-splash-rights b{display:block;color:#c4142c;margin-top:5px;font-size:12px}
+.cj-splash-loader{width:90px;height:3px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;margin-top:22px}
+.cj-splash-loader i{display:block;height:100%;width:0;background:#c4142c;border-radius:99px;animation:cjLoad 1.55s ease forwards}
+@keyframes cjLogoIn{from{opacity:0;transform:scale(.72) translateY(16px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes cjTextIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes cjLoad{to{width:100%}}
+@media(max-width:520px){.cj-splash-logo{width:118px;height:118px}.cj-splash-title{font-size:25px}.cj-splash-welcome{font-size:16px}.cj-splash-rights{margin-top:25px}}
+</style>
+
+</head>
+<body>
+<div class="app">
+<header class="top professional-top">
+  <div class="top-left">
+    <button class="top-menu" id="topMenuBtn" onclick="openHeaderNav()" aria-label="Accueil / Menu">☰</button>
+    <div class="logo"><img src="logo_header_pro.png" style="width:100%;height:100%;object-fit:cover" alt="Chez Jalel"></div>
+    <div class="brand-block"><h1 id="brandName">Chez Jalel</h1><small id="headerContext">CAISSE • RESTAURANT</small></div>
+  </div>
+  <div class="header-actions">
+    <span class="top-status" id="topCloudStatus"><span class="status-dot"></span><span class="status-label">Connecté</span></span>
+    <button class="top-theme-toggle" id="topThemeToggle" onclick="event.preventDefault();event.stopPropagation();toggleTheme();return false" aria-label="Changer le thème"><span id="topThemeIcon">☀️</span><span class="theme-label">Clair</span></button>
+    <button id="serverHeaderBtn" class="server-header-btn" onclick="openServerOrders()">Serveur</button>
+    <button id="serverBellBtn" class="top-icon-btn server-bell" onclick="openServerOrders()" aria-label="Commandes serveur"><span class="icon">🔔</span><span id="serverCount" class="server-count">0</span></button>
+    <span class="header-chip role-text" id="roleBadge"></span>
+    <button class="top-ticket" id="ticketBadge" onclick="go('orders')">Ticket #1</button>
+    <button class="theme-btn top-lock" onclick="lockApp()" aria-label="Verrouiller">🔒</button>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+</div>
+<div class="owner-drawer" id="ownerDrawer" aria-hidden="true">
+  <div class="owner-drawer-backdrop" onclick="closeOwnerDrawer()"></div>
+  <aside class="owner-drawer-panel" role="dialog" aria-label="Menu Owner">
+    <div class="owner-drawer-head">
+      <img src="logo.jpg" alt="Chez Jalel">
+      <div><div class="od-title">👑 Owner</div><small>Gestion complète de Chez Jalel</small></div>
+      <button class="owner-drawer-close" onclick="closeOwnerDrawer()" aria-label="Fermer">✕</button>
+    </div>
+    <div class="owner-drawer-section">ACCUEIL & ACTIVITÉ</div>
+    <div class="owner-drawer-list">
+      <button class="owner-drawer-item" onclick="ownerDrawerGo('dashboard')"><span class="od-icon">⌂</span><span>Tableau de bord</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerGo('pos')"><span class="od-icon">▣</span><span>Caisse</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerGo('orders')"><span class="od-icon">☷</span><span>Tickets & commandes</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerGo('stock')"><span class="od-icon">▤</span><span>Stock & inventaire</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerGo('reports')"><span class="od-icon">◒</span><span>Recette & rapports</span><span class="od-arrow">›</span></button>
+    </div>
+    <div class="owner-drawer-section">PARAMÈTRES & GESTION</div>
+    <div class="owner-drawer-list">
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('menu')"><span class="od-icon">🍔</span><span>Menu & sections</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('payroll')"><span class="od-icon">💵</span><span>Salaires des employés</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('security')"><span class="od-icon">🔐</span><span>Accès employés & PIN</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('brand')"><span class="od-icon">🎨</span><span>Identité & apparence</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('tickets')"><span class="od-icon">🎫</span><span>Numérotation des tickets</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('cloud')"><span class="od-icon">☁️</span><span>Cloud & Realtime</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('audit')"><span class="od-icon">📋</span><span>Historique des actions</span><span class="od-arrow">›</span></button>
+    </div>
+    <div class="owner-drawer-section">COMPTE</div>
+    <div class="owner-drawer-list">
+      <button class="owner-drawer-item" onclick="closeOwnerDrawer();lockApp()"><span class="od-icon">🔒</span><span>Verrouiller / changer de compte</span><span class="od-arrow">›</span></button>
+    </div>
+  </aside>
+</div>
+<div id="cjSplash" aria-label="Chez Jalel POS splash screen">
+  <div class="cj-splash-inner">
+    <img class="cj-splash-logo" src="logo_header_pro.png" alt="Chez Jalel">
+    <div class="cj-splash-title">CHEZ JALEL</div>
+    <div class="cj-splash-welcome">مرحبا بيكم 👋</div>
+    <div class="cj-splash-msg">أهلاً بيكم في Chez Jalel POS<br>نظام إدارة المطعم بكل سهولة واحترافية.</div>
+    <div class="cj-splash-rights">هذا التطبيق وجميع حقوقه محفوظة لـ<b>Chez Jalel Restaurant</b></div>
+    <div class="cj-splash-loader"><i></i></div>
+  </div>
+</div>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div><div id="newOrderAlert" class="new-order-alert" onclick="openServerOrders();hideOrderAlert()"><div class="alert-title">🔔 طلبية جديدة من السيرفر</div><div class="alert-sub" id="newOrderAlertSub">طلبية جديدة</div></div><div class="lock" id="lock"><div class="lockbox">
+<img class="login-brand-logo" src="logo_header_pro.png" alt="Chez Jalel">
+<h1 class="login-title">CHEZ JALEL</h1>
+<div class="login-subtitle">RESTAURANT • POS</div>
+<div class="login-welcome">مرحبا بيكم 👋</div>
+<p class="login-caption">Connectez-vous pour continuer</p>
+<label class="login-label">Choisir votre rôle</label>
+<div class="tabs" style="grid-template-columns:repeat(3,1fr)!important">
+<button id="ownerTab" class="on" onclick="setLoginRole('owner')">👑 Aziz</button>
+<button id="staffTab" onclick="setLoginRole('staff')">🧾 Gérant</button>
+<button id="serverTab" onclick="setLoginRole('server')">🧑‍🍳 Serveur</button>
+</div>
+<label class="login-label">Code PIN</label>
+<input class="input" id="pinInput" inputmode="numeric" type="password" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')unlockApp">
+<button class="login-submit" onclick="unlockApp()">Se connecter&nbsp; →</button>
+<p id="firstSetup" class="small muted" style="margin-top:12px;text-align:center"></p>
+<div class="login-footer">CHEZ JALEL POS</div>
+<div class="app-signature">App By Aziz Hleli</div>
+</div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const KEY='chez_jalel_pos_v4';
+const blank={settings:{name:'Chez Jalel',subtitle:'Restaurant POS',brand:'#c4142c',maxTicket:50,logo:''},security:{ownerPin:'',staffPin:'',setup:false},categories:[],products:[],orders:[],stock:[],expenses:[],employees:[],salaryPayments:[],audit:[],caisseSession:null,caisseSessions:[]};
+let s=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(blank);
+s.security.serverPin=s.security.serverPin||s.security.staffPin||'';s.employees=s.employees||[];s.salaryPayments=s.salaryPayments||[];s.expenses=s.expenses||[];s.audit=s.audit||[];
+// Robust data migration for older local saves.
+s.security=s.security||{};s.settings=s.settings||{};s.caisseSession=s.caisseSession||null;s.caisseSessions=Array.isArray(s.caisseSessions)?s.caisseSessions:[];if(s.caisseSession&&!s.caisseSessions.some(x=>x.date===s.caisseSession.date)){s.caisseSessions.push(s.caisseSession);}s.orders=Array.isArray(s.orders)?s.orders:[];s.products=Array.isArray(s.products)?s.products:[];s.categories=Array.isArray(s.categories)?s.categories:[];s.stock=Array.isArray(s.stock)?s.stock:[];s.expenses=Array.isArray(s.expenses)?s.expenses:[];s.employees=Array.isArray(s.employees)?s.employees:[];s.salaryPayments=Array.isArray(s.salaryPayments)?s.salaryPayments:[];s.audit=Array.isArray(s.audit)?s.audit:[];s.orders.forEach(o=>{o.lines=Array.isArray(o.lines)?o.lines:[];o.total=Number(o.total||0);o.customers=Math.max(1,Number(o.customers||1));o.date=o.date||new Date().toISOString()});
+let page='dashboard',cart={},customers=1,filterCat='all',loginRole='owner',currentRole=null,serverTable='',dashboardDate=today();
+let cloudClient=null,cloudChannel=null,cloudBusy=false,cloudTimer=null;
+function cloudCfg(){return JSON.parse(localStorage.getItem('chezJalelCloudConfig')||'null')}
+function cloudStatus(){return localStorage.getItem('chezJalelCloudStatus')||'offline'}
+function setCloudStatus(v){localStorage.setItem('chezJalelCloudStatus',v);const el=document.getElementById('cloudStatus');if(el)el.textContent=v==='online'?'🟢 متصل':v==='connecting'?'🟡 جاري الاتصال':'⚪ غير متصل'}
+function save(){localStorage.setItem(KEY,JSON.stringify(s));render();scheduleCloudPush()}
+function scheduleCloudPush(){const c=cloudCfg();if(!c?.enabled||cloudBusy)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>cloudPush(),350)}
+function makeCloudClient(c){if(!window.supabase)return null;return window.supabase.createClient(c.url,c.key,{global:{headers:{'x-chez-key':c.accessKey,'x-chez-device':c.device||'device'}}})}
+async function cloudPull(){const c=cloudCfg();if(!c?.enabled)return false;try{cloudBusy=true;setCloudStatus('connecting');if(!cloudClient)cloudClient=makeCloudClient(c);const {data,error}=await cloudClient.from('cloud_state').select('state,updated_at').eq('restaurant_id',c.restaurantId).maybeSingle();if(error)throw error;if(data?.state){s=Object.assign(structuredClone(blank),data.state);localStorage.setItem(KEY,JSON.stringify(s));}else{await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:new Date().toISOString(),updated_by:c.device||'device'},{onConflict:'restaurant_id'});}setCloudStatus('online');cloudSubscribe();render();return true}catch(e){console.error(e);setCloudStatus('offline');return false}finally{cloudBusy=false}}
+async function cloudPush(){const c=cloudCfg();if(!c?.enabled||cloudBusy||!cloudClient)return;try{cloudBusy=true;const {error}=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:new Date().toISOString(),updated_by:c.device||'device'},{onConflict:'restaurant_id'});if(error)throw error;setCloudStatus('online')}catch(e){console.error(e);setCloudStatus('offline')}finally{cloudBusy=false}}
+function cloudSubscribe(){const c=cloudCfg();if(!c?.enabled||!cloudClient)return;if(cloudChannel)cloudClient.removeChannel(cloudChannel);cloudChannel=cloudClient.channel('chezjalel-'+c.restaurantId).on('postgres_changes',{event:'*',schema:'public',table:'cloud_state',filter:'restaurant_id=eq.'+c.restaurantId},payload=>{if(payload.eventType==='DELETE')return;const incoming=payload.new?.state;if(!incoming)return;if(payload.new?.updated_by===(c.device||'device'))return;const previousIds=new Set((s.orders||[]).map(o=>o.id));const newServerOrders=(incoming.orders||[]).filter(o=>o.source==='server'&&!previousIds.has(o.id));s=Object.assign(structuredClone(blank),incoming);localStorage.setItem(KEY,JSON.stringify(s));setCloudStatus('online');render();if(currentRole==='staff'&&newServerOrders.length){newServerOrders.slice(-3).forEach(notifyNewServerOrder)}else showToast('☁️ Mise à jour reçue')}).subscribe(status=>{if(status==='SUBSCRIBED')setCloudStatus('online');if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setCloudStatus('offline')})}
+function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;top:90px;left:50%;transform:translateX(-50%);z-index:200;background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-weight:800;box-shadow:0 8px 25px #0005';document.body.appendChild(t)}t.textContent=msg;t.style.display='block';clearTimeout(t._tm);t._tm=setTimeout(()=>t.style.display='none',1800)}
+function beepNewOrder(){try{const C=window.AudioContext||window.webkitAudioContext;if(C){const ctx=new C();const now=ctx.currentTime;[0,.16,.32].forEach((d,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=i===1?880:660;g.gain.setValueAtTime(.0001,now+d);g.gain.exponentialRampToValueAtTime(.22,now+d+.02);g.gain.exponentialRampToValueAtTime(.0001,now+d+.13);o.connect(g);g.connect(ctx.destination);o.start(now+d);o.stop(now+d+.14)})}}catch(e){}try{navigator.vibrate?.([180,80,180])}catch(e){}}
+function notifyNewServerOrder(o){beepNewOrder();updateServerBadge();const el=document.getElementById('newOrderAlert');const sub=document.getElementById('newOrderAlertSub');if(sub)sub.textContent=`Table ${o.table||'—'} • Ticket #${o.ticket} • ${money(o.total)}`;if(el){el.classList.add('show');clearTimeout(window._orderAlertTimer);window._orderAlertTimer=setTimeout(()=>el.classList.remove('show'),7000)}showToast(`🔔 Nouvelle commande • Table ${o.table||'—'}`);try{printTickets(o);setTimeout(()=>window.print(),450)}catch(e){}}
+function hideOrderAlert(){document.getElementById('newOrderAlert')?.classList.remove('show')}
+
+async function connectCloud(){const url=document.getElementById('cloudUrl').value.trim().replace(/\/$/,''),key=document.getElementById('cloudKey').value.trim(),rid=document.getElementById('cloudRid').value.trim()||'chezjalel',access=document.getElementById('cloudAccess').value.trim(),device=document.getElementById('cloudDevice').value.trim()||('device-'+Math.random().toString(36).slice(2,7));if(!url||!key||!rid||!access){alert('كمّل URL + Publishable key + Restaurant ID + Access key');return}localStorage.setItem('chezJalelCloudConfig',JSON.stringify({enabled:true,url,key,restaurantId:rid,accessKey:access,device}));cloudClient=makeCloudClient({url,key,restaurantId:rid,accessKey:access,device});const ok=await cloudPull();if(ok){closeModal();showToast('☁️ Realtime connecté');more()}else alert('ما نجّمش نتصل. تأكد من Supabase و SQL والـ keys.')} 
+function disconnectCloud(){if(cloudClient&&cloudChannel)cloudClient.removeChannel(cloudChannel);cloudClient=null;cloudChannel=null;localStorage.removeItem('chezJalelCloudConfig');setCloudStatus('offline');closeModal();showToast('Cloud déconnecté');more()}
+function cloudManager(){if(!canEdit())return;const c=cloudCfg()||{};document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>☁️ Cloud & Realtime</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><div class="card"><div class="row"><b>État</b><b id="cloudStatus">${cloudStatus()==='online'?'🟢 متصل':cloudStatus()==='connecting'?'🟡 جاري الاتصال':'⚪ غير متصل'}</b></div><p class="muted">نفس المعلومات تتحط في تليفون الـ Caisse والـ Serveur باش يتزامنوا مع بعضهم.</p></div><label class="small">Supabase Project URL</label><input class="input" id="cloudUrl" value="${esc(c.url||'')}" placeholder="https://xxxx.supabase.co"><br><br><label class="small">Publishable key</label><input class="input" id="cloudKey" value="${esc(c.key||'')}" placeholder="sb_publishable_..."><br><br><label class="small">Restaurant ID</label><input class="input" id="cloudRid" value="${esc(c.restaurantId||'chezjalel')}"><br><br><label class="small">Access key</label><input class="input" id="cloudAccess" type="password" value="${esc(c.accessKey||'')}" placeholder="Code commun للمطعم"><br><br><label class="small">Nom الجهاز</label><input class="input" id="cloudDevice" value="${esc(c.device||'')}" placeholder="Caisse / Serveur 1 / Owner"><button class="btn gold" style="width:100%;margin-top:14px" onclick="connectCloud()">🔗 Connecter & synchroniser</button>${c.enabled?'<button class="btn danger" style="width:100%;margin-top:8px" onclick="disconnectCloud()">Déconnecter Cloud</button>':''}<p class="small muted" style="margin-top:12px">ملاحظة: الـ Publishable key ينجم يكون في التطبيق؛ ممنوع تحط Service Role/Secret key هنا.</p>`;document.getElementById('modal').classList.add('show')}
+
+function money(n){return Number(n||0).toFixed(3)+' DT'}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function today(){return new Date().toISOString().slice(0,10)}
+function ordersToday(){return ordersForDate(today())}
+function ordersForDate(d){return s.orders.filter(o=>String(o.date||'').slice(0,10)===d)}
+function expensesForDate(d){return s.expenses.filter(x=>x.date===d).reduce((a,x)=>a+Number(x.amount||0),0)}
+function waitingClients(excludeId=''){return ordersToday().filter(o=>o.status!=='cancelled'&&o.status!=='served'&&o.id!==excludeId).reduce((a,o)=>a+Number(o.customers||0),0)}
+function revenueToday(){return revenueForDate(today())}
+function revenueForDate(d){return ordersForDate(d).filter(o=>o.status!=='cancelled').reduce((a,o)=>a+Number(o.total||0),0)}
+function expensesToday(){return expensesForDate(today())}
+function fondCaisseForDate(d){return (s.caisseSessions||[]).find(x=>x.date===d)||((s.caisseSession&&s.caisseSession.date===d)?s.caisseSession:null)}
+function setDashboardDate(d){const v=String(d||'').slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return;if(v>today())return;dashboardDate=v;render()}
+function monthKey(d=new Date()){return d.toISOString().slice(0,7)}
+function salaryPaidThisMonth(empId){return (s.salaryPayments||[]).filter(x=>x.employeeId===empId&&x.date.slice(0,7)===monthKey()).reduce((a,x)=>a+Number(x.amount||0),0)}
+function salariesPaidThisMonth(){return (s.salaryPayments||[]).filter(x=>x.date.slice(0,7)===monthKey()).reduce((a,x)=>a+Number(x.amount||0),0)}
+function salariesDueThisMonth(){return (s.employees||[]).filter(e=>e.active!==false).reduce((a,e)=>a+Math.max(0,Number(e.salary||0)-salaryPaidThisMonth(e.id)),0)}
+function canEdit(){return currentRole==='owner'}
+function applyTheme(){let t=localStorage.getItem('chezJalelTheme')||'light';document.documentElement.setAttribute('data-theme',t);document.getElementById('themeLight')?.classList.toggle('active',t==='light');document.getElementById('themeDark')?.classList.toggle('active',t==='dark');const icon=document.getElementById('topThemeIcon');const label=document.querySelector('#topThemeToggle .theme-label');if(icon)icon.textContent=t==='dark'?'☀️':'🌙';if(label)label.textContent=t==='dark'?'Clair':'Sombre';const b=document.getElementById('topThemeToggle');if(b)b.setAttribute('aria-label',t==='dark'?'Passer au mode clair':'Passer au mode sombre')}
+function setTheme(t){localStorage.setItem('chezJalelTheme',t);document.documentElement.setAttribute('data-theme',t);applyTheme();}
+function toggleTheme(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')}
+function closeModal(){const modal=document.getElementById('modal');const sheet=document.getElementById('sheet');if(!modal)return;modal.classList.remove('show','fond-modal');if(sheet)sheet.innerHTML='';document.body.classList.remove('modal-open')}
+document.addEventListener('DOMContentLoaded',()=>{const modal=document.getElementById('modal');if(modal){modal.addEventListener('click',e=>{if(e.target===modal)closeModal()})}document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()})})
+
+function audit(action,details=''){s.audit.unshift({id:uid(),date:new Date().toISOString(),role:currentRole||'system',action,details});s.audit=s.audit.slice(0,200)}
+function nextTicket(){let max=Number(s.settings.maxTicket||50),all=ordersToday();if(!all.length)return 1;let used=new Set(all.map(o=>Number(o.ticket)));for(let i=1;i<=max;i++)if(!used.has(i))return i;return 1}
+function openOwnerDrawer(){if(currentRole!=='owner')return;document.getElementById('ownerDrawer')?.classList.add('show');document.getElementById('ownerDrawer')?.setAttribute('aria-hidden','false')}
+function closeOwnerDrawer(){document.getElementById('ownerDrawer')?.classList.remove('show');document.getElementById('ownerDrawer')?.setAttribute('aria-hidden','true')}
+function ownerDrawerGo(p){closeOwnerDrawer();go(p)}
+function ownerDrawerAction(a){closeOwnerDrawer();if(a==='menu')menuManager();else if(a==='payroll')payrollManager();else if(a==='security')securityManager();else if(a==='brand')brandManager();else if(a==='tickets')ticketManager();else if(a==='cloud')cloudManager();else if(a==='audit')auditManager()}
+function go(p){if(currentRole==='staff' && !['pos','orders'].includes(p))return;if(currentRole==='server' && p!=='pos')return;page=p;render()}
+function openHeaderNav(){if(currentRole==='owner')openOwnerDrawer();else go('pos')}
+function render(){applyTheme();document.body.classList.toggle('staff-mode',currentRole==='staff');document.body.classList.toggle('serveur-mode',currentRole==='server');document.documentElement.style.setProperty('--brand',s.settings.brand||'#c4142c');document.getElementById('brandName').textContent=s.settings.name||'Chez Jalel';document.getElementById('ticketBadge').textContent='Ticket #'+nextTicket();document.getElementById('roleBadge').textContent=currentRole==='owner'?'👑 Aziz':currentRole==='staff'?'🧾 Gérant':'🧑‍🍳 Serveur';const serverPending=(currentRole==='staff'||currentRole==='owner')?s.orders.filter(o=>o.source==='server'&&o.status==='pending').length:0;const sb=document.getElementById('serverHeaderBtn'),bell=document.getElementById('serverBellBtn'),sc=document.getElementById('serverCount');if(sb)sb.classList.toggle('show',currentRole==='staff'||currentRole==='owner');if(bell)bell.style.display=(currentRole==='staff'||currentRole==='owner')?'inline-block':'none';if(sc){sc.textContent=serverPending;sc.classList.toggle('show',serverPending>0)}document.getElementById('headerContext').textContent=(page==='pos'?'CAISSE • VENTE':page==='orders'?'TICKETS • SUIVI':page==='stock'?'STOCK • INVENTAIRE':page==='reports'?'RECETTE • RAPPORTS':page==='more'?'PARAMÈTRES • PLUS':'TABLEAU DE BORD');const ts=document.getElementById('topCloudStatus');if(ts){const cs=cloudStatus();ts.innerHTML=`<span class="status-dot" style="background:${cs==='online'?'#39c96e':cs==='connecting'?'#e0b52e':'#8b8f94'};box-shadow:0 0 9px ${cs==='online'?'rgba(57,201,110,.7)':cs==='connecting'?'rgba(224,181,46,.55)':'transparent'}"></span><span class="status-label">${cs==='online'?'Connecté':cs==='connecting'?'Connexion…':'Hors ligne'}</span>`}const tm=document.getElementById('topMenuBtn');if(tm)tm.style.display=currentRole?'flex':'none';// Bottom navigation was removed; Owner navigation lives in the header drawer.
+const view={dashboard,pos,orders,serverOrders,stock,reports,more}[page]||dashboard;try{view()}catch(err){console.error('chezJalel render error',err);const app=document.getElementById('app');if(app)app.innerHTML='<div class="card"><h2>Tableau de bord</h2><p class="muted">صار خطأ في البيانات المحلية.</p><button class="btn primary" onclick="location.reload()">إعادة تحميل</button></div>';}}
+function dashboardDetail(type,d){
+  const selected=String(d||dashboardDate||today()).slice(0,10), od=ordersForDate(selected), exList=s.expenses.filter(x=>x.date===selected), rev=revenueForDate(selected), ex=exList.reduce((a,x)=>a+Number(x.amount||0),0), clients=od.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+Number(o.customers||0),0), f=fondCaisseForDate(selected), theoretical=f?Number(f.amount||0)+rev-ex:rev-ex;
+  const label=new Date(selected+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  const back='<button class="btn light" onclick="dashboard()">← Tableau de bord</button>';
+  const head=(title,sub)=>`<div class="page-head"><div>${back}<h2 style="margin-top:10px">${title}</h2><p>${sub}</p></div><div class="page-meta"><b>${esc(label)}</b></div></div>`;
+  if(type==='clients'){
+    const active=od.filter(o=>o.status!=='cancelled');
+    const clientRows=active.flatMap(o=>Array.from({length:Math.max(0,Number(o.customers||0))},(_,i)=>({o,i})))
+      .map(({o,i})=>`<div class="listrow"><div class="row"><div><b>Client ${i+1}</b><div class="muted">Ticket #${o.ticket}${o.table?' • Table '+esc(o.table):''} • ${new Date(o.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div></div><span class="badge">${o.source==='server'?'Serveur':'Caisse'}</span></div></div>`).join('');
+    const ticketSummary=active.map(o=>`<div class="card"><div class="row"><div><b>Ticket #${o.ticket}</b><div class="muted">${new Date(o.date).toLocaleString('fr-FR')}${o.table?' • Table '+esc(o.table):''}</div></div><div style="text-align:right"><b>${Number(o.customers||0)} client(s)</b><div class="muted">${money(o.total)}</div></div></div></div>`).join('');
+    document.getElementById('app').innerHTML=head('Clients — '+clients,`Liste détaillée des clients enregistrés pour ${label}.`)+`<div class="grid4"><div class="card stat"><span class="muted">Total clients</span><b>${clients}</b></div><div class="card stat"><span class="muted">Tickets concernés</span><b>${active.length}</b></div><div class="card stat"><span class="muted">Moyenne / ticket</span><b>${active.length?(clients/active.length).toFixed(1):'0.0'}</b></div><div class="card stat"><span class="muted">Recette</span><b>${money(rev)}</b></div></div><div class="card"><h3>👥 Liste des clients</h3><p class="muted">Chaque ligne représente un client enregistré dans une commande. Les noms ne sont pas demandés par le système.</p>${clientRows||'<div class="empty">Aucun client enregistré.</div>'}</div><div class="card"><h3>🧾 Répartition par ticket</h3>${ticketSummary||'<div class="empty">Aucune commande pour cette journée.</div>'}</div>`;
+    return;
+  }
+  if(type==='sales'){
+    document.getElementById('app').innerHTML=head('Ventes & Tickets',`${od.length} ticket(s) • détail complet des ventes.`)+`<div class="grid4"><div class="card stat"><span class="muted">Recette</span><b>${money(rev)}</b></div><div class="card stat"><span class="muted">Tickets</span><b>${od.length}</b></div><div class="card stat"><span class="muted">Clients</span><b>${clients}</b></div><div class="card stat"><span class="muted">Panier moyen</span><b>${money(od.length?rev/od.length:0)}</b></div></div>${od.map(o=>`<div class="card"><div class="row"><div><b>Ticket #${o.ticket}</b><div class="muted">${new Date(o.date).toLocaleString('fr-FR')}${o.table?' • Table '+esc(o.table):''}${o.source==='server'?' • 🧑‍🍳 Serveur':''}</div></div><b>${money(o.total)}</b></div>${o.lines.map(l=>`<div class="listrow"><div class="row"><span>${l.qty} × ${esc(l.name)}</span><b>${money(Number(l.price||0)*Number(l.qty||0))}</b></div>${l.note?`<div class="muted">Note: ${esc(l.note)}</div>`:''}</div>`).join('')}<div class="row" style="margin-top:10px"><span class="muted">Paiement</span><b>${esc(o.payment||'cash')}</b></div></div>`).join('')||'<div class="empty">Aucune vente pour cette journée.</div>'}`;
+    return;
+  }
+  if(type==='revenue'){
+    const pay={cash:0,card:0,other:0};od.filter(o=>o.status!=='cancelled').forEach(o=>pay[o.payment||'cash']=(pay[o.payment||'cash']||0)+Number(o.total||0));
+    document.getElementById('app').innerHTML=head('Recette',`Détail de la recette du ${label}.`)+`<div class="grid4"><div class="card stat"><span class="muted">Recette totale</span><b>${money(rev)}</b></div><div class="card stat"><span class="muted">Espèces</span><b>${money(pay.cash)}</b></div><div class="card stat"><span class="muted">Carte</span><b>${money(pay.card)}</b></div><div class="card stat"><span class="muted">Autre</span><b>${money(pay.other)}</b></div></div><div class="card"><h3>Détail par ticket</h3>${od.filter(o=>o.status!=='cancelled').map(o=>`<div class="listrow"><div class="row"><span>Ticket #${o.ticket}<span class="muted"> • ${new Date(o.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></span><b>${money(o.total)}</b></div></div>`).join('')||'<div class="empty">Aucune recette.</div>'}</div>`;return;
+  }
+  if(type==='expenses'){
+    document.getElementById('app').innerHTML=head('Dépenses',`Toutes les dépenses enregistrées le ${label}.`)+`<div class="card stat"><span class="muted">Total dépenses</span><b>${money(ex)}</b></div><div class="card"><h3>Détail</h3>${exList.map(x=>`<div class="listrow"><div class="row"><div><b>${esc(x.name)}</b><div class="muted">${esc(x.date)}</div></div><b>${money(x.amount)}</b></div></div>`).join('')||'<div class="empty">Aucune dépense pour cette journée.</div>'}</div>`;return;
+  }
+  if(type==='net'){
+    document.getElementById('app').innerHTML=head('Net',`Calcul détaillé du résultat du ${label}.`)+`<div class="card"><div class="row"><span>Recette</span><b>${money(rev)}</b></div><div class="row"><span>Dépenses</span><b>− ${money(ex)}</b></div><hr><div class="row"><strong>Net</strong><strong>${money(rev-ex)}</strong></div></div><div class="card"><h3>Explication</h3><p class="muted">Net = Recette − Dépenses. Le Fond de Caisse initial n'est pas une recette.</p></div>`;return;
+  }
+  if(type==='caisse'){
+    document.getElementById('app').innerHTML=head('Contrôle de Caisse',`Situation théorique du ${label}.`)+`<div class="card"><div class="row"><span>Fond de Caisse</span><b>${f?money(f.amount):'—'}</b></div><div class="row"><span>Recette</span><b>+ ${money(rev)}</b></div><div class="row"><span>Dépenses</span><b>− ${money(ex)}</b></div><hr><div class="row"><strong>Caisse théorique</strong><strong>${money(theoretical)}</strong></div>${f?`<p class="muted" style="margin-top:10px">Ouverte le ${new Date(f.openedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})} par ${f.openedBy==='owner'?'Aziz':f.openedBy==='staff'?'Gérant':'Serveur'}.</p>`:'<p class="muted">Aucun Fond de Caisse enregistré pour cette journée.</p>'}</div>`;return;
+  }
+  if(type==='top'){
+    let top={};od.filter(o=>o.status!=='cancelled').forEach(o=>o.lines.forEach(l=>top[l.name]=(top[l.name]||0)+Number(l.qty||0)));let rows=Object.entries(top).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('app').innerHTML=head('Produits les plus vendus',`Classement détaillé du ${label}.`)+`<div class="card">${rows.map((x,i)=>`<div class="listrow"><div class="row"><span><b>#${i+1}</b> ${esc(x[0])}</span><b>${x[1]} unité(s)</b></div><div class="mini-bar"><i style="width:${Math.max(6,Math.round(x[1]/Math.max(1,rows[0][1])*100))}%"></i></div></div>`).join('')||'<div class="empty">Pas encore de ventes.</div>'}</div>`;return;
+  }
+  if(type==='nosales'){
+    let sold={};od.filter(o=>o.status!=='cancelled').forEach(o=>o.lines.forEach(l=>sold[l.name]=(sold[l.name]||0)+Number(l.qty||0)));let rows=s.products.filter(p=>!sold[p.name]);
+    document.getElementById('app').innerHTML=head('Ce qui ne sort pas',`Produits sans vente le ${label}.`)+`<div class="card"><div class="row"><b>Produits sans vente</b><b>${rows.length}</b></div>${rows.map(p=>`<div class="listrow"><div class="row"><span>${esc(p.name)}</span><span class="muted">0 vente</span></div></div>`).join('')||'<div class="empty">Tous les produits ont été vendus.</div>'}</div>`;return;
+  }
+}
+function dashboard(){
+  const selected=dashboardDate>today()?today():dashboardDate;
+  const od=Array.isArray(s.orders)?ordersForDate(selected):[],rev=Number(revenueForDate(selected)||0),ex=Number(expensesForDate(selected)||0),net=rev-ex,top={};
+  od.forEach(o=>(Array.isArray(o.lines)?o.lines:[]).forEach(l=>{const k=l.name||'Produit';top[k]=(top[k]||0)+Number(l.qty||0)}));
+  const tops=Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,5),f=fondCaisseForDate(selected),theoretical=f?Number(f.amount||0)+rev-ex:null,app=document.getElementById('app');if(!app)return;
+  const label=selected===today()?'Aujourd’hui':new Date(selected+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  app.innerHTML=`<div class="dashboard-wrap"><div class="page-head"><div><h2>Tableau de bord</h2><p>Vue d'ensemble de votre activité.</p></div><div class="page-meta"><label class="dash-date-label">Journée<br><input class="dash-date-input" type="date" value="${selected}" max="${today()}" onchange="setDashboardDate(this.value)"></label><div class="dash-date-caption">${label}</div></div></div>${caisseControlCardForDate(selected)}<div class="dashboardAccounts"><button class="dashCard dashCardBtn" onclick="dashboardDetail('revenue','${selected}')"><div class="l">RECETTE</div><div class="v">${money(rev)}</div><span class="dash-more">Voir le détail →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('sales','${selected}')"><div class="l">VENTES / TICKETS</div><div class="v">${od.length}</div><span class="dash-more">Voir les tickets →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('clients','${selected}')"><div class="l">CLIENTS</div><div class="v">${od.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+Number(o.customers||0),0)}</div><span class="dash-more">Voir les clients →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('expenses','${selected}')"><div class="l">DÉPENSES</div><div class="v">${money(ex)}</div><span class="dash-more">Voir les dépenses →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('net','${selected}')"><div class="l">NET</div><div class="v">${money(net)}</div><span class="dash-more">Voir le calcul →</span></button>${f?`<button class="dashCard dashCardBtn" onclick="dashboardDetail('caisse','${selected}')"><div class="l">CAISSE THÉORIQUE</div><div class="v">${money(theoretical)}</div><span class="dash-more">Contrôler la caisse →</span></button>`:''}</div><div class="dashCharts"><div class="dashChart card dashChartBtn" onclick="dashboardDetail('top','${selected}')"><div class="row"><h3>Produits les plus vendus</h3><span class="badge">${esc(selected===today()?'Aujourd’hui':label)}</span></div>${tops.length?tops.map(x=>`<div class="listrow"><div class="row"><span>${esc(x[0])}</span><b>${x[1]}</b></div><div class="mini-bar"><i style="width:${Math.max(6,Math.round(x[1]/Math.max(1,tops[0][1])*100))}%"></i></div></div>`).join(''):'<div class="empty">Pas encore de ventes.</div>'}</div><div class="dashChart card dashChartBtn" onclick="dashboardDetail('nosales','${selected}')"><div class="row"><h3>Ce qui ne sort pas</h3><span class="badge">À surveiller</span></div><p class="muted">Produits sans vente pour cette journée.</p>${s.products.filter(p=>!top[p.name]).slice(0,8).map(p=>`<div class="listrow"><div class="row"><span>${esc(p.name)}</span><span class="muted">0 vente</span></div></div>`).join('')||'<div class="empty">Tous les produits ont été vendus.</div>'}</div></div></div>`
+}
+
+function catIcon(name){
+  const n=(name||'').toLowerCase();
+  if(/boisson|drink|jus|soda|eau|café|cafe/.test(n)) return '🥤';
+  if(/sandwich|burger|tacos|panini/.test(n)) return '🥪';
+  if(/plat|repas|keftaji|cuisine/.test(n)) return '🍽️';
+  if(/brik|salade|entrée|entree/.test(n)) return '🥗';
+  if(/dessert|sucré|sucre|gateau|gâteau/.test(n)) return '🍰';
+  if(/extra|ajout|supp/.test(n)) return '➕';
+  return '•';
+}
+function startStaffOrder(){cart={};customers=1;filterCat='all';page='pos';render()}
+function pos(){
+  if(currentRole==='server'){return serverHome()}
+  let cats=s.categories;
+  let products=s.products.filter(p=>filterCat==='all'||p.cat===filterCat);
+  let serverPending=(currentRole==='staff'||currentRole==='owner')?s.orders.filter(o=>o.source==='server'&&o.status==='pending').length:0;
+  let total=Object.values(cart).reduce((a,x)=>a+x.price*x.qty,0);
+  document.getElementById('app').innerHTML=`
+  <div class="pos-shell">
+    <div class="staff-hero"><div class="row"><div><h2>Bonjour 👋</h2><div class="muted">Caisse • Ticket #${nextTicket()}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:0"><span class="badge" style="background:#fff;color:#8e0d20;font-weight:900">${waitingClients()} en attente</span>${serverPending>0?`<button class="server-hero-alert pulse" onclick="openServerOrders()">🔔 ${serverPending} serveur${serverPending>1?'s':''} en attente</button>`:''}</div></div></div>
+    ${currentRole==='staff'?`<div class="staff-command-access"><div class="staff-command-title"><span>Gestion des commandes</span><small>Accès rapide</small></div><div class="staff-command-buttons"><button class="staff-command-btn create" onclick="startStaffOrder()"><span class="scb-icon">＋</span><span><b>Créer commande</b><small>Nouvelle vente</small></span><span class="scb-arrow">›</span></button><button class="staff-command-btn edit" onclick="go('orders')"><span class="scb-icon">✎</span><span><b>Modifier commande</b><small>Modifier • Annuler • Réimprimer</small></span><span class="scb-arrow">›</span></button></div></div>`:''}
+    <div class="category-header">
+      <div class="category-top"><span class="category-title">Catégories du menu</span><span class="category-count">${cats.length} catégories</span></div>
+      <div class="category-scroll">
+        <button class="cat-btn ${filterCat==='all'?'on':''}" onclick="filterCat='all';pos()"><span class="cat-icon">▦</span>Tout</button>
+        ${cats.map(c=>`<button class="cat-btn ${filterCat===c.id?'on':''}" onclick="filterCat='${c.id}';pos()"><span class="cat-icon">${catIcon(c.name)}</span>${esc(c.name)}</button>`).join('')}
+      </div>
+      <input class="category-search" id="productSearch" placeholder="Rechercher un produit..." oninput="renderProductSearch(this.value)">
+    </div>
+    <div class="row"><div><h2>Caisse</h2><span class="muted">Choisis une catégorie puis un produit</span></div></div>
+    <div class="products" id="productGrid">${products.map(p=>`<button class="product" data-name="${esc(p.name).toLowerCase()}" onclick="addToCart('${p.id}')"><div class="pic">${p.image?`<img src="${p.image}">`:'<div class="placeholder">🍽️</div>'}</div><div class="pbody"><b>${esc(p.name)}</b><span>${money(p.price)}</span></div></button>`).join('')||'<div class="empty">Ajoute tes produits dans Plus → Menu.</div>'}</div>
+    <div class="card" style="margin-top:12px"><div class="row"><b>Nombre de clients</b><div class="qty"><button onclick="customers=Math.max(1,customers-1);pos()">−</button><b>${customers}</b><button onclick="customers++;pos()">＋</button></div></div></div>
+    ${Object.keys(cart).length?`<div class="card cart"><div class="row"><h3>Commande</h3><b>${money(total)}</b></div>${Object.values(cart).map(x=>`<div class="line"><div style="flex:1"><b>${esc(x.name)}</b><div class="muted">${money(x.price)}</div><input class="note-input" value="${esc(x.note||'')}" placeholder="Note: sans harissa, bien cuite..." onchange="setLineNote('${x.id}',this.value)"></div><div class="qty"><button onclick="changeQty('${x.id}',-1)">−</button><b>${x.qty}</b><button onclick="changeQty('${x.id}',1)">＋</button></div><b>${money(x.price*x.qty)}</b></div>`).join('')}<div style="margin-top:10px" class="muted">La note sera imprimée sur le ticket cuisine.</div><button class="btn primary" style="width:100%;margin-top:12px" onclick="finishOrder()">Valider la commande • ${money(total)}</button></div>`:''}
+  </div>`;
+}
+function serverHome(){
+  const pending=s.orders.filter(o=>o.source==='server'&&o.status==='pending').length;
+  document.getElementById('app').innerHTML=`<div class="server-home">
+    <div class="serveur-hero"><h2>Serveur</h2><div>Prends une commande en quelques secondes.</div><div class="serveur-sync">☁️ La commande sera envoyée à la caisse dès que le Cloud est connecté.</div></div>
+    <button class="server-add" onclick="serverStartOrder()">＋ Ajouter commande<small>Choisir la table puis les articles</small></button>
+    <div class="server-card"><div class="row"><div><b>Commandes envoyées</b><div class="muted">Aujourd'hui</div></div><span class="badge">${pending} en attente</span></div></div>
+  </div>`;
+}
+function serverStartOrder(){cart={};customers=1;serverTable='';filterCat='all';page='serverOrder';renderServerOrder()}
+function renderServerOrder(){
+  const cats=s.categories, products=s.products.filter(p=>filterCat==='all'||p.cat===filterCat), total=Object.values(cart).reduce((a,x)=>a+x.price*x.qty,0);
+  document.getElementById('app').innerHTML=`<div class="server-home">
+    <div class="server-card"><div class="row"><div><b>Nouvelle commande</b><div class="muted">Choisir la table</div></div><button class="btn light" onclick="cart={};serverTable='';pos()">✕</button></div><div class="server-tables">${Array.from({length:20},(_,i)=>i+1).map(n=>`<button class="server-table-btn ${String(serverTable)===String(n)?'on':''}" onclick="serverTable='${n}';renderServerOrder()">${n}</button>`).join('')}</div></div>
+    ${serverTable?`<div class="server-card"><div class="row"><div><b>Table ${serverTable}</b><div class="muted">اختار طلب الحريف</div></div><button class="btn light" onclick="serverTable='';cart={};renderServerOrder()">تبديل الطاولة</button></div><div class="category-scroll" style="margin:0"><button class="cat-btn ${filterCat==='all'?'on':''}" onclick="filterCat='all';renderServerOrder()">Tout</button>${cats.map(c=>`<button class="cat-btn ${filterCat===c.id?'on':''}" onclick="filterCat='${c.id}';renderServerOrder()">${esc(c.name)}</button>`).join('')}</div><div class="server-menu">${products.map(p=>`<button class="server-product" onclick="serverAddProduct('${p.id}')"><b>${esc(p.name)}</b><span>${money(p.price)} • ＋</span></button>`).join('')||'<div class="empty">Aucun produit.</div>'}</div></div>`:''}
+    ${Object.keys(cart).length?`<div class="server-card"><div class="row"><b>Table ${serverTable||'—'}</b><b>${money(total)}</b></div>${Object.values(cart).map(x=>`<div class="server-cart-line"><div><b>${esc(x.name)}</b><div class="muted">${money(x.price)}</div><input class="note-input" value="${esc(x.note||'')}" placeholder="Note cuisine" onchange="setLineNote('${x.id}',this.value)"></div><div class="qty"><button onclick="serverQty('${x.id}',-1)">−</button><b>${x.qty}</b><button onclick="serverQty('${x.id}',1)">＋</button></div></div>`).join('')}<button class="btn primary server-accept" onclick="acceptServerOrder()">✓ Accepter commande • ${money(total)}</button></div>`:''}
+  </div>`;
+}
+function serverAddProduct(id){let p=s.products.find(x=>x.id===id);if(!p)return;cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1}:{id:p.id,name:p.name,price:p.price,qty:1,note:''};renderServerOrder()}
+function serverQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)delete cart[id];renderServerOrder()}
+function acceptServerOrder(){if(!serverTable){alert('اختار رقم الطاولة أولاً');return}let lines=Object.values(cart).map(x=>({...x}));if(!lines.length){alert('اختار الطلبية أولاً');return}let total=lines.reduce((a,x)=>a+x.price*x.qty,0),o={id:uid(),ticket:nextTicket(),customers:customers||1,date:new Date().toISOString(),lines,total,payment:'cash',status:'pending',source:'server',table:String(serverTable)};s.orders.unshift(o);lines.forEach(l=>{let st=s.stock.find(x=>x.productId===l.id);if(st&&st.control)st.qty=Math.max(0,Number(st.qty)-l.qty)});audit('Commande serveur',`Table ${o.table} • Ticket #${o.ticket} • ${money(o.total)}`);cart={};customers=1;serverTable='';page='pos';save();showToast(`✓ Commande table ${o.table} envoyée à la caisse`);pos()}
+function renderProductSearch(q){
+  q=(q||'').trim().toLowerCase();
+  document.querySelectorAll('#productGrid .product').forEach(el=>el.style.display=(!q||el.dataset.name.includes(q))?'':'none');
+}
+function addToCart(id){let p=s.products.find(x=>x.id===id);if(!p)return;cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1}:{id:p.id,name:p.name,price:p.price,qty:1,note:''};pos()}
+function setLineNote(id,note){if(cart[id]){cart[id].note=note;}}
+
+function changeQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)delete cart[id];pos()}
+function finishOrder(){let lines=Object.values(cart).map(x=>({...x}));if(!lines.length)return;let total=lines.reduce((a,x)=>a+x.price*x.qty,0),o={id:uid(),ticket:nextTicket(),customers,date:new Date().toISOString(),lines,total,payment:'cash',status:'pending',source:currentRole||'staff',table:serverTable||''};s.orders.unshift(o);lines.forEach(l=>{let st=s.stock.find(x=>x.productId===l.id);if(st&&st.control)st.qty=Math.max(0,Number(st.qty)-l.qty)});audit('Vente',`Ticket #${o.ticket} • ${money(o.total)}`);cart={};customers=1;save();printTickets(o)}
+
+function printOnly(type){let all=document.querySelectorAll('.ticket-print');all.forEach((el,i)=>el.classList.toggle('print-hide',type==='client'?i!==0:i!==1));window.print();setTimeout(()=>all.forEach(el=>el.classList.remove('print-hide')),500)}
+function printTickets(o){let dt=new Date(o.date),date=dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}),time=dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),wait=waitingClients(o.id),items=o.lines.reduce((a,x)=>a+Number(x.qty||0),0);document.getElementById('sheet').innerHTML=`<div class="no-print"><h2>Tickets #${o.ticket}</h2><p class="muted">Ticket client + ticket cuisine • ${date} ${time}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn gold" onclick="window.print()">🖨 Imprimer les 2</button><button class="btn light" onclick="printOnly('client')">Ticket client</button></div><button class="btn light" style="width:100%;margin-top:8px" onclick="printOnly('cuisine')">👨‍🍳 Ticket cuisine فقط</button><button class="btn light" style="width:100%;margin-top:8px" onclick="closeModal()">Fermer</button></div><div class="print-area">
+<div class="ticket-print">
+<img class="ticket-logo" src="logo.jpg"><div class="ticket-brand">${esc(s.settings.name)}</div><div class="ticket-sub">RESTAURANT</div><div class="ticket-auth">GOÛT AUTHENTIQUE</div>
+<div class="ticket-rule"></div><div class="ticket-meta"><span>Date : ${date}</span><span>Heure : ${time}</span></div>
+<div class="ticket-client-grid">
+<div class="ticket-client-left"><div class="ticket-label">NUMÉRO CLIENT</div><div class="ticket-big">${o.ticket}</div><div class="ticket-rule"></div><div class="ticket-wait">CLIENT(S) EN ATTENTE</div><div class="ticket-big" style="font-size:10mm">${wait}</div></div>
+<div class="ticket-client-right"><div class="ticket-label">COMMANDE :</div><div class="ticket-lines">${o.lines.map(x=>`<div class="trow"><b>${x.qty}</b><span>${esc(x.name)}${x.note?`<br><small>Note : ${esc(x.note)}</small>`:''}</span><b>${money(x.price*x.qty)}</b></div>`).join('')}</div><div class="ticket-total"><span>PRIX :</span><span>${money(o.total)}</span></div></div>
+</div>
+<div class="ticket-phone">☎ 48048118</div><div class="ticket-thanks">شكراً على ثقتكم</div><div class="ticket-ar">نتمنى لكم وجبة شهية</div><div class="ticket-heart">♥</div><div class="ticket-footer">— &nbsp; À TRÈS BIENTÔT &nbsp; —</div>
+</div>
+<div class="ticket-print">
+<div class="cuisine-head"><div class="cuisine-brand"><img class="ticket-logo" src="logo.jpg"><div class="ticket-brand">${esc(s.settings.name)}</div><div class="ticket-sub">RESTAURANT</div><div class="ticket-auth">GOÛT AUTHENTIQUE</div></div><div class="cuisine-title"><strong>CUISINE</strong><small>TICKET DE COMMANDE</small><div class="cuisine-date">▣ &nbsp; Date : ${date}<br>◷ &nbsp; Heure : ${time}</div></div></div>
+<div class="ticket-rule"></div><div class="cuisine-info"><div class="cuisine-box"><div class="ticket-label">N° COMMANDE</div><div class="num">${o.ticket}</div></div><div class="cuisine-box"><div class="ticket-label">N° CLIENT</div><div class="num">${o.ticket}</div><div class="serve">À SERVIR : ${wait}</div></div></div>
+<div class="cuisine-items"><div class="cuisine-table-head"><div>QTÉ</div><div>PLAT / ARTICLE</div><div>NOTES</div></div>${o.lines.map(x=>`<div class="cuisine-item"><div class="qty">${x.qty}</div><div class="name">${esc(x.name)}</div><div class="note">${x.note?esc(x.note):'—'}</div></div>`).join('')}</div>
+<div class="cuisine-total">TOTAL ARTICLES : ${items}</div><div class="cuisine-footer">— &nbsp; BON APPÉTIT ! &nbsp; —</div>
+</div></div>`;document.getElementById('modal').classList.add('show')}
+function openServerOrders(){if(currentRole!=='staff'&&currentRole!=='owner')return;page='serverOrders';render()}
+function serverOrders(){const pending=s.orders.filter(o=>o.source==='server'&&o.status==='pending');document.getElementById('app').innerHTML=`<div class="page-head"><div><h2>Serveur — Commandes</h2><p>الطلبات المبعوثة من السيرفور.</p></div><div class="page-meta">${pending.length} en attente</div></div><div class="server-orders-list">${pending.map(o=>`<div class="server-order-item new"><div class="row"><div><b>Ticket #${o.ticket}</b><div class="muted">Table ${esc(o.table||'—')} • ${new Date(o.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div></div><b>${money(o.total)}</b></div><div class="so-lines">${o.lines.map(l=>`<div class="so-line"><span><b>${l.qty}×</b> ${esc(l.name)}</span><span>${money(l.price*l.qty)}</span></div>${l.note?`<div class="muted">Note: ${esc(l.note)}</div>`:''}`).join('')}</div><div class="server-order-actions"><button class="btn gold" onclick='printTickets(${JSON.stringify(o).replace(/'/g,"&#39;")})'>🖨 Tickets</button><button class="btn success" onclick="markServed('${o.id}')">✓ Prise en charge</button></div></div>`).join('')||'<div class="card server-order-empty">🔔 ما فما حتى طلبية Serveur تستنى.</div>'}</div>`;updateServerBadge()}
+function updateServerBadge(){const n=(currentRole==='staff'||currentRole==='owner')?s.orders.filter(o=>o.source==='server'&&o.status==='pending').length:0;const sc=document.getElementById('serverCount');if(sc){sc.textContent=n;sc.classList.toggle('show',n>0)}}
+function orders(){let od=ordersToday();document.getElementById('app').innerHTML=`<div class="page-head"><div><button class="btn light" onclick="go('pos')">← Accueil</button><h2 style="margin-top:10px">Tickets</h2><p>Suivi des commandes, modifications et service.</p></div><div class="page-meta">${waitingClients()} clients en attente</div></div><div class="card"><div class="row"><b>Recette</b><b>${money(revenueToday())}</b></div><p class="muted">Le gérant peut modifier une commande, l'annuler ou la marquer comme servie.</p></div>${s.orders.slice(0,60).map(o=>{let cancelled=o.status==='cancelled',served=o.status==='served';return `<div class="card" style="${cancelled?'opacity:.65':''}"><div class="row rowtop"><div><b>Ticket #${o.ticket}</b> ${cancelled?'<span class="badge">ANNULÉ</span>':''}${served?'<span class="badge">SERVI</span>':''}<div class="muted">${new Date(o.date).toLocaleString('fr-FR')} • ${o.customers} client(s)${o.table?` • Table ${esc(o.table)}`:''}${o.source==='server'?' • 🧑‍🍳 Serveur':''}</div></div><b>${money(o.total)}</b></div><details style="margin-top:9px"><summary>Détails</summary>${o.lines.map(l=>`<div class="listrow"><div class="row"><span>${l.qty} × ${esc(l.name)}</span><span>${money(l.price*l.qty)}</span></div>${l.note?`<div class="muted">Note cuisine: ${esc(l.note)}</div>`:''}</div>`).join('')}<div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn light" onclick='printTickets(${JSON.stringify(o).replace(/'/g,"&#39;")})'>Réimprimer</button>${!cancelled&&!served?`<button class="btn light" onclick="editOrder('${o.id}')">✎ Modifier</button><button class="btn success" onclick="markServed('${o.id}')">✓ Servi</button><button class="btn danger" onclick="cancelOrder('${o.id}')">↩ Annuler</button>`:''}</div></details></div>`}).join('')||'<div class="empty">Aucun ticket.</div>'}`}
+function markServed(id){let o=s.orders.find(x=>x.id===id);if(!o||o.status==='cancelled')return;o.status='served';o.servedAt=new Date().toISOString();audit('Commande servie',`Ticket #${o.ticket}`);save()}
+
+function reverseStock(lines,sign){lines.forEach(l=>{let st=s.stock.find(x=>x.productId===l.id);if(st&&st.control)st.qty=Math.max(0,Number(st.qty)+(sign*l.qty))})}
+function cancelOrder(id){let o=s.orders.find(x=>x.id===id);if(!o||o.status==='cancelled')return;if(!confirm(`Annuler le ticket #${o.ticket} ?`))return;reverseStock(o.lines,+1);o.status='cancelled';o.cancelledAt=new Date().toISOString();audit('Annulation ticket',`Ticket #${o.ticket} • ${money(o.total)}`);save()}
+function editOrder(id){let o=s.orders.find(x=>x.id===id);if(!o||o.status==='cancelled')return;let draft=o.lines.map(x=>({...x}));document.getElementById('sheet').innerHTML=`<div class="modalhead"><div><button class="btn light" onclick="closeModal();go('orders')">← Tickets</button><h2 style="margin-top:10px">Modifier ticket #${o.ticket}</h2></div><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><div class="card"><div class="row"><b>Clients</b><div class="qty"><button onclick="orderEditCustomers=Math.max(1,orderEditCustomers-1);renderOrderEdit()">−</button><b id="oec">${o.customers}</b><button onclick="orderEditCustomers++;renderOrderEdit()">＋</button></div></div></div><div id="orderEditLines"></div><div class="card"><select class="select" id="editAddProduct"><option value="">＋ Ajouter un produit</option>${s.products.map(p=>`<option value="${p.id}">${esc(p.name)} • ${money(p.price)}</option>`).join('')}</select><button class="btn gold" style="width:100%;margin-top:8px" onclick="addEditedLine()">Ajouter</button></div><button class="btn primary" style="width:100%;margin-top:10px" onclick="saveOrderEdit('${o.id}')">Enregistrer les changements</button>`;window._editingOrderLines=draft;window.orderEditCustomers=o.customers;renderOrderEdit();document.getElementById('modal').classList.add('show')}
+function renderOrderEdit(){let box=document.getElementById('orderEditLines');if(!box)return;let total=window._editingOrderLines.reduce((a,x)=>a+x.price*x.qty,0);box.innerHTML=`<div class="card"><div class="row"><h3>Commande</h3><b>${money(total)}</b></div>${window._editingOrderLines.map((x,i)=>`<div class="line"><div style="flex:1"><b>${esc(x.name)}</b><div class="muted">${money(x.price)}</div><input class="note-input" value="${esc(x.note||'')}" placeholder="Note cuisine" onchange="window._editingOrderLines[${i}].note=this.value"></div><div class="qty"><button onclick="changeEditedLine(${i},-1)">−</button><b>${x.qty}</b><button onclick="changeEditedLine(${i},1)">＋</button></div><button class="btn danger" onclick="removeEditedLine(${i})">×</button></div>`).join('')||'<div class="empty">Commande vide. Tu peux ajouter un produit ou annuler.</div>'}</div>`;let c=document.getElementById('oec');if(c)c.textContent=window.orderEditCustomers}
+
+function changeEditedLine(i,d){let a=window._editingOrderLines;if(!a[i])return;a[i].qty+=d;if(a[i].qty<=0)a.splice(i,1);renderOrderEdit()}
+function removeEditedLine(i){window._editingOrderLines.splice(i,1);renderOrderEdit()}
+function addEditedLine(){let id=document.getElementById('editAddProduct').value;if(!id)return;let p=s.products.find(x=>x.id===id);if(!p)return;let x=window._editingOrderLines.find(x=>x.id===id);if(x)x.qty++;else window._editingOrderLines.push({id:p.id,name:p.name,price:p.price,qty:1,note:''});document.getElementById('editAddProduct').value='';renderOrderEdit()}
+
+function saveOrderEdit(id){let o=s.orders.find(x=>x.id===id);if(!o)return;if(!window._editingOrderLines.length){if(confirm('La commande est vide. Voulez-vous annuler le ticket ?')){closeModal();cancelOrder(id)}return}reverseStock(o.lines,+1);o.lines=window._editingOrderLines.map(x=>({...x}));o.customers=Math.max(1,Number(window.orderEditCustomers||1));o.total=o.lines.reduce((a,x)=>a+x.price*x.qty,0);reverseStock(o.lines,-1);o.editedAt=new Date().toISOString();audit('Modification ticket',`Ticket #${o.ticket} • ${money(o.total)}`);window._editingOrderLines=null;closeModal();save()}
+
+function stock(){if(!canEdit()){document.getElementById('app').innerHTML='<div class="card"><h2>Accès limité</h2><p>Le stock est réservé au propriétaire.</p></div>';return}document.getElementById('app').innerHTML=`<div class="row"><h2>Stock</h2><button class="btn gold" onclick="openStockForm()">＋ Ajouter</button></div>${s.stock.map(x=>`<div class="card"><div class="row"><div><b>${esc(x.name)}</b><div class="muted">${esc(x.unit||'unité')} • minimum ${x.min||0}</div></div><b class="${Number(x.qty)<=Number(x.min||0)?'stocklow':'stockok'}">${x.qty}</b></div><div class="bar" style="margin:9px 0"><i style="width:${Math.min(100,Number(x.qty)/Math.max(1,Number(x.min||1)*3)*100)}%"></i></div><div class="row"><button class="btn light" onclick="adjustStock('${x.id}',-1)">−</button><button class="btn light" onclick="adjustStock('${x.id}',1)">＋</button><button class="btn danger" onclick="delStock('${x.id}')">Supprimer</button></div></div>`).join('')||'<div class="empty">Aucun stock.</div>'}`}
+function adjustStock(id,d){let x=s.stock.find(x=>x.id===id);if(x){x.qty=Math.max(0,Number(x.qty)+d);audit('Stock',`${x.name}: ${d>0?'+':''}${d}`);save()}}
+function delStock(id){if(!canEdit())return;let x=s.stock.find(x=>x.id===id);if(confirm('Supprimer ce stock ?')){s.stock=s.stock.filter(x=>x.id!==id);audit('Suppression stock',x?.name||id);save()}}
+function openStockForm(){document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>Ajouter au stock</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><div class="formgrid"><div class="full"><select class="select" id="stp"><option value="">Choisir un produit</option>${s.products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></div><input class="input" id="stq" type="number" value="0" placeholder="Quantité"><input class="input" id="stu" placeholder="Unité (kg, L, pièce...)"/><input class="input" id="stm" type="number" value="0" placeholder="Stock minimum"><div class="full"><button class="btn gold" style="width:100%" onclick="addStock()">Enregistrer</button></div></div>`;document.getElementById('modal').classList.add('show')}
+function addStock(){let pid=document.getElementById('stp').value,q=Number(document.getElementById('stq').value||0),u=document.getElementById('stu').value.trim(),m=Number(document.getElementById('stm').value||0),p=s.products.find(x=>x.id===pid);if(!p)return;let old=s.stock.find(x=>x.productId===pid);if(old){old.qty=q;old.unit=u;old.min=m;old.control=true}else s.stock.push({id:uid(),productId:pid,name:p.name,qty:q,unit:u,min:m,control:true});audit('Ajout/modification stock',p.name);closeModal();save()}
+function reports(){if(!canEdit()){document.getElementById('app').innerHTML='<div class="card"><h2>Accès limité</h2><p>Les recettes et rapports sont visibles uniquement par le propriétaire.</p></div>';return}let od=ordersToday(),rev=revenueToday(),ex=expensesToday(),net=rev-ex,pay={cash:0,card:0,other:0};od.forEach(o=>pay[o.payment||'cash']=(pay[o.payment||'cash']||0)+o.total);let top={};od.forEach(o=>o.lines.forEach(l=>top[l.name]=(top[l.name]||0)+l.qty));let topRows=Object.entries(top).sort((a,b)=>b[1]-a[1]);document.getElementById('app').innerHTML=`<h2>Recette</h2><div class="grid4"><div class="card stat"><span class="muted">Recette</span><b>${money(rev)}</b></div><div class="card stat"><span class="muted">Tickets</span><b>${od.length}</b></div><div class="card stat"><span class="muted">Dépenses</span><b>${money(ex)}</b></div><div class="card stat"><span class="muted">Net</span><b>${money(net)}</b></div></div><div class="card"><h3>👷 Salaires — ${monthKey()}</h3><div class="grid4"><div class="stat"><span class="muted">Salaires payés</span><b>${money(salariesPaidThisMonth())}</b></div><div class="stat"><span class="muted">Reste à payer</span><b>${money(salariesDueThisMonth())}</b></div></div><button class="btn light" style="width:100%;margin-top:10px" onclick="payrollManager()">Gérer les salaires</button></div><div class="card"><h3>Articles vendus</h3>${topRows.map(x=>`<div class="row listrow"><span>${esc(x[0])}</span><b>${x[1]}</b></div>`).join('')||'<div class="empty">Pas encore de ventes.</div>'}</div><div class="card"><button class="btn light" style="width:100%" onclick="addExpense()">＋ Ajouter une dépense</button></div><div class="card"><h3>Dépenses du jour</h3>${s.expenses.filter(x=>x.date===today()).map(x=>`<div class="row listrow"><span>${esc(x.name)}</span><b>${money(x.amount)}</b></div>`).join('')||'<div class="empty">Aucune dépense.</div>'}</div>`}
+function addExpense(){document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>Dépense</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><input class="input" id="exn" placeholder="Ex: achat pain"><br><br><input class="input" id="exa" type="number" step="0.001" placeholder="Montant DT"><br><br><button class="btn gold" style="width:100%" onclick="saveExpense()">Enregistrer</button>`;document.getElementById('modal').classList.add('show')}
+function saveExpense(){let n=document.getElementById('exn').value.trim(),a=Number(document.getElementById('exa').value);if(!n||!a)return;s.expenses.push({id:uid(),name:n,amount:a,date:today()});audit('Dépense',`${n} • ${money(a)}`);closeModal();save()}
+function more(){if(!canEdit()){document.getElementById('app').innerHTML='<div class="card"><h2>Accès propriétaire</h2><p>Le gérant/caisse ne peut ni ajouter, ni supprimer, ni modifier le menu ou le stock.</p><button class="btn primary" style="width:100%" onclick="lockApp()">Changer de compte</button></div>';return}document.getElementById('app').innerHTML=`<h2>Plus</h2><div class="card"><h3>Menu & sections</h3><p class="muted">Ajoute tes produits, prix, sections et photos.</p><button class="btn primary" onclick="menuManager()">Ouvrir le menu</button></div><div class="card"><h3>💵 Salaires des employés</h3><p class="muted">سجّل الخلاصات، التسبيقات والمدفوعات باش حساباتك تخرج واضحة.</p><div class="row"><span><b>${(s.employees||[]).filter(e=>e.active!==false).length}</b> employés • <b>${money(salariesPaidThisMonth())}</b> payés ce mois</span><button class="btn gold" onclick="payrollManager()">Gérer</button></div></div><div class="card"><h3>🔐 Accès employés</h3><p class="muted">Le gérant/caisse peut vendre et modifier ou annuler les tickets. Le serveur peut prendre les commandes par table. Ils ne peuvent pas modifier le menu, les prix, le stock, les recettes ou les réglages.</p><button class="btn light" onclick="securityManager()">Gérer les PIN</button></div><div class="card"><h3>🎨 Identité</h3><button class="btn light" onclick="brandManager()">Personnaliser</button></div><div class="card"><h3>🎫 Numérotation</h3><button class="btn light" onclick="ticketManager()">1 → ${s.settings.maxTicket} → 1</button></div><div class="card"><h3>☁️ Cloud & Realtime</h3><div class="row"><div><b id="cloudStatus">${cloudStatus()==='online'?'🟢 متصل':cloudStatus()==='connecting'?'🟡 جاري الاتصال':'⚪ غير متصل'} </b><p class="muted">Caisse ↔ Serveur ↔ Owner en temps réel.</p></div><button class="btn light" onclick="cloudManager()">Configurer</button></div></div><div class="card"><h3>Journal des actions</h3>${s.audit.slice(0,20).map(a=>`<div class="audit"><b>${esc(a.action)}</b> • ${esc(a.role)}<br>${new Date(a.date).toLocaleString('fr-FR')}<br>${esc(a.details)}</div>`).join('')||'<div class="empty">Aucune action.</div>'}</div>`}
+function payrollManager(){
+  const emps=s.employees||[], pays=s.salaryPayments||[];
+  document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>💵 Salaires des employés</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div>
+  <div class="card"><div class="grid4"><div class="stat"><span class="muted">Employés</span><b>${emps.filter(e=>e.active!==false).length}</b></div><div class="stat"><span class="muted">Salaires du mois</span><b>${money(salariesPaidThisMonth())}</b></div><div class="stat"><span class="muted">Reste à payer</span><b>${money(salariesDueThisMonth())}</b></div></div></div>
+  <div class="card"><h3>Ajouter un employé</h3><div class="formgrid"><input class="input" id="en" placeholder="Nom du salarié"><input class="input" id="es" type="number" step="0.001" placeholder="Salaire mensuel DT"><div class="full"><button class="btn gold" style="width:100%" onclick="addEmployee()">＋ Ajouter</button></div></div></div>
+  <div class="card"><h3>Employés</h3>${emps.map(e=>`<div class="listrow" style="padding:12px 0;border-bottom:1px solid var(--line)"><div><b>${esc(e.name)}</b><br><small class="muted">Salaire: ${money(e.salary)} • Payé: ${money(salaryPaidThisMonth(e.id))} • Reste: ${money(Math.max(0,Number(e.salary)-salaryPaidThisMonth(e.id)))}</small></div><div class="row"><button class="btn gold" onclick="paySalary('${e.id}')">💵 Payer</button><button class="btn danger" onclick="removeEmployee('${e.id}')">×</button></div></div>`).join('')||'<div class="empty">Aucun employé enregistré.</div>'}</div>
+  <div class="card"><h3>Historique des paiements</h3>${pays.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30).map(x=>`<div class="row listrow"><span><b>${esc(x.employeeName)}</b><br><small class="muted">${x.date}${x.note?' • '+esc(x.note):''}</small></span><b>${money(x.amount)}</b></div>`).join('')||'<div class="empty">Aucun paiement.</div>'}</div>`;
+  document.getElementById('modal').classList.add('show');
+}
+function addEmployee(){let name=document.getElementById('en').value.trim(),salary=Number(document.getElementById('es').value||0);if(!name||salary<=0){alert('دخل اسم الموظف والراتب الشهري');return}s.employees=s.employees||[];s.employees.push({id:uid(),name,salary,active:true});audit('Ajout employé',`${name} • ${money(salary)}/mois`);save();payrollManager()}
+function removeEmployee(id){let e=(s.employees||[]).find(x=>x.id===id);if(!e)return;if(confirm(`Supprimer ${e.name} de la liste des employés ?`)){e.active=false;audit('Désactivation employé',e.name);save();payrollManager()}}
+function paySalary(id){let e=(s.employees||[]).find(x=>x.id===id);if(!e)return;let due=Math.max(0,Number(e.salary||0)-salaryPaidThisMonth(id));document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>💵 Paiement — ${esc(e.name)}</h2><button class="btn light" onclick="payrollManager()">← Retour</button></div><p class="muted">Salaire mensuel: <b>${money(e.salary)}</b> • Déjà payé ce mois: <b>${money(salaryPaidThisMonth(id))}</b> • Reste: <b>${money(due)}</b></p><input class="input" id="spa" type="number" step="0.001" value="${due.toFixed(3)}" placeholder="Montant payé DT"><br><br><input class="input" id="spn" placeholder="Note — ex: acompte, salaire septembre"><button class="btn gold" style="width:100%;margin-top:14px" onclick="saveSalaryPayment('${e.id}')">Enregistrer le paiement</button>`}
+function saveSalaryPayment(id){let e=(s.employees||[]).find(x=>x.id===id),amount=Number(document.getElementById('spa').value||0),note=document.getElementById('spn').value.trim();if(!e||amount<=0)return;let payment={id:uid(),employeeId:id,employeeName:e.name,amount,date:today(),note};s.salaryPayments=s.salaryPayments||[];s.salaryPayments.push(payment);s.expenses=s.expenses||[];s.expenses.push({id:uid(),name:`Salaire — ${e.name}${note?' • '+note:''}`,amount,date:today(),type:'salary',employeeId:id,salaryPaymentId:payment.id});audit('Paiement salaire',`${e.name} • ${money(amount)}`);save();payrollManager()}
+
+function menuManager(){document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>Menu</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><p class="muted">Les changements sont enregistrés automatiquement.</p><div class="formgrid"><input class="input" id="pn" placeholder="Nom produit"><input class="input" id="pp" type="number" step="0.001" placeholder="Prix DT"><select class="select" id="pc"><option value="">Sans section</option>${s.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select><input class="input" id="pi" type="file" accept="image/*"><div class="full"><button class="btn gold" style="width:100%" onclick="addProduct()">＋ Produit</button></div></div><hr><h3>Sections</h3><div class="row"><input class="input" id="cn" placeholder="Nouvelle section"><button class="btn light" onclick="addCategory()">＋</button></div>${s.categories.map(c=>`<div class="listrow row"><span>${esc(c.name)}</span><button class="btn danger" onclick="delCategory('${c.id}')">×</button></div>`).join('')}<h3>Produits</h3>${s.products.map(p=>`<div class="listrow row"><div class="row" style="justify-content:flex-start"><img class="image-preview" src="${p.image||'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='}"><span><b>${esc(p.name)}</b><br><small class="muted">${money(p.price)}</small></span></div><div><button class="btn light" onclick="editProduct('${p.id}')">✎</button><button class="btn danger" onclick="delProduct('${p.id}')">×</button></div></div>`).join('')||'<div class="empty">Aucun produit.</div>'}<button class="btn primary" style="width:100%;margin-top:14px" onclick="closeModal();go('dashboard')">✓ Enregistrer & retourner à l'accueil</button>`;document.getElementById('modal').classList.add('show')}
+function addCategory(){let n=document.getElementById('cn').value.trim();if(n){s.categories.push({id:uid(),name:n});audit('Ajout section',n);save();menuManager()}}
+function delCategory(id){let c=s.categories.find(x=>x.id===id);if(confirm('Supprimer cette section ?')){s.categories=s.categories.filter(x=>x.id!==id);s.products.forEach(p=>{if(p.cat===id)p.cat=''});audit('Suppression section',c?.name||id);save();menuManager()}}
+function compressImage(file,cb){let r=new FileReader();r.onload=()=>{let im=new Image();im.onload=()=>{let max=900,scale=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.78))};im.src=r.result};r.readAsDataURL(file)}
+function addProduct(){let n=document.getElementById('pn').value.trim(),p=Number(document.getElementById('pp').value),cat=document.getElementById('pc').value,file=document.getElementById('pi')?.files?.[0];if(!n||!p)return;let finish=image=>{s.products.push({id:uid(),name:n,price:p,cat,image:image||'',stockControl:false});audit('Ajout produit',n);save();menuManager()};file?compressImage(file,finish):finish('')}
+function editProduct(id){let p=s.products.find(x=>x.id===id);if(!p)return;document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>Modifier produit</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><input class="input" id="epn" value="${esc(p.name)}"><br><br><input class="input" id="epp" type="number" step="0.001" value="${p.price}"><br><br><select class="select" id="epc"><option value="">Sans section</option>${s.categories.map(c=>`<option value="${c.id}" ${p.cat===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select><br><br><input class="input" id="epi" type="file" accept="image/*"><br><br>${p.image?`<img class="image-preview" src="${p.image}">`:''}<button class="btn gold" style="width:100%;margin-top:14px" onclick="saveProductEdit('${p.id}')">Enregistrer</button>`}
+function saveProductEdit(id){let p=s.products.find(x=>x.id===id);if(!p)return;let file=document.getElementById('epi').files[0];let finish=image=>{p.name=document.getElementById('epn').value.trim()||p.name;p.price=Number(document.getElementById('epp').value)||p.price;p.cat=document.getElementById('epc').value;p.image=image||p.image;audit('Modification produit',p.name);closeModal();save()};file?compressImage(file,finish):finish('')}
+function delProduct(id){let p=s.products.find(x=>x.id===id);if(confirm('Supprimer ce produit ?')){s.products=s.products.filter(x=>x.id!==id);s.stock=s.stock.filter(x=>x.productId!==id);audit('Suppression produit',p?.name||id);save();menuManager()}}
+function brandManager(){document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>Identité</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><p class="muted">ألوان اللوغو الأصلية مستعملة في الواجهة: أحمر + كريمي + بني + ذهبي.</p><input class="input" id="bn" value="${esc(s.settings.name)}" placeholder="Nom du restaurant"><br><br><input class="input" id="bc" value="${esc(s.settings.brand)}" placeholder="#c4142c"><br><br><button class="btn gold" style="width:100%" onclick="saveBrand()">Enregistrer</button>`;document.getElementById('modal').classList.add('show')}
+function saveBrand(){s.settings.name=document.getElementById('bn').value.trim()||'Restaurant';s.settings.brand=document.getElementById('bc').value.trim()||'#c4142c';audit('Réglages identité',s.settings.name);closeModal();save()}
+function ticketManager(){document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>Numérotation</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><input class="input" id="tm" type="number" min="1" value="${s.settings.maxTicket}"><p class="muted">Exemple : 50 signifie 1 → 50 puis 1.</p><button class="btn gold" style="width:100%" onclick="s.settings.maxTicket=Math.max(1,Number(document.getElementById('tm').value));audit('Numérotation','max '+s.settings.maxTicket);closeModal();save()">Enregistrer</button>`;document.getElementById('modal').classList.add('show')}
+function securityManager(){document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>🔐 Sécurité</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><p class="muted">Le PIN propriétaire donne accès à tout. Le PIN caisse يسمح بالبيع فقط.</p><label class="small">PIN propriétaire</label><input class="input" id="op" type="password" inputmode="numeric" value="${esc(s.security.ownerPin)}"><br><br><label class="small">PIN caisse / gérant</label><input class="input" id="sp" type="password" inputmode="numeric" value="${esc(s.security.staffPin)}"><br><br><label class="small">PIN serveur</label><input class="input" id="svp" type="password" inputmode="numeric" value="${esc(s.security.serverPin||'')}"><br><br><button class="btn gold" style="width:100%" onclick="saveSecurity()">Enregistrer les PIN</button>`;document.getElementById('modal').classList.add('show')}
+function saveSecurity(){let op=document.getElementById('op').value.trim(),sp=document.getElementById('sp').value.trim(),svp=document.getElementById('svp').value.trim();if(op.length<4||sp.length<4||svp.length<4){alert('PIN لازم يكون 4 أرقام على الأقل');return}s.security.ownerPin=op;s.security.staffPin=sp;s.security.serverPin=svp;s.security.setup=true;audit('Sécurité','PIN modifiés');closeModal();save();lockApp()}
+function fondCaisseToday(){return fondCaisseForDate(today())}
+function needsFondCaisse(){return !fondCaisseToday()}
+function openFondCaisse(){
+  if(!currentRole||!needsFondCaisse())return;
+  const roleName=currentRole==='owner'?'Aziz':currentRole==='staff'?'Gérant':'Serveur';
+  document.getElementById('sheet').innerHTML=`<div class="fond-caisse-modal">
+    <img class="fond-brand-logo" src="logo_header_pro.png" alt="Chez Jalel">
+    <div class="fond-kicker">OUVERTURE DE CAISSE</div>
+    <h2>Fond de Caisse</h2>
+    <p class="muted">Bonjour ${roleName}. Avant de commencer, indique le montant qui se trouve déjà dans la caisse.</p>
+    <div class="fond-explain"><b>Ce montant ne sera pas compté comme une vente.</b><span>Il servira de base pour le contrôle de caisse.</span></div>
+    <label class="login-label" style="color:inherit;margin-top:18px">Montant au départ</label>
+    <div class="fond-input-wrap"><input id="fondAmount" class="input" type="number" inputmode="decimal" min="0" step="0.001" placeholder="0.000"><span>DT</span></div>
+    <button class="btn primary fond-submit" onclick="saveFondCaisse()">Ouvrir la caisse →</button>
+    <div class="fond-date">${new Date().toLocaleDateString('fr-FR')} • ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
+  </div>`;
+  const modal=document.getElementById('modal');modal.classList.add('show','fond-modal');
+  const input=document.getElementById('fondAmount');if(input){setTimeout(()=>input.focus(),80);input.addEventListener('keydown',e=>{if(e.key==='Enter')saveFondCaisse()})}
+}
+function saveFondCaisse(){
+  const input=document.getElementById('fondAmount');const amount=Number(input?.value);
+  if(!Number.isFinite(amount)||amount<0){alert('حط مبلغ Fond de Caisse صحيح.');input?.focus();return}
+  s.caisseSession={date:today(),amount,openedAt:new Date().toISOString(),openedBy:currentRole};s.caisseSessions=Array.isArray(s.caisseSessions)?s.caisseSessions:[];s.caisseSessions=s.caisseSessions.filter(x=>x.date!==today());s.caisseSessions.push(s.caisseSession);
+  audit('Ouverture caisse',`Fond de Caisse: ${money(amount)} • ${new Date().toLocaleDateString('fr-FR')}`);
+  closeModal();save();render();
+}
+function caisseControlCard(){return caisseControlCardForDate(today())}
+function caisseControlCardForDate(d){const f=fondCaisseForDate(d);if(!f)return `<div class="card fond-dashboard"><div class="row"><div><span class="muted">FOND DE CAISSE</span><h3 style="margin:4px 0 0">Aucune ouverture</h3><div class="muted">Aucune caisse enregistrée pour cette journée.</div></div><div class="fond-mini" style="background:#2a2d31;color:#c8cbd0">—</div></div></div>`;const rev=revenueForDate(d),ex=expensesForDate(d),theoretical=Number(f.amount||0)+rev-ex;return `<div class="card fond-dashboard"><div class="row"><div><span class="muted">FOND DE CAISSE • ${d===today()?'AUJOURD’HUI':new Date(d+'T12:00:00').toLocaleDateString('fr-FR')}</span><h3 style="margin:4px 0 0">${money(f.amount)}</h3><div class="muted">Ouverte le ${new Date(f.openedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})} • ${f.openedBy==='owner'?'Aziz':f.openedBy==='staff'?'Gérant':'Serveur'}</div></div><div class="fond-mini">✓ Ouverte</div></div><div class="fond-control-row"><span>Caisse théorique</span><b>${money(theoretical)}</b></div></div>`}
+function setLoginRole(r){loginRole=r;document.getElementById('ownerTab').classList.toggle('on',r==='owner');document.getElementById('staffTab').classList.toggle('on',r==='staff');document.getElementById('serverTab')?.classList.toggle('on',r==='server');document.getElementById('lockRole').textContent=r==='owner'?'👑 Aziz':r==='staff'?'🧾 Gérant':'🧑‍🍳 Serveur'}
+function unlockApp(){let pin=document.getElementById('pinInput').value.trim();if(!s.security.setup){if(pin.length<4){alert('أول مرة: اختار PIN من 4 أرقام على الأقل');return}s.security.ownerPin=pin;s.security.staffPin=pin;s.security.serverPin=pin;s.security.setup=true;save()}let ok=(loginRole==='owner'&&pin===s.security.ownerPin)||(loginRole==='staff'&&pin===s.security.staffPin)||(loginRole==='server'&&pin===s.security.serverPin);if(!ok){alert('PIN غالط');return}currentRole=loginRole;document.getElementById('lock').classList.remove('show');page=(currentRole==='staff'||currentRole==='server')?'pos':'dashboard';serverTable='';document.getElementById('pinInput').value='';render();setTimeout(()=>openFondCaisse(),80)}
+function lockApp(){currentRole=null;document.getElementById('pinInput').value='';document.getElementById('lock').classList.add('show')}
+async function boot(){
+  // Splash first, then always start locked on the login screen.
+  currentRole=null;
+  const lock=document.getElementById('lock');
+  if(lock) lock.classList.add('show');
+  setLoginRole('owner');
+  const c=cloudCfg();
+  if(c?.enabled){try{await cloudPull()}catch(e){console.error('Cloud boot error',e)}}
+  if(!s.security.setup){document.getElementById('firstSetup').textContent='أول دخول: حط PIN المالك. بعد ذلك اعمل PIN للـ Caisse وPIN للـ Serveur من Sécurité.'}
+  else document.getElementById('firstSetup').textContent='';
+  if(lock) lock.classList.add('show');
+  const splash=document.getElementById('cjSplash');
+  setTimeout(()=>splash?.classList.add('hide'),1700);
+}
+applyTheme();document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+boot().catch(err=>{
+  console.error('chezJalel boot error',err);
+  currentRole=null;
+  setLoginRole('owner');
+  const lock=document.getElementById('lock');
+  if(lock) lock.classList.add('show');
+  setTimeout(()=>document.getElementById('cjSplash')?.classList.add('hide'),1700);
+});
+</script>
+
+<style>
+#upBtn{position:fixed;right:18px;bottom:78px;width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,.15);background:#b31324;color:#fff;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:9999;display:none;cursor:pointer}#upBtn.show{display:block}#upBtn small{display:block;font-size:9px;letter-spacing:.5px} .themeToggle{cursor:pointer}
+.dash-date-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:inherit;display:block}.dash-date-input{margin-top:5px;max-width:170px;padding:8px 10px;border-radius:10px;border:1px solid rgba(196,20,44,.35);background:rgba(255,255,255,.08);color:inherit;font-weight:800}.dash-date-caption{font-size:11px;opacity:.65;margin-top:5px}.fond-control-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid rgba(196,20,44,.2);font-size:13px}.fond-control-row b{font-size:16px}.dashboardAccounts{margin:18px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.dashCardBtn{font:inherit;color:inherit;text-align:left;width:100%;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease}.dashCardBtn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.18)}.dash-more{display:block;margin-top:10px;font-size:11px;font-weight:800;opacity:.68}.dashChartBtn{cursor:pointer;transition:transform .16s ease,box-shadow .16s ease}.dashChartBtn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.18)}.dashCard{border-radius:18px;padding:16px;background:linear-gradient(145deg,rgba(179,19,36,.14),rgba(255,255,255,.035));border:1px solid rgba(179,19,36,.3);box-shadow:0 10px 30px rgba(0,0,0,.12)}.dashCard .v{font-size:24px;font-weight:800;margin-top:6px}.dashCard .l{font-size:12px;opacity:.7}.dashCharts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.dashChart{padding:16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.08)}
+</style>
+<button id="upBtn" aria-label="Retour en haut">↑<small>UP</small></button>
+<script>
+(function(){
+ const b=document.getElementById('upBtn');
+ function sc(){b.classList.toggle('show',window.scrollY>420)}
+ window.addEventListener('scroll',sc,{passive:true}); b.onclick=()=>window.scrollTo({top:0,behavior:'smooth'}); sc();
+
+})();
+</script>
+</body>
+</html><style id="v37-login-responsive">
+/* V37 — Login fully responsive on phones and tablets, portrait + landscape */
+.lock{padding:clamp(8px,2vw,24px)!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
+.lockbox{width:min(560px,94vw)!important;max-width:560px!important;max-height:calc(100dvh - 16px)!important;overflow-y:auto!important;overflow-x:hidden!important;box-sizing:border-box!important}
+.lockbox .login-brand-logo{max-width:min(126px,24vw)!important;max-height:min(126px,24vw)!important}
+@media (min-width:700px) and (min-height:600px){
+  .lockbox{width:min(620px,88vw)!important;padding:30px 34px 24px!important}
+  .lockbox .login-brand-logo{width:112px!important;height:112px!important}
+}
+@media (orientation:landscape) and (max-height:600px){
+  .lock{align-items:center!important;justify-content:center!important;padding:6px 10px!important}
+  .lockbox{width:min(430px,92vw)!important;max-width:430px!important;max-height:calc(100dvh - 10px)!important;padding:10px 14px 9px!important;border-radius:22px!important;overflow-y:auto!important;display:block!important;text-align:center!important}
+  .lockbox .login-brand-logo{width:64px!important;height:64px!important;margin:0 auto 4px!important;border-width:3px!important}
+  .lockbox .login-title{font-size:22px!important;letter-spacing:1.5px!important;margin:0!important}
+  .lockbox .login-subtitle{font-size:8px!important;letter-spacing:3px!important;margin:1px 0 3px!important}
+  .lockbox .login-welcome{font-size:15px!important;margin:2px 0 0!important}
+  .lockbox .login-caption{font-size:9px!important;margin:0 0 5px!important}
+  .lockbox .login-label{font-size:11px!important;margin:4px 2px 3px!important;text-align:left!important}
+  .lockbox .tabs{padding:4px!important;gap:5px!important;margin:0!important}
+  .lockbox .tabs button{min-height:42px!important;height:42px!important;font-size:10px!important;border-radius:11px!important}
+  .lockbox .input{height:38px!important;font-size:16px!important;border-radius:11px!important}
+  .lockbox .login-submit{height:40px!important;margin-top:6px!important;border-radius:11px!important;font-size:13px!important}
+  .lockbox #firstSetup{font-size:8px!important;margin:2px 0!important}
+  .lockbox .login-footer{margin:5px 0 0!important;font-size:8px!important}
+  .lockbox .app-signature{font-size:9px!important;margin-top:2px!important}
+}
+@media (orientation:landscape) and (max-height:430px){
+  .lockbox{width:min(390px,94vw)!important;max-height:calc(100dvh - 8px)!important;padding:7px 10px 6px!important}
+  .lockbox .login-brand-logo{width:52px!important;height:52px!important;margin-bottom:2px!important}
+  .lockbox .login-title{font-size:18px!important}
+  .lockbox .login-subtitle{font-size:6px!important;letter-spacing:2px!important}
+  .lockbox .login-welcome{font-size:12px!important}
+  .lockbox .login-caption{font-size:8px!important;margin-bottom:3px!important}
+  .lockbox .login-label{font-size:9px!important;margin:2px 2px!important}
+  .lockbox .tabs button{height:34px!important;min-height:34px!important;font-size:9px!important}
+  .lockbox .input{height:32px!important}
+  .lockbox .login-submit{height:34px!important;font-size:11px!important;margin-top:4px!important}
+  .lockbox .login-footer{margin-top:3px!important;font-size:7px!important}
+  .lockbox .app-signature{font-size:8px!important}
+}
+@media (orientation:portrait) and (max-height:700px){
+  .lock{padding:7px!important}
+  .lockbox{width:min(430px,96vw)!important;max-height:calc(100dvh - 12px)!important;padding:15px 14px 12px!important;border-radius:20px!important}
+  .lockbox .login-brand-logo{width:78px!important;height:78px!important;margin:0 auto 7px!important;border-width:3px!important}
+  .lockbox .login-title{font-size:23px!important}
+  .lockbox .login-subtitle{font-size:9px!important;margin:2px 0 5px!important}
+  .lockbox .login-welcome{font-size:17px!important;margin:3px 0 1px!important}
+  .lockbox .login-caption{font-size:11px!important;margin:0 0 6px!important}
+  .lockbox .login-label{font-size:12px!important;margin:6px 2px 4px!important}
+  .lockbox .tabs{padding:5px!important;gap:5px!important}
+  .lockbox .tabs button{min-height:48px!important;height:48px!important;font-size:11px!important;border-radius:11px!important}
+  .lockbox .input{height:44px!important}
+  .lockbox .login-submit{height:45px!important;font-size:14px!important;margin-top:7px!important}
+  .lockbox .login-footer{margin:7px 0 0!important;font-size:9px!important}
+  .lockbox .app-signature{font-size:10px!important}
+}
+</style>
+
+<style id="v39-fond-caisse">
+/* V39 — Fond de caisse: same Chez Jalel visual identity */
+.modal.fond-modal{align-items:center!important;justify-content:center!important;padding:calc(16px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom))!important}
+.modal.fond-modal .sheet{width:min(430px,100%);max-height:min(88dvh,680px);overflow:auto;border-radius:26px!important;padding:0!important;background:#17191b!important;color:#fff!important;border:1px solid rgba(255,255,255,.09);box-shadow:0 28px 90px rgba(0,0,0,.55);position:relative}
+.fond-caisse-modal{background:linear-gradient(180deg,#191b1e 0%,#101112 100%);color:#fff;padding:24px 22px 20px;text-align:center;overflow:hidden}
+.fond-caisse-modal:before{content:"";display:block;height:4px;margin:-24px -22px 22px;background:linear-gradient(90deg,#8f0f20,#c4142c,#e01b32,#c4142c,#8f0f20)}
+.fond-brand-logo{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:3px solid #fff;box-shadow:0 0 0 4px rgba(196,20,44,.35),0 8px 24px rgba(0,0,0,.35);background:#fff}
+.fond-kicker{font-size:10px;font-weight:900;letter-spacing:2.2px;color:#ef6a79;margin-bottom:3px}
+.fond-caisse-modal h2{margin:4px 0 7px;font-size:27px;color:#fff}
+.fond-caisse-modal>.muted{color:#b7bbc0!important;font-size:13px;line-height:1.5;margin:0 auto 12px;max-width:340px}
+.fond-explain{background:#202327;border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:12px;text-align:left;margin-top:13px;display:grid;gap:4px}
+.fond-explain b{font-size:13px;color:#fff}.fond-explain span{font-size:12px;color:#aeb1b5}
+.fond-caisse-modal .login-label{color:#fff!important;display:block;text-align:left;font-size:12px;font-weight:800;margin-top:16px!important}
+.fond-input-wrap{position:relative;margin-top:7px}.fond-input-wrap .input{padding:0 54px 0 16px;text-align:center;font-size:24px;font-weight:900;height:58px;background:#111315;color:#fff;border:1px solid rgba(255,255,255,.13);border-radius:14px}.fond-input-wrap .input::placeholder{color:#6e7378}.fond-input-wrap>span{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-weight:900;color:#e01b32}
+.fond-submit{width:100%;height:54px;margin-top:13px;border-radius:14px!important;background:#c4142c!important;box-shadow:0 10px 25px rgba(196,20,44,.25);font-size:15px}
+.fond-date{font-size:11px;color:#777d83;margin-top:11px}
+.fond-dashboard{border-color:rgba(196,20,44,.28);background:linear-gradient(135deg,rgba(196,20,44,.08),rgba(255,253,249,.96))}.fond-dashboard h3{font-size:25px}.fond-mini{background:#e7f6ec;color:#237443;border-radius:99px;padding:7px 10px;font-size:11px;font-weight:900}
+@media(max-width:500px){.modal.fond-modal{padding-left:10px!important;padding-right:10px!important}.modal.fond-modal .sheet{max-height:calc(100dvh - 28px);border-radius:22px!important}.fond-caisse-modal{padding:18px 16px 16px}.fond-caisse-modal:before{margin:-18px -16px 17px}.fond-brand-logo{width:64px;height:64px}.fond-caisse-modal h2{font-size:23px}.fond-input-wrap .input{height:52px;font-size:21px}.fond-submit{height:50px}}
+</style>
