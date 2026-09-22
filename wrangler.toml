@@ -1,0 +1,5 @@
+name = "chezjalel"
+compatibility_date = "2026-09-22"
+
+[assets]
+directory = "."
