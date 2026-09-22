@@ -189,7 +189,7 @@ body{overscroll-behavior-y:none}
 .category-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 1px 3px}
 .category-scroll::-webkit-scrollbar{display:none}
 .cat-btn{flex:0 0 auto;min-width:96px;border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:14px;padding:9px 12px;text-align:center;font-weight:850;font-size:12px;box-shadow:0 2px 7px rgba(0,0,0,.04)}
-.cat-btn .cat-icon{display:block;font-size:20px;line-height:1;margin-bottom:5px}
+.cat-btn .cat-icon{display:block;width:25px;height:25px;margin:0 auto 5px;line-height:1}.cat-btn .cat-icon svg{width:25px;height:25px;display:block;margin:auto}
 .cat-btn.on{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 7px 18px rgba(196,20,44,.2)}
 .category-search{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:12px;padding:9px 11px;margin-top:8px;outline:none}
 .category-search::placeholder{color:var(--muted)}
@@ -583,7 +583,39 @@ const blank={settings:{name:'Chez Jalel',subtitle:'Restaurant POS',brand:'#c4142
 let s=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(blank);
 s.security.serverPin=s.security.serverPin||s.security.staffPin||'';s.employees=s.employees||[];s.salaryPayments=s.salaryPayments||[];s.expenses=s.expenses||[];s.audit=s.audit||[];
 // Robust data migration for older local saves.
-s.security=s.security||{};s.settings=s.settings||{};s.caisseSession=s.caisseSession||null;s.caisseSessions=Array.isArray(s.caisseSessions)?s.caisseSessions:[];if(s.caisseSession&&!s.caisseSessions.some(x=>x.date===s.caisseSession.date)){s.caisseSessions.push(s.caisseSession);}s.orders=Array.isArray(s.orders)?s.orders:[];s.products=Array.isArray(s.products)?s.products:[];s.categories=Array.isArray(s.categories)?s.categories:[];s.stock=Array.isArray(s.stock)?s.stock:[];s.expenses=Array.isArray(s.expenses)?s.expenses:[];s.employees=Array.isArray(s.employees)?s.employees:[];s.salaryPayments=Array.isArray(s.salaryPayments)?s.salaryPayments:[];s.audit=Array.isArray(s.audit)?s.audit:[];s.orders.forEach(o=>{o.lines=Array.isArray(o.lines)?o.lines:[];o.total=Number(o.total||0);o.customers=Math.max(1,Number(o.customers||1));o.date=o.date||new Date().toISOString()});
+s.security=s.security||{};s.settings=s.settings||{};s.caisseSession=s.caisseSession||null;s.caisseSessions=Array.isArray(s.caisseSessions)?s.caisseSessions:[];if(s.caisseSession&&!s.caisseSessions.some(x=>x.date===s.caisseSession.date)){s.caisseSessions.push(s.caisseSession);}s.orders=Array.isArray(s.orders)?s.orders:[];s.products=Array.isArray(s.products)?s.products:[];s.categories=Array.isArray(s.categories)?s.categories:[];s.stock=Array.isArray(s.stock)?s.stock:[];s.expenses=Array.isArray(s.expenses)?s.expenses:[];s.employees=Array.isArray(s.employees)?s.employees:[];s.salaryPayments=Array.isArray(s.salaryPayments)?s.salaryPayments:[];s.audit=Array.isArray(s.audit)?s.audit:[];
+s.orders.forEach(o=>{o.lines=Array.isArray(o.lines)?o.lines:[];o.total=Number(o.total||0);o.customers=Math.max(1,Number(o.customers||1));o.date=o.date||new Date().toISOString()});
+
+// Chez Jalel starter menu — editable later from Owner > Plus > Menu.
+function svgImg(kind){
+  const map={
+    plate:'🍽️',kaft:'🥘',sandwich:'🥪',tuna:'🐟',drink:'🥤',water:'💧',lemon:'🍋',strawberry:'🍓',merguez:'🌭',chab:'🍢',bones:'🍖',tajine:'🍳',pack:'📦',platepack:'🍱'
+  };
+  const e=map[kind]||'🍽️';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420"><rect width="640" height="420" rx="42" fill="#f6f1eb"/><circle cx="320" cy="205" r="145" fill="#fff" stroke="#c4142c" stroke-width="8"/><text x="320" y="240" text-anchor="middle" font-size="132">${e}</text><path d="M150 345h340" stroke="#c4142c" stroke-width="8" stroke-linecap="round" opacity=".7"/></svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
+function seedChezJalelMenu(){
+  const defs=[
+    {name:'Kafteji',icon:'plate',products:[['كفتاجي عادي',3,'kaft'],['كفتاجي دوبل عظام',3.5,'bones'],['خبزة كفتاجي',5,'sandwich'],['صحن عادي',5,'plate'],['صحن دوبل عظام',6,'bones']]},
+    {name:'Thon',icon:'tuna',products:[['كسكروت تن',3.5,'tuna'],['خبزة تن',6.5,'sandwich'],['صحن تونسي',7,'plate']]},
+    {name:'Soda',icon:'drink',products:[['Gazouz Bellar 30CL',1.5,'drink'],['Canette',2,'drink'],['Citron',1.5,'lemon'],['Fraise',2.5,'strawberry'],['Eau 1.5L',1.5,'water'],['Eau 0.5L',1,'water']]},
+    {name:'Extra',icon:'extra',products:[['مرقاز',1,'merguez'],['كعبة شبتية',0.5,'chab'],['كعبة عظام',0.5,'bones'],['برج طاجين',2,'tajine']]},
+    {name:'Gros/Emballage',icon:'pack',products:[['كيلو كفتاجي تعليب',10,'pack'],['Plat Emballage',2,'platepack']]}
+  ];
+  const iconSvg=(kind)=>{const em={plate:'🍽️',tuna:'🐟',drink:'🥤',extra:'➕',pack:'📦'}[kind]||'•';return `<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><text x="24" y="32" text-anchor="middle" font-size="22">${em}</text></svg>`};
+  defs.forEach((d,ci)=>{
+    let c=s.categories.find(x=>String(x.name).trim().toLowerCase()===d.name.toLowerCase());
+    if(!c){c={id:'cat-'+Date.now()+'-'+ci,name:d.name,icon:iconSvg(d.icon)};s.categories.push(c)} else if(!c.icon){c.icon=iconSvg(d.icon)}
+    d.products.forEach(([name,price,img],pi)=>{
+      let p=s.products.find(x=>String(x.name).trim()===name);
+      if(!p){p={id:'prod-'+Date.now()+'-'+ci+'-'+pi,name,price,cat:c.id,image:svgImg(img),stockControl:false};s.products.push(p)}
+      else {p.cat=p.cat||c.id;if(!p.image)p.image=svgImg(img)}
+    });
+  });
+  localStorage.setItem(KEY,JSON.stringify(s));
+}
+seedChezJalelMenu();
 let page='dashboard',cart={},customers=1,filterCat='all',loginRole='owner',currentRole=null,serverTable='',dashboardDate=today();
 let cloudClient=null,cloudChannel=null,cloudBusy=false,cloudTimer=null;
 function cloudCfg(){return JSON.parse(localStorage.getItem('chezJalelCloudConfig')||'null')}
@@ -597,7 +629,23 @@ window.addEventListener('offline',updateOfflineUI);
 
 function makeCloudClient(c){if(!window.supabase)return null;return window.supabase.createClient(c.url,c.key,{global:{headers:{'x-chez-key':c.accessKey,'x-chez-device':c.device||'device'}}})}
 async function cloudPull(){const c=cloudCfg();if(!c?.enabled)return false;try{cloudBusy=true;setCloudStatus('connecting');if(!cloudClient)cloudClient=makeCloudClient(c);const {data,error}=await cloudClient.from('cloud_state').select('state,updated_at').eq('restaurant_id',c.restaurantId).maybeSingle();if(error)throw error;if(data?.state){s=Object.assign(structuredClone(blank),data.state);localStorage.setItem(KEY,JSON.stringify(s));}else{await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:new Date().toISOString(),updated_by:c.device||'device'},{onConflict:'restaurant_id'});}setCloudStatus('online');if(data?.updated_at)localStorage.setItem('chezJalelLastCloudSync',data.updated_at);cloudSubscribe();render();return true}catch(e){console.error(e);setCloudStatus('offline');return false}finally{cloudBusy=false}}
-async function cloudPush(){const c=cloudCfg();if(!c?.enabled||cloudBusy||!cloudClient||!navigator.onLine)return;try{cloudBusy=true;setCloudStatus('connecting');const remote=await cloudClient.from('cloud_state').select('updated_at,updated_by').eq('restaurant_id',c.restaurantId).maybeSingle();if(remote.error)throw remote.error;const last=localStorage.getItem('chezJalelLastCloudSync')||'';if(remote.data?.updated_at&&last&&remote.data.updated_at>last&&remote.data.updated_by!==(c.device||'device')){await cloudPull();return}const now=new Date().toISOString();const {error}=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:now,updated_by:c.device||'device'},{onConflict:'restaurant_id'});if(error)throw error;localStorage.setItem('chezJalelLastCloudSync',now);setCloudStatus('online')}catch(e){console.error(e);setCloudStatus('offline')}finally{cloudBusy=false}}
+async function mirrorStructuredCloud(){
+  const c=cloudCfg(); if(!c?.enabled||!cloudClient) return;
+  const rid=c.restaurantId;
+  const up=(table,rows)=>rows?.length?cloudClient.from(table).upsert(rows,{onConflict:'id'}):Promise.resolve({error:null});
+  const categories=(s.categories||s.sections||[]).map((x,i)=>({id:String(x.id||('cat-'+i)),restaurant_id:rid,name:String(x.name||x.title||''),sort_order:i,data:x,updated_at:new Date().toISOString()}));
+  const products=(s.products||[]).map((x,i)=>({id:String(x.id||('prod-'+i)),restaurant_id:rid,category_id:x.categoryId||x.category_id||null,name:String(x.name||''),price:Number(x.price||0),stock:x.stock==null?null:Number(x.stock),data:x,updated_at:new Date().toISOString()}));
+  const orders=(s.orders||[]).map((x,i)=>({id:String(x.id||('ord-'+i)),restaurant_id:rid,ticket_no:Number(x.ticket||x.ticketNo||x.number||0),source:x.source||null,status:x.status||null,total:Number(x.total||0),order_time:x.date||x.createdAt||null,data:x,updated_at:new Date().toISOString()}));
+  const lines=[]; (s.orders||[]).forEach((o,oi)=>{(o.items||o.lines||[]).forEach((x,i)=>lines.push({id:String(x.id||((o.id||('ord-'+oi))+'-'+i)),restaurant_id:rid,order_id:String(o.id||('ord-'+oi)),product_id:x.productId||x.product_id||null,quantity:Number(x.qty||x.quantity||1),data:x,updated_at:new Date().toISOString()}));});
+  const expenses=(s.expenses||[]).map((x,i)=>({id:String(x.id||('exp-'+i)),restaurant_id:rid,amount:Number(x.amount||0),expense_date:x.date||null,data:x,updated_at:new Date().toISOString()}));
+  const employees=(s.employees||[]).map((x,i)=>({id:String(x.id||('emp-'+i)),restaurant_id:rid,name:String(x.name||''),data:x,updated_at:new Date().toISOString()}));
+  const payments=[]; employees.forEach(()=>{}); (s.salaryPayments||s.salary_payments||[]).forEach((x,i)=>payments.push({id:String(x.id||('pay-'+i)),restaurant_id:rid,employee_id:x.employeeId||x.employee_id||null,amount:Number(x.amount||0),payment_date:x.date||null,data:x,updated_at:new Date().toISOString()}));
+  const sessions=(s.cashOpenings||s.caisseSessions||[]).map((x,i)=>({id:String(x.id||x.date||('cash-'+i)),restaurant_id:rid,session_date:x.date||null,opening_amount:Number(x.amount||x.opening||0),data:x,updated_at:new Date().toISOString()}));
+  const audit=(s.audit||[]).map((x,i)=>({id:String(x.id||('audit-'+i)),restaurant_id:rid,action:x.action||'',role:x.role||'',event_time:x.date||null,data:x,updated_at:new Date().toISOString()}));
+  for(const [t,rows] of [['categories',categories],['products',products],['orders',orders],['order_lines',lines],['expenses',expenses],['employees',employees],['salary_payments',payments],['caisse_sessions',sessions],['audit_logs',audit]]){const r=await up(t,rows);if(r.error)throw r.error;}
+}
+
+async function cloudPush(){const c=cloudCfg();if(!c?.enabled||cloudBusy||!cloudClient||!navigator.onLine)return;try{cloudBusy=true;setCloudStatus('connecting');const remote=await cloudClient.from('cloud_state').select('updated_at,updated_by').eq('restaurant_id',c.restaurantId).maybeSingle();if(remote.error)throw remote.error;const last=localStorage.getItem('chezJalelLastCloudSync')||'';if(remote.data?.updated_at&&last&&remote.data.updated_at>last&&remote.data.updated_by!==(c.device||'device')){await cloudPull();return}const now=new Date().toISOString();const {error}=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:now,updated_by:c.device||'device'},{onConflict:'restaurant_id'});if(error)throw error;localStorage.setItem('chezJalelLastCloudSync',now);try{await mirrorStructuredCloud()}catch(e){console.warn('Structured mirror skipped',e)}setCloudStatus('online')}catch(e){console.error(e);setCloudStatus('offline')}finally{cloudBusy=false}}
 function cloudSubscribe(){const c=cloudCfg();if(!c?.enabled||!cloudClient)return;if(cloudChannel)cloudClient.removeChannel(cloudChannel);cloudChannel=cloudClient.channel('chezjalel-'+c.restaurantId).on('postgres_changes',{event:'*',schema:'public',table:'cloud_state',filter:'restaurant_id=eq.'+c.restaurantId},payload=>{if(payload.eventType==='DELETE')return;const incoming=payload.new?.state;if(!incoming)return;if(payload.new?.updated_by===(c.device||'device'))return;const previousIds=new Set((s.orders||[]).map(o=>o.id));const newServerOrders=(incoming.orders||[]).filter(o=>o.source==='server'&&!previousIds.has(o.id));s=Object.assign(structuredClone(blank),incoming);localStorage.setItem(KEY,JSON.stringify(s));setCloudStatus('online');render();if(currentRole==='staff'&&newServerOrders.length){newServerOrders.slice(-3).forEach(notifyNewServerOrder)}else showToast('☁️ Mise à jour reçue')}).subscribe(status=>{if(status==='SUBSCRIBED')setCloudStatus('online');if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setCloudStatus('offline')})}
 function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;top:90px;left:50%;transform:translateX(-50%);z-index:200;background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-weight:800;box-shadow:0 8px 25px #0005';document.body.appendChild(t)}t.textContent=msg;t.style.display='block';clearTimeout(t._tm);t._tm=setTimeout(()=>t.style.display='none',1800)}
 function beepNewOrder(){try{const C=window.AudioContext||window.webkitAudioContext;if(C){const ctx=new C();const now=ctx.currentTime;[0,.16,.32].forEach((d,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=i===1?880:660;g.gain.setValueAtTime(.0001,now+d);g.gain.exponentialRampToValueAtTime(.22,now+d+.02);g.gain.exponentialRampToValueAtTime(.0001,now+d+.13);o.connect(g);g.connect(ctx.destination);o.start(now+d);o.stop(now+d+.14)})}}catch(e){}try{navigator.vibrate?.([180,80,180])}catch(e){}}
@@ -690,16 +738,7 @@ function dashboard(){
   app.innerHTML=`<div class="dashboard-wrap"><div class="page-head"><div><h2>Tableau de bord</h2><p>Vue d'ensemble de votre activité.</p></div><div class="page-meta"><label class="dash-date-label">Journée<br><input class="dash-date-input" type="date" value="${selected}" max="${today()}" onchange="setDashboardDate(this.value)"></label><div class="dash-date-caption">${label}</div></div></div>${caisseControlCardForDate(selected)}<div class="dashboardAccounts"><button class="dashCard dashCardBtn" onclick="dashboardDetail('revenue','${selected}')"><div class="l">RECETTE</div><div class="v">${money(rev)}</div><span class="dash-more">Voir le détail →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('sales','${selected}')"><div class="l">VENTES / TICKETS</div><div class="v">${od.length}</div><span class="dash-more">Voir les tickets →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('clients','${selected}')"><div class="l">CLIENTS</div><div class="v">${od.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+Number(o.customers||0),0)}</div><span class="dash-more">Voir les clients →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('expenses','${selected}')"><div class="l">DÉPENSES</div><div class="v">${money(ex)}</div><span class="dash-more">Voir les dépenses →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('net','${selected}')"><div class="l">NET</div><div class="v">${money(net)}</div><span class="dash-more">Voir le calcul →</span></button>${f?`<button class="dashCard dashCardBtn" onclick="dashboardDetail('caisse','${selected}')"><div class="l">CAISSE THÉORIQUE</div><div class="v">${money(theoretical)}</div><span class="dash-more">Contrôler la caisse →</span></button>`:''}</div><div class="dashCharts"><div class="dashChart card dashChartBtn" onclick="dashboardDetail('top','${selected}')"><div class="row"><h3>Produits les plus vendus</h3><span class="badge">${esc(selected===today()?'Aujourd’hui':label)}</span></div>${tops.length?tops.map(x=>`<div class="listrow"><div class="row"><span>${esc(x[0])}</span><b>${x[1]}</b></div><div class="mini-bar"><i style="width:${Math.max(6,Math.round(x[1]/Math.max(1,tops[0][1])*100))}%"></i></div></div>`).join(''):'<div class="empty">Pas encore de ventes.</div>'}</div><div class="dashChart card dashChartBtn" onclick="dashboardDetail('nosales','${selected}')"><div class="row"><h3>Ce qui ne sort pas</h3><span class="badge">À surveiller</span></div><p class="muted">Produits sans vente pour cette journée.</p>${s.products.filter(p=>!top[p.name]).slice(0,8).map(p=>`<div class="listrow"><div class="row"><span>${esc(p.name)}</span><span class="muted">0 vente</span></div></div>`).join('')||'<div class="empty">Tous les produits ont été vendus.</div>'}</div></div></div>`
 }
 
-function catIcon(name){
-  const n=(name||'').toLowerCase();
-  if(/boisson|drink|jus|soda|eau|café|cafe/.test(n)) return '🥤';
-  if(/sandwich|burger|tacos|panini/.test(n)) return '🥪';
-  if(/plat|repas|keftaji|cuisine/.test(n)) return '🍽️';
-  if(/brik|salade|entrée|entree/.test(n)) return '🥗';
-  if(/dessert|sucré|sucre|gateau|gâteau/.test(n)) return '🍰';
-  if(/extra|ajout|supp/.test(n)) return '➕';
-  return '•';
-}
+function catIcon(name){const c=s.categories.find(x=>String(x.name).trim().toLowerCase()===String(name).trim().toLowerCase());if(c&&c.icon)return c.icon;const n=(name||'').toLowerCase();if(/boisson|drink|jus|soda|eau|café|cafe/.test(n))return '🥤';if(/sandwich|burger|tacos|panini/.test(n))return '🥪';if(/plat|repas|keftaji|cuisine/.test(n))return '🍽️';if(/brik|salade|entrée|entree/.test(n))return '🥗';if(/dessert|sucré|sucre|gateau|gâteau/.test(n))return '🍰';if(/extra|ajout|supp/.test(n))return '➕';return '•'}
 function startStaffOrder(){cart={};customers=1;filterCat='all';page='pos';render()}
 function pos(){
   if(currentRole==='server'){return serverHome()}
