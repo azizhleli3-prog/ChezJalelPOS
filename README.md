@@ -1,4 +1,4 @@
-# ChezJalelPOS V53
+# ChezJalelPOS V54
 
 - Menu preserved: 5 categories / 20 products.
 - Cloud & Realtime remains connected through the saved device configuration.

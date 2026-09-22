@@ -929,13 +929,13 @@ async function boot(){
   if(lock) lock.classList.add('show');
   setLoginRole('owner');
   const c=cloudCfg();
-  if(c?.enabled){try{await cloudPull()}catch(e){console.error('Cloud boot error',e)}}
+  if(c?.enabled){try{await cloudPull(); if(cloudClient) cloudSubscribe()}catch(e){console.error('Cloud boot error',e)}}
   if(!s.security.setup){document.getElementById('firstSetup').textContent='أول دخول: حط PIN المالك. بعد ذلك اعمل PIN للـ Caisse وPIN للـ Serveur من Sécurité.'}
   else document.getElementById('firstSetup').textContent='';
   if(lock) lock.classList.add('show');
 }
-/* V52 — automatic app-update notice across installed/open devices */
-const CJ_APP_VERSION='52';
+/* V54 — automatic app-update notice across installed/open devices */
+const CJ_APP_VERSION='54';
 let cjUpdateTimer=null;
 function showAppUpdateNotice(remoteVersion){
   if(document.getElementById('cjUpdateNotice')) return;
@@ -953,6 +953,8 @@ async function checkAppUpdate(){
   }catch(e){/* offline or version file unavailable */}
 }
 function applyAppUpdate(){
+  const n=document.getElementById('cjUpdateNotice'); if(n)n.remove();
+  try{sessionStorage.setItem('cjUpdateInProgress','1')}catch(e){}
   const u=new URL(location.href); u.searchParams.set('update',Date.now()); location.replace(u.toString());
 }
 function startAppUpdateChecker(){
