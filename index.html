@@ -107,7 +107,7 @@ html,body{background:#fff!important;margin:0!important;padding:0!important;color
 }
 
 
-.app-signature{margin-top:22px;text-align:center;font-family:"Brush Script MT","Segoe Script",cursive;font-size:17px;font-style:italic;font-weight:600;letter-spacing:.2px;color:#8f8a84;opacity:.9}.app-signature::before{content:"";display:block;width:54px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#c9c1b7,transparent)}
+.app-version-label{margin-top:8px;text-align:center;font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;color:#777;opacity:.9}.app-signature{margin-top:22px;text-align:center;font-family:"Brush Script MT","Segoe Script",cursive;font-size:17px;font-style:italic;font-weight:600;letter-spacing:.2px;color:#8f8a84;opacity:.9}.app-signature::before{content:"";display:block;width:54px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#c9c1b7,transparent)}
 .lock{position:fixed;inset:0;background:rgba(33,29,22,.72);backdrop-filter:blur(12px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}.lock.show{display:flex}.lockbox{width:min(420px,100%);background:#fffdf9;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 80px #0005}.locklogo{width:90px;height:90px;border-radius:50%;object-fit:cover;border:5px solid var(--brand);margin-bottom:10px}.rolechip{display:inline-block;background:#f8e4e5;color:var(--brand);font-weight:800;border-radius:99px;padding:6px 10px;font-size:12px;margin:5px}.readonly{opacity:.62;pointer-events:none}.audit{font-size:12px;color:#665f57;padding:7px 0;border-bottom:1px dashed #ddd}.cloudbox{border-left:4px solid var(--brand);padding-left:12px}.image-preview{width:84px;height:84px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
 .note-input{width:100%;border:1px dashed #cfc6bb;border-radius:8px;padding:7px;background:#fff;font-size:12px;margin-top:6px}.wait-badge{background:#111;color:#fff;font-weight:900}.product .pbody{min-height:65px}.modalhead{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:var(--card);padding-bottom:10px;z-index:2}.modalhead h2{margin:0}.modalhead .btn{white-space:nowrap}
 /* V10 professional UI */
@@ -583,7 +583,7 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 <button class="login-submit" onclick="unlockApp()">Se connecter&nbsp; →</button>
 <p id="firstSetup" class="small muted" style="margin-top:12px;text-align:center"></p>
 <div class="login-footer">CHEZ JALEL POS</div>
-<div class="app-signature">App By Aziz Hleli</div>
+<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V58</div>
 </div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -940,7 +940,7 @@ const CJ_APP_VERSION='54';
 let cjUpdateTimer=null;
 function showAppUpdateNotice(remoteVersion){
   if(document.getElementById('cjUpdateNotice')) return;
-  const n=document.createElement('div'); n.id='cjUpdateNotice';
+  const n=document.createElement('div'); n.id='cjUpdateNotice'; n.dataset.version=String(remoteVersion||'');
   n.innerHTML=`<div class="cj-update-icon">↻</div><div class="cj-update-copy"><b>تحديث جديد لـ ChezJalelPOS</b><span>نسخة جديدة متوفرة. اعمل تحديث باش تستعمل آخر نسخة.</span></div><button onclick="applyAppUpdate()">تحديث الآن</button>`;
   document.body.appendChild(n);
 }
@@ -950,11 +950,13 @@ async function checkAppUpdate(){
     if(!r.ok)return;
     const v=await r.json();
     const remote=String(v.version||'').trim();
-    if(remote && remote!==CJ_APP_VERSION && Number(remote)>Number(CJ_APP_VERSION)) showAppUpdateNotice(remote);
+    const dismissed=localStorage.getItem('cjUpdateDismissedVersion')||'';
+    if(remote && remote!==CJ_APP_VERSION && Number(remote)>Number(CJ_APP_VERSION) && dismissed!==remote) showAppUpdateNotice(remote);
   }catch(e){/* offline or version file unavailable */}
 }
 function applyAppUpdate(){
-  const n=document.getElementById('cjUpdateNotice'); if(n)n.remove();
+  const n=document.getElementById('cjUpdateNotice'); const remoteVersionForUpdate=n?.dataset?.version||''; if(n)n.remove();
+  try{localStorage.setItem('cjUpdateDismissedVersion',String(remoteVersionForUpdate||''))}catch(e){}
   try{sessionStorage.setItem('cjUpdateInProgress','1')}catch(e){}
   const u=new URL(location.href); u.searchParams.set('update',Date.now()); location.replace(u.toString());
 }
