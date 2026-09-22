@@ -11,6 +11,16 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
+<style id="v52-update-notice">
+#cjUpdateNotice{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:100000;display:flex;align-items:center;gap:10px;width:min(620px,calc(100vw - 24px));padding:12px 13px;background:#17191b;color:#fff;border:1px solid rgba(196,20,44,.55);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:inherit}
+#cjUpdateNotice .cj-update-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#c4142c;font-size:21px;font-weight:900;flex:none}
+#cjUpdateNotice .cj-update-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+#cjUpdateNotice .cj-update-copy b{font-size:13px}
+#cjUpdateNotice .cj-update-copy span{font-size:11px;color:#c7c9cc;line-height:1.35}
+#cjUpdateNotice button{border:0;border-radius:11px;background:#c4142c;color:#fff;padding:10px 13px;font-weight:900;cursor:pointer;white-space:nowrap}
+@media(max-width:520px){#cjUpdateNotice{top:10px;padding:10px;gap:8px}#cjUpdateNotice .cj-update-icon{width:34px;height:34px;font-size:18px}#cjUpdateNotice .cj-update-copy b{font-size:12px}#cjUpdateNotice .cj-update-copy span{font-size:10px}#cjUpdateNotice button{padding:9px 10px;font-size:11px}}
+</style>
+
 <style>
 :root{--brand:#c4142c;--dark:#211d16;--bg:#f5efe6;--card:#fffdf9;--muted:#776f67;--danger:#9f1720;--ok:#276749;--line:#ded3c5;--gold:#c49a4a;--wood:#6b302b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#171717;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -924,6 +934,33 @@ async function boot(){
   else document.getElementById('firstSetup').textContent='';
   if(lock) lock.classList.add('show');
 }
+/* V52 — automatic app-update notice across installed/open devices */
+const CJ_APP_VERSION='52';
+let cjUpdateTimer=null;
+function showAppUpdateNotice(remoteVersion){
+  if(document.getElementById('cjUpdateNotice')) return;
+  const n=document.createElement('div'); n.id='cjUpdateNotice';
+  n.innerHTML=`<div class="cj-update-icon">↻</div><div class="cj-update-copy"><b>تحديث جديد لـ ChezJalelPOS</b><span>نسخة جديدة متوفرة. اعمل تحديث باش تستعمل آخر نسخة.</span></div><button onclick="applyAppUpdate()">تحديث الآن</button>`;
+  document.body.appendChild(n);
+}
+async function checkAppUpdate(){
+  try{
+    const r=await fetch('./app-version.json?ts='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+    if(!r.ok)return;
+    const v=await r.json();
+    const remote=String(v.version||'').trim();
+    if(remote && remote!==CJ_APP_VERSION && Number(remote)>Number(CJ_APP_VERSION)) showAppUpdateNotice(remote);
+  }catch(e){/* offline or version file unavailable */}
+}
+function applyAppUpdate(){
+  const u=new URL(location.href); u.searchParams.set('update',Date.now()); location.replace(u.toString());
+}
+function startAppUpdateChecker(){
+  checkAppUpdate();
+  clearInterval(cjUpdateTimer);
+  cjUpdateTimer=setInterval(checkAppUpdate,30000);
+}
+
 applyTheme();document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 boot().catch(err=>{
   console.error('chezJalel boot error',err);
@@ -933,6 +970,7 @@ boot().catch(err=>{
   if(lock) lock.classList.add('show');
   setTimeout(()=>document.getElementById('cjSplash')?.classList.add('hide'),1700);
 });
+startAppUpdateChecker();
 </script>
 
 <style>
