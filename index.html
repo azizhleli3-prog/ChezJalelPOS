@@ -961,7 +961,7 @@ function refreshPushButton(){
 async function boot(){
   updateOfflineUI();
   setTimeout(refreshPushButton,250);
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=61',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=63',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
   // Splash first, then always start locked on the login screen.
   currentRole=null;
   const splash=document.getElementById('cjSplash');

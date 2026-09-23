@@ -1,4 +1,4 @@
-const CACHE = 'chezjalel-v61';
+const CACHE = 'chezjalel-v63';
 self.addEventListener('install', event => { self.skipWaiting(); });
 self.addEventListener('activate', event => {
   event.waitUntil((async()=>{
