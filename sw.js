@@ -1,4 +1,4 @@
-const CACHE = 'chezjalel-v60';
+const CACHE = 'chezjalel-v61';
 self.addEventListener('install', event => { self.skipWaiting(); });
 self.addEventListener('activate', event => {
   event.waitUntil((async()=>{
@@ -23,7 +23,7 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil((async()=>{
-    const target=new URL('./',self.location.origin).href;
+    const target=new URL('./?pushUpdate=1',self.location.origin).href;
     const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
     for(const c of clients){ if('focus' in c){ await c.focus(); if(c.navigate) await c.navigate(target); return; } }
     if(self.clients.openWindow) await self.clients.openWindow(target);

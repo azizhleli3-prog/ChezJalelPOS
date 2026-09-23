@@ -502,6 +502,12 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 @media(max-width:520px){.cj-splash-logo{width:118px;height:118px}.cj-splash-title{font-size:25px}.cj-splash-welcome{font-size:16px}.cj-splash-rights{margin-top:25px}}
 </style>
 
+
+<style id="cj-push-v61">
+#cjPushBtn{margin:12px auto 0;display:block;width:100%;height:46px;border:1px solid rgba(255,255,255,.14);border-radius:13px;background:#202328;color:#fff;font-weight:800;cursor:pointer}
+#cjPushBtn:hover{background:#2a2e34}
+#cjPushStatus{text-align:center;font-size:11px;color:#999;margin-top:7px;min-height:16px}
+</style>
 </head>
 <body>
 <div class="app">
@@ -582,8 +588,10 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 <input class="input" id="pinInput" inputmode="numeric" type="password" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')unlockApp()">
 <button class="login-submit" onclick="unlockApp()">Se connecter&nbsp; →</button>
 <p id="firstSetup" class="small muted" style="margin-top:12px;text-align:center"></p>
+<button id="cjPushBtn" type="button" onclick="enableUpdatePush()">🔔 تفعيل إشعارات التحديث</button>
+<div id="cjPushStatus"></div>
 <div class="login-footer">CHEZ JALEL POS</div>
-<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V60</div>
+<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V61</div>
 </div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -919,9 +927,10 @@ function caisseControlCardForDate(d){const f=fondCaisseForDate(d);if(!f)return `
 function setLoginRole(r){loginRole=r;document.getElementById('ownerTab')?.classList.toggle('on',r==='owner');document.getElementById('staffTab')?.classList.toggle('on',r==='staff');document.getElementById('serverTab')?.classList.toggle('on',r==='server');const roleEl=document.getElementById('lockRole');if(roleEl)roleEl.textContent=r==='owner'?'👑 Aziz':r==='staff'?'🧾 Gérant':'🧑‍🍳 Serveur'}
 function unlockApp(){let pin=document.getElementById('pinInput').value.trim();if(!s.security.setup){if(pin.length<4){alert('أول مرة: اختار PIN من 4 أرقام على الأقل');return}s.security.ownerPin=pin;s.security.staffPin=pin;s.security.serverPin=pin;s.security.setup=true;save()}let ok=(loginRole==='owner'&&pin===s.security.ownerPin)||(loginRole==='staff'&&pin===s.security.staffPin)||(loginRole==='server'&&pin===s.security.serverPin);if(!ok){alert('PIN غالط');return}currentRole=loginRole;document.getElementById('lock').classList.remove('show');page=(currentRole==='staff'||currentRole==='server')?'pos':'dashboard';serverTable='';document.getElementById('pinInput').value='';render();setTimeout(()=>openFondCaisse(),80)}
 function lockApp(){currentRole=null;document.getElementById('pinInput').value='';document.getElementById('lock').classList.add('show')}
-async function boot(){
+\nconst CJ_PUSH_VAPID_PUBLIC='BE0VrdcimqmAtxkNn9Rt-tUHbj4Qj4rEhKqqMXPt-pZfcWyRYcPRFr9hD-EjJDyMs9vmEcrIiBy6ZCOFr9q2WSk';\nfunction cjPushStatus(t){const el=document.getElementById('cjPushStatus');if(el)el.textContent=t||''}\nfunction urlBase64ToUint8Array(base64String){const padding='='.repeat((4-base64String.length%4)%4);const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(base64);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)))}\nasync function enableUpdatePush(){\n  const btn=document.getElementById('cjPushBtn');\n  try{\n    if(!('serviceWorker' in navigator)||!('PushManager' in window)){cjPushStatus('⚠️ هذا المتصفح ما يدعمش Web Push.');return}\n    if(location.protocol!=='https:'){cjPushStatus('⚠️ يلزم HTTPS.');return}\n    if(Notification.permission==='denied'){cjPushStatus('⚠️ الإشعارات مرفوضة من إعدادات المتصفح.');return}\n    if(btn)btn.disabled=true; cjPushStatus('جاري تفعيل الإشعارات...');\n    const reg=await navigator.serviceWorker.ready;\n    let sub=await reg.pushManager.getSubscription();\n    if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(CJ_PUSH_VAPID_PUBLIC)});\n    localStorage.setItem('chezJalelPushSubscription',JSON.stringify(sub.toJSON?sub.toJSON():sub));\n    const c=cloudCfg();\n    if(c?.enabled&&cloudClient){\n      const row={id:btoa(unescape(encodeURIComponent(sub.endpoint))).replace(/[^a-zA-Z0-9]/g,'').slice(0,80),restaurant_id:c.restaurantId,device:c.device||'device',access_key:c.accessKey,subscription:sub.toJSON?sub.toJSON():sub,updated_at:new Date().toISOString()};\n      const r=await cloudClient.from('push_subscriptions').upsert(row,{onConflict:'id'});\n      if(r.error) throw r.error;\n    }\n    cjPushStatus('✅ إشعارات التحديث مفعّلة على هذا الجهاز');\n  }catch(e){console.error('Push setup',e);cjPushStatus('❌ ما تمش تفعيل الإشعارات: '+(e?.message||e));}\n  finally{if(btn)btn.disabled=false}\n}\nfunction refreshPushButton(){\n  const btn=document.getElementById('cjPushBtn'); if(!btn)return;\n  if(!('Notification' in window)||!('PushManager' in window)){btn.style.display='none';return}\n  const sub=localStorage.getItem('chezJalelPushSubscription');\n  if(sub&&Notification.permission==='granted'){btn.textContent='🔔 إشعارات التحديث مفعّلة';cjPushStatus('جاهز لاستقبال تحديثات التطبيق');}\n}\n\nasync function boot(){
   updateOfflineUI();
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=60',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
+  setTimeout(refreshPushButton,250);
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=61',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
   // Splash first, then always start locked on the login screen.
   currentRole=null;
   const splash=document.getElementById('cjSplash');
