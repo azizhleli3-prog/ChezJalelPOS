@@ -583,7 +583,7 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 <button class="login-submit" onclick="unlockApp()">Se connecter&nbsp; →</button>
 <p id="firstSetup" class="small muted" style="margin-top:12px;text-align:center"></p>
 <div class="login-footer">CHEZ JALEL POS</div>
-<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V59</div>
+<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V60</div>
 </div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -921,7 +921,7 @@ function unlockApp(){let pin=document.getElementById('pinInput').value.trim();if
 function lockApp(){currentRole=null;document.getElementById('pinInput').value='';document.getElementById('lock').classList.add('show')}
 async function boot(){
   updateOfflineUI();
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=59',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=60',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
   // Splash first, then always start locked on the login screen.
   currentRole=null;
   const splash=document.getElementById('cjSplash');
@@ -935,6 +935,34 @@ async function boot(){
   else document.getElementById('firstSetup').textContent='';
   if(lock) lock.classList.add('show');
 }
+/* V60 — Web Push client foundation for update notifications */
+const CJ_PUSH_VAPID_PUBLIC_KEY = localStorage.getItem('cjPushVapidPublicKey') || '';
+async function enableUpdatePushNotifications(vapidPublicKey=''){
+  try{
+    if(!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) return {ok:false,reason:'unsupported'};
+    if(Notification.permission==='denied') return {ok:false,reason:'denied'};
+    const key=vapidPublicKey || localStorage.getItem('cjPushVapidPublicKey') || '';
+    if(!key) return {ok:false,reason:'missing-vapid-key'};
+    const permission=Notification.permission==='granted'?'granted':await Notification.requestPermission();
+    if(permission!=='granted') return {ok:false,reason:'permission'};
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(key)});
+    localStorage.setItem('cjPushSubscription',JSON.stringify(sub.toJSON()));
+    window.cjPushSubscription=sub.toJSON();
+    return {ok:true,subscription:sub.toJSON()};
+  }catch(e){console.warn('Web Push',e);return {ok:false,reason:'error',error:String(e)}}
+}
+function urlBase64ToUint8Array(base64String){const padding='='.repeat((4-base64String.length%4)%4);const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(base64);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));}
+async function showLocalUpdateNotification(){
+  try{
+    if(!('Notification' in window)||Notification.permission!=='granted') return false;
+    const reg=await navigator.serviceWorker.ready;
+    await reg.showNotification('تحديث جديد لـ ChezJalelPOS',{body:`النسخة V${remoteVersionForUpdate||'الجديدة'} متوفرة. اضغط للتحديث.`,icon:'./favicon.png',badge:'./favicon.png',tag:'chezjalel-update',data:{type:'app-update',version:remoteVersionForUpdate||''}});
+    return true;
+  }catch(e){return false}
+}
+
 /* V54 — automatic app-update notice across installed/open devices */
 const CJ_APP_VERSION='59';
 let cjUpdateTimer=null;

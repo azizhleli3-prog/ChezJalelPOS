@@ -1,5 +1,3 @@
-ChezJalelPOS V59 — إصلاح Realtime للطلبات: Serveur → Cloud → Gérant، مع polling سريع ودمج الطلبات بدون مسح بيانات الجهاز.
+ChezJalelPOS V60
 
-
-## V58
-- Fix: after pressing Update Now, the same update notification is not shown again on refresh while the browser still serves the old cached app. The dismissed remote version is remembered until the new app version is actually loaded.
+V60 adds the Web Push client foundation for update notifications, while preserving V59 realtime server-to-gerant and update-check behavior. A VAPID public key and push sender backend are still required for true background/lock-screen update delivery.
