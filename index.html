@@ -266,7 +266,11 @@ html,body{background:#121212!important;min-height:100%;width:100%;}
 .server-header-btn{display:none!important;border:1px solid #e5e5e5;background:#fff;border-radius:12px;padding:8px 11px;font-weight:900;cursor:pointer;position:relative;display:none;white-space:nowrap}.server-header-btn.show{display:inline-flex;align-items:center;gap:6px}.server-bell{width:28px;height:28px;border-radius:9px;border:1px solid #e5e5e5;background:#fff;cursor:pointer;position:relative;font-size:16px}.server-bell .server-count{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#c4142c;color:#fff;font-size:11px;line-height:19px;font-weight:900;display:none;box-shadow:0 2px 7px #0003}.server-bell .server-count.show{display:block;animation:orderPulse .7s ease}.server-orders-list{display:grid;gap:10px}.server-order-item{border:1px solid #eee;border-left:4px solid #c4142c;border-radius:16px;padding:13px;background:#fff}.server-order-item.new{box-shadow:0 0 0 2px #c4142c22}.server-order-item .so-lines{margin-top:8px;display:grid;gap:4px}.server-order-item .so-line{display:flex;justify-content:space-between;gap:8px}.server-order-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.server-order-empty{padding:28px;text-align:center;color:#777}
 @keyframes orderPulse{0%{transform:scale(.96);opacity:.2}100%{transform:scale(1);opacity:1}}
 @media(max-width:520px){.server-tables{grid-template-columns:repeat(4,1fr)}.server-menu{grid-template-columns:1fr}}
-html[data-theme="dark"] .server-card{background:#1b1d20;border-color:#303236}.dark .server-product{background:#202226;color:#fff}
+html[data-theme="dark"] .server-card{background:#1b1d20;border-color:#303236}
+html[data-theme="dark"] .server-order-item{background:#181a1c;color:#f5f5f5;border-color:#303236;border-left-color:#c4142c}
+html[data-theme="dark"] .server-order-item .muted{color:#a8aaad}
+html[data-theme="dark"] .server-order-item .so-line{color:#f5f5f5}
+.dark .server-product{background:#202226;color:#fff}
 
 @media(max-width:520px){.serveur-table{grid-template-columns:1fr}.serveur-hero{padding:16px}}
 
