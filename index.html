@@ -583,7 +583,7 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 <button class="login-submit" onclick="unlockApp()">Se connecter&nbsp; →</button>
 <p id="firstSetup" class="small muted" style="margin-top:12px;text-align:center"></p>
 <div class="login-footer">CHEZ JALEL POS</div>
-<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V58</div>
+<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V59</div>
 </div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -921,7 +921,7 @@ function unlockApp(){let pin=document.getElementById('pinInput').value.trim();if
 function lockApp(){currentRole=null;document.getElementById('pinInput').value='';document.getElementById('lock').classList.add('show')}
 async function boot(){
   updateOfflineUI();
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW',e));}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=59',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
   // Splash first, then always start locked on the login screen.
   currentRole=null;
   const splash=document.getElementById('cjSplash');
@@ -936,7 +936,7 @@ async function boot(){
   if(lock) lock.classList.add('show');
 }
 /* V54 — automatic app-update notice across installed/open devices */
-const CJ_APP_VERSION='54';
+const CJ_APP_VERSION='59';
 let cjUpdateTimer=null;
 function showAppUpdateNotice(remoteVersion){
   if(document.getElementById('cjUpdateNotice')) return;
@@ -958,12 +958,15 @@ function applyAppUpdate(){
   const n=document.getElementById('cjUpdateNotice'); const remoteVersionForUpdate=n?.dataset?.version||''; if(n)n.remove();
   try{localStorage.setItem('cjUpdateDismissedVersion',String(remoteVersionForUpdate||''))}catch(e){}
   try{sessionStorage.setItem('cjUpdateInProgress','1')}catch(e){}
-  const u=new URL(location.href); u.searchParams.set('update',Date.now()); location.replace(u.toString());
+  const u=new URL(location.href); u.searchParams.set('update',Date.now()); u.searchParams.set('v',remoteVersionForUpdate||'59'); location.replace(u.toString());
 }
 function startAppUpdateChecker(){
   checkAppUpdate();
   clearInterval(cjUpdateTimer);
-  cjUpdateTimer=setInterval(checkAppUpdate,30000);
+  cjUpdateTimer=setInterval(checkAppUpdate,5000);
+  window.addEventListener('focus',checkAppUpdate);
+  window.addEventListener('pageshow',checkAppUpdate);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkAppUpdate();});
 }
 
 applyTheme();document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});

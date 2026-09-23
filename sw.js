@@ -1,11 +1,18 @@
-const CACHE='chezjalel-pos-v47-shell';
-const CORE=['./','./index.html','./manifest.json','./favicon.png','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png','./logo.jpg','./logo_cropped.jpg','./logo_header_pro.png','./pattern.jpg'];
-self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',event=>{
-  if(event.request.method!=='GET') return;
-  const url=new URL(event.request.url);
-  if(url.origin===location.origin){
-    event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request).then(resp=>{const copy=resp.clone();caches.open(CACHE).then(c=>c.put(event.request,copy));return resp}).catch(()=>caches.match('./index.html'))));
+const CACHE = 'chezjalel-v59';
+self.addEventListener('install', event => { self.skipWaiting(); });
+self.addEventListener('activate', event => {
+  event.waitUntil((async()=>{
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k=>k.startsWith('chezjalel-') && k!==CACHE).map(k=>caches.delete(k)));
+    await self.clients.claim();
+  })());
+});
+self.addEventListener('fetch', event => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return;
+  if (req.mode === 'navigate' || url.pathname.endsWith('/app-version.json') || url.pathname.endsWith('/index.html')) {
+    event.respondWith(fetch(new Request(req, {cache:'no-store'})).catch(()=>caches.match(req).then(r=>r||caches.match('/index.html'))));
   }
 });
