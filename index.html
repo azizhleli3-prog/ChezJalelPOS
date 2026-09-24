@@ -45,65 +45,52 @@ h2{margin:7px 0 14px;font-size:23px}h3{margin:5px 0 8px}
 .listrow{padding:11px 0;border-bottom:1px solid #eee}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{padding:9px 7px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap}
 .bar{height:9px;background:#eee;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--brand)}
 .empty{padding:35px 15px;text-align:center;color:#777}.small{font-size:12px}
-.modal{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:flex-end}.modal.show{display:flex}.sheet{background:#fff;width:100%;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.sheet{background:var(--card,#fff);color:var(--text,#111);width:min(760px,100%);max-height:88vh;overflow:auto;border-radius:20px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.35)}.sheet .no-print{display:block!important}.sheet .no-print h2{margin:0 0 5px!important;font-size:22px!important}.sheet .no-print>p{margin:0 0 18px!important}.sheet .no-print>div{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}.sheet .no-print .btn{min-height:48px!important;border-radius:12px!important;font-size:15px!important;font-weight:800!important}.sheet .no-print>button{width:100%!important;margin-top:10px!important;min-height:46px!important;border-radius:12px!important}.sheet .print-area{display:none!important}
 @media(min-width:760px){.grid4{grid-template-columns:repeat(4,1fr)}.products{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:repeat(4,1fr)}.nav{left:50%;transform:translateX(-50%);max-width:900px;border-radius:16px 16px 0 0}.wrap{padding:20px}}
 @media print{
-@page{size:80mm auto;margin:0}
-html,body{background:#fff!important;margin:0!important;padding:0!important;color:#000!important;font-family:Arial,Helvetica,sans-serif!important}
-.no-print,.nav,.top{display:none!important}.print-hide{display:none!important}
-.print-area{display:block!important;width:80mm!important;margin:0!important;padding:0!important;color:#000!important;background:#fff!important}
-.ticket-print{width:80mm!important;max-width:80mm!important;min-height:105mm!important;margin:0!important;padding:5mm 4mm 6mm!important;font-family:Arial,Helvetica,sans-serif!important;color:#000!important;background:#fff!important;page-break-after:always!important;break-after:page!important;break-inside:avoid!important;overflow:visible!important}
-.ticket-print + .ticket-print{page-break-before:always!important;break-before:page!important}.ticket-print:last-child{page-break-after:auto!important;break-after:auto!important}
+@page{size:80mm 150mm;margin:0}
+html,body{width:80mm!important;margin:0!important;padding:0!important;background:#fff!important;color:#000!important;font-family:Arial,Helvetica,sans-serif!important}
+body>*{display:none!important}
+body>#modal{display:block!important;position:static!important;inset:auto!important;width:80mm!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;background:#fff!important;color:#000!important;z-index:auto!important}
+body>#modal .sheet{display:block!important;width:80mm!important;max-width:80mm!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#fff!important;color:#000!important;box-shadow:none!important}
+body>#modal .sheet>.no-print{display:none!important}
+body>#modal .sheet>.print-area{display:block!important;width:80mm!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;color:#000!important}
+.ticket-print{width:80mm!important;max-width:80mm!important;height:150mm!important;min-height:150mm!important;max-height:150mm!important;margin:0!important;padding:4mm 3.5mm!important;box-sizing:border-box!important;font-family:Arial,Helvetica,sans-serif!important;color:#000!important;background:#fff!important;page-break-inside:avoid!important;break-inside:avoid-page!important;overflow:hidden!important}
+.ticket-client{page-break-after:always!important;break-after:page!important;page-break-before:auto!important;break-before:auto!important}
+.ticket-kitchen{page-break-before:always!important;break-before:page!important;page-break-after:auto!important;break-after:auto!important}
 .ticket-print *{box-sizing:border-box!important;color:#000!important;background-color:transparent!important;box-shadow:none!important}
-.ticket-logo{display:block!important;width:28mm!important;height:28mm!important;object-fit:contain!important;filter:grayscale(1) contrast(2)!important;margin:0 auto 1mm!important}
-.ticket-brand{text-align:center!important;font-family:Georgia,serif!important;font-size:8mm!important;font-weight:900!important;line-height:1!important;letter-spacing:-.2mm!important}
-.ticket-sub{text-align:center!important;font-size:3.2mm!important;letter-spacing:1.4mm!important;margin-top:1.8mm!important}
-.ticket-auth{text-align:center!important;font-size:3mm!important;letter-spacing:1.5mm!important;margin-top:2mm!important}
-.ticket-rule{border-top:1px solid #000!important;height:0!important;margin:3mm 0!important}
-.ticket-meta{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4mm!important;font-size:3.4mm!important;font-weight:700!important}
+.ticket-logo{display:block!important;width:22mm!important;height:22mm!important;object-fit:contain!important;filter:grayscale(1) contrast(2)!important;margin:0 auto 1mm!important}
+.ticket-brand{text-align:center!important;font-family:Georgia,serif!important;font-size:6.8mm!important;font-weight:900!important;line-height:1!important;letter-spacing:-.2mm!important}
+.ticket-sub{text-align:center!important;font-size:2.7mm!important;letter-spacing:1.2mm!important;margin-top:1.4mm!important}
+.ticket-auth{text-align:center!important;font-size:2.5mm!important;letter-spacing:1.3mm!important;margin-top:1.5mm!important}
+.ticket-rule{border-top:1px solid #000!important;height:0!important;margin:2mm 0!important}
+.ticket-meta{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2mm!important;font-size:2.8mm!important;font-weight:700!important}
 .ticket-meta span{border:0!important;padding:0!important;white-space:nowrap!important}
 .ticket-meta span:last-child{text-align:right!important}
 .ticket-client-grid{display:grid!important;grid-template-columns:38% 62%!important;border-top:1px solid #000!important;border-bottom:1px solid #000!important;margin-top:2mm!important}
-.ticket-client-left{border-right:1px solid #000!important;text-align:center!important;padding:3mm 1.5mm!important}
-.ticket-client-right{padding:3mm 2mm!important;min-width:0!important}
-.ticket-label{font-size:3.6mm!important;font-weight:900!important;line-height:1.15!important}
-.ticket-big{font-size:16mm!important;font-weight:900!important;line-height:1!important;margin:2.5mm 0!important}
-.ticket-wait{font-size:3.2mm!important;font-weight:900!important;line-height:1.2!important}
+.ticket-client-left{border-right:1px solid #000!important;text-align:center!important;padding:2mm 1mm!important}
+.ticket-client-right{padding:2mm 1.5mm!important;min-width:0!important}
+.ticket-label{font-size:2.8mm!important;font-weight:900!important;line-height:1.15!important}
+.ticket-big{font-size:11mm!important;font-weight:900!important;line-height:1!important;margin:2.5mm 0!important}
+.ticket-wait{font-size:2.6mm!important;font-weight:900!important;line-height:1.2!important}
 .ticket-lines{width:100%!important}
-.ticket-lines .trow{display:grid!important;grid-template-columns:7mm minmax(0,1fr) 18mm!important;gap:1.5mm!important;align-items:start!important;padding:2.3mm 0!important;border-bottom:1px dashed #000!important;font-size:3.25mm!important;line-height:1.2!important;word-break:normal!important;overflow-wrap:anywhere!important}
-.ticket-lines .trow b:first-child{text-align:center!important}
-.ticket-lines .trow b:last-child{text-align:right!important;white-space:nowrap!important}
-.ticket-lines small{font-size:2.7mm!important;line-height:1.2!important;font-weight:700!important}
+.ticket-lines .trow{display:grid!important;grid-template-columns:7mm minmax(0,1fr) 18mm!important;gap:1.5mm!important;align-items:start!important;padding:2.3mm 0!important;border-bottom:1px dashed #000!important;font-size:2.8mm!important;line-height:1.25!important;overflow-wrap:anywhere!important;word-break:normal!important}.ticket-lines .trow>b:first-child{text-align:center!important;font-size:3.2mm!important;font-weight:900!important}.ticket-lines .trow>span{min-width:0!important;text-align:left!important;font-weight:700!important}.ticket-lines .trow>b:last-child{text-align:right!important;white-space:nowrap!important;font-size:2.8mm!important;font-weight:900!important}.ticket-lines .trow small{display:block!important;font-size:2.2mm!important;margin-top:1mm!important;font-weight:600!important}
 .ticket-total{display:flex!important;justify-content:space-between!important;align-items:center!important;border:1px solid #000!important;padding:2.5mm!important;margin-top:3mm!important;font-size:4mm!important;font-weight:900!important}
-.ticket-phone{text-align:center!important;font-size:5.5mm!important;font-weight:900!important;border-top:1px solid #000!important;border-bottom:1px solid #000!important;padding:2.8mm 0!important;margin-top:3mm!important}
-.ticket-thanks{text-align:center!important;margin-top:4mm!important;font-size:4.5mm!important;font-weight:900!important;direction:rtl!important}
-.ticket-ar{text-align:center!important;font-size:3.7mm!important;margin-top:1.5mm!important;direction:rtl!important}
+.ticket-phone{text-align:center!important;font-size:2.8mm!important;font-weight:900!important;border-top:1px solid #000!important;border-bottom:1px solid #000!important;padding:2.8mm 0!important;margin-top:3mm!important}
+.ticket-thanks{text-align:center!important;margin-top:4mm!important;font-size:3.1mm!important;font-weight:900!important}
 .ticket-heart{text-align:center!important;font-size:5mm!important;margin-top:2mm!important}
-.ticket-footer{text-align:center!important;margin-top:3mm!important;font-size:2.8mm!important;letter-spacing:1.1mm!important}
+.ticket-footer{text-align:center!important;margin-top:3mm!important;font-size:2.8mm!important;letter-spacing:1mm!important}
 .cuisine-head{display:grid!important;grid-template-columns:47% 53%!important;align-items:center!important;gap:3mm!important}
-.cuisine-brand{text-align:center!important;border-right:1px solid #000!important;padding-right:3mm!important}
+.cuisine-brand{border-right:1px solid #000!important;padding-right:3mm!important}
 .cuisine-brand .ticket-logo{width:23mm!important;height:23mm!important}
 .cuisine-brand .ticket-brand{font-size:6.5mm!important}
 .cuisine-brand .ticket-sub{font-size:2.8mm!important;letter-spacing:1.2mm!important}
 .cuisine-title{text-align:center!important}
 .cuisine-title strong{display:block!important;background:#000!important;color:#fff!important;font-size:7mm!important;padding:2.8mm 1mm!important;letter-spacing:.9mm!important}
 .cuisine-title small{display:block!important;font-size:3.1mm!important;letter-spacing:.7mm!important;margin-top:2mm!important;font-weight:800!important}
-.cuisine-date{text-align:left!important;font-size:3.1mm!important;line-height:1.9!important;margin-top:2.5mm!important}
-.cuisine-info{display:grid!important;grid-template-columns:1fr 1fr!important;border-bottom:1px solid #000!important;border-top:1px solid #000!important;margin-top:3mm!important}
-.cuisine-box{text-align:center!important;padding:3mm 1mm!important}
-.cuisine-box:first-child{border-right:1px solid #000!important}
-.cuisine-box .num{font-size:12mm!important;font-weight:900!important;line-height:1!important;margin-top:2mm!important}
-.cuisine-box .serve{font-size:3.2mm!important;font-weight:900!important;margin-top:2mm!important}
-.cuisine-items{margin-top:3mm!important;border-top:1px solid #000!important}
-.cuisine-table-head,.cuisine-item{display:grid!important;grid-template-columns:15% 48% 37%!important;gap:0!important}
-.cuisine-table-head{background:#000!important;color:#fff!important;font-weight:900!important;font-size:3.35mm!important;padding:2.4mm 0!important}
-.cuisine-table-head>div,.cuisine-item>div{padding:0 1.8mm!important}
-.cuisine-item{border-bottom:1px dashed #000!important;font-size:3.45mm!important;min-height:10mm!important;align-items:center!important;line-height:1.2!important}
-.cuisine-item .qty{text-align:center!important;font-size:4.5mm!important;font-weight:900!important}
-.cuisine-item .name{font-weight:900!important;overflow-wrap:anywhere!important}
-.cuisine-item .note{font-size:3.1mm!important;overflow-wrap:anywhere!important}
-.cuisine-total{border:1px solid #000!important;margin-top:4mm!important;padding:2.8mm!important;font-size:3.8mm!important;font-weight:900!important}
-.cuisine-footer{text-align:center!important;margin-top:4mm!important;font-size:3.3mm!important;letter-spacing:1.1mm!important;font-weight:800!important}
+.cuisine-meta{display:grid!important;grid-template-columns:1fr 1fr!important;margin-top:2mm!important}
+.cuisine-meta>div{border:1px solid #000!important;padding:2mm!important;text-align:center!important;font-size:2.8mm!important;font-weight:900!important}
+.cuisine-items{width:100%!important;margin-top:3mm!important;border-top:1px solid #000!important}.cuisine-table-head{display:grid!important;grid-template-columns:15% 50% 35%!important;gap:0!important;background:#000!important;color:#fff!important;font-weight:900!important;font-size:2.7mm!important;padding:2mm 0!important}.cuisine-table-head>div{padding:0 1.5mm!important}.cuisine-item{display:grid!important;grid-template-columns:15% 50% 35%!important;gap:0!important;align-items:center!important;min-height:9mm!important;border-bottom:1px dashed #000!important;font-size:2.8mm!important;line-height:1.2!important}.cuisine-item>div{padding:1.8mm 1.5mm!important}.cuisine-item .qty{text-align:center!important;font-size:4mm!important;font-weight:900!important}.cuisine-item .name{text-align:left!important;font-weight:800!important;overflow-wrap:anywhere!important}.cuisine-item .note{text-align:left!important;font-size:2.5mm!important;overflow-wrap:anywhere!important}.cuisine-total{display:flex!important;justify-content:space-between!important;align-items:center!important;border:1px solid #000!important;margin-top:2.5mm!important;padding:2.2mm!important;font-size:3mm!important;font-weight:900!important}
 }
 
 
@@ -266,11 +253,7 @@ html,body{background:#121212!important;min-height:100%;width:100%;}
 .server-header-btn{display:none!important;border:1px solid #e5e5e5;background:#fff;border-radius:12px;padding:8px 11px;font-weight:900;cursor:pointer;position:relative;display:none;white-space:nowrap}.server-header-btn.show{display:inline-flex;align-items:center;gap:6px}.server-bell{width:28px;height:28px;border-radius:9px;border:1px solid #e5e5e5;background:#fff;cursor:pointer;position:relative;font-size:16px}.server-bell .server-count{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#c4142c;color:#fff;font-size:11px;line-height:19px;font-weight:900;display:none;box-shadow:0 2px 7px #0003}.server-bell .server-count.show{display:block;animation:orderPulse .7s ease}.server-orders-list{display:grid;gap:10px}.server-order-item{border:1px solid #eee;border-left:4px solid #c4142c;border-radius:16px;padding:13px;background:#fff}.server-order-item.new{box-shadow:0 0 0 2px #c4142c22}.server-order-item .so-lines{margin-top:8px;display:grid;gap:4px}.server-order-item .so-line{display:flex;justify-content:space-between;gap:8px}.server-order-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.server-order-empty{padding:28px;text-align:center;color:#777}
 @keyframes orderPulse{0%{transform:scale(.96);opacity:.2}100%{transform:scale(1);opacity:1}}
 @media(max-width:520px){.server-tables{grid-template-columns:repeat(4,1fr)}.server-menu{grid-template-columns:1fr}}
-html[data-theme="dark"] .server-card{background:#1b1d20;border-color:#303236}
-html[data-theme="dark"] .server-order-item{background:#181a1c;color:#f5f5f5;border-color:#303236;border-left-color:#c4142c}
-html[data-theme="dark"] .server-order-item .muted{color:#a8aaad}
-html[data-theme="dark"] .server-order-item .so-line{color:#f5f5f5}
-.dark .server-product{background:#202226;color:#fff}
+html[data-theme="dark"] .server-card{background:#1b1d20;border-color:#303236}html[data-theme="dark"] .server-order-item{background:#181a1c;color:#f5f5f5;border-color:#303236;border-left-color:#c4142c}html[data-theme="dark"] .server-order-item .muted{color:#a8aaad}html[data-theme="dark"] .server-order-item .so-line{color:#f5f5f5}.dark .server-product{background:#202226;color:#fff}
 
 @media(max-width:520px){.serveur-table{grid-template-columns:1fr}.serveur-hero{padding:16px}}
 
@@ -545,6 +528,7 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
     <div class="owner-drawer-list">
       <button class="owner-drawer-item" onclick="ownerDrawerGo('dashboard')"><span class="od-icon">⌂</span><span>Tableau de bord</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerGo('pos')"><span class="od-icon">▣</span><span>Caisse</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerOpenFondCaisse()"><span class="od-icon">💰</span><span>Fond de Caisse</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerGo('orders')"><span class="od-icon">☷</span><span>Tickets & commandes</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerGo('stock')"><span class="od-icon">▤</span><span>Stock & inventaire</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerGo('reports')"><span class="od-icon">◒</span><span>Recette & rapports</span><span class="od-arrow">›</span></button>
@@ -718,6 +702,11 @@ function nextTicket(){let max=Number(s.settings.maxTicket||50),all=ordersToday()
 function openOwnerDrawer(){if(currentRole!=='owner')return;document.getElementById('ownerDrawer')?.classList.add('show');document.getElementById('ownerDrawer')?.setAttribute('aria-hidden','false')}
 function closeOwnerDrawer(){document.getElementById('ownerDrawer')?.classList.remove('show');document.getElementById('ownerDrawer')?.setAttribute('aria-hidden','true')}
 function ownerDrawerGo(p){closeOwnerDrawer();go(p)}
+function ownerOpenFondCaisse(){
+  if(currentRole!=='owner')return;
+  closeOwnerDrawer();
+  openFondCaisse(true);
+}
 function ownerDrawerAction(a){closeOwnerDrawer();if(a==='menu')menuManager();else if(a==='payroll')payrollManager();else if(a==='security')securityManager();else if(a==='brand')brandManager();else if(a==='tickets')ticketManager();else if(a==='cloud')cloudManager();else if(a==='audit')auditManager()}
 function go(p){if(currentRole==='staff' && !['pos','orders'].includes(p))return;if(currentRole==='server' && p!=='pos')return;page=p;render()}
 function openHeaderNav(){if(currentRole==='owner')openOwnerDrawer();else go('pos')}
@@ -829,8 +818,8 @@ function changeQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)
 function finishOrder(){let lines=Object.values(cart).map(x=>({...x}));if(!lines.length)return;let total=lines.reduce((a,x)=>a+x.price*x.qty,0),o={id:uid(),ticket:nextTicket(),customers,date:new Date().toISOString(),lines,total,payment:'cash',status:'pending',source:currentRole||'staff',table:serverTable||''};s.orders.unshift(o);lines.forEach(l=>{let st=s.stock.find(x=>x.productId===l.id);if(st&&st.control)st.qty=Math.max(0,Number(st.qty)-l.qty)});audit('Vente',`Ticket #${o.ticket} • ${money(o.total)}`);cart={};customers=1;save();printTickets(o)}
 
 function printOnly(type){let all=document.querySelectorAll('.ticket-print');all.forEach((el,i)=>el.classList.toggle('print-hide',type==='client'?i!==0:i!==1));window.print();setTimeout(()=>all.forEach(el=>el.classList.remove('print-hide')),500)}
-function printTickets(o){let dt=new Date(o.date),date=dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}),time=dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),wait=waitingClients(o.id),items=o.lines.reduce((a,x)=>a+Number(x.qty||0),0);document.getElementById('sheet').innerHTML=`<div class="no-print"><h2>Tickets #${o.ticket}</h2><p class="muted">Ticket client + ticket cuisine • ${date} ${time}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn gold" onclick="window.print()">🖨 Imprimer les 2</button><button class="btn light" onclick="printOnly('client')">Ticket client</button></div><button class="btn light" style="width:100%;margin-top:8px" onclick="printOnly('cuisine')">👨‍🍳 Ticket cuisine فقط</button><button class="btn light" style="width:100%;margin-top:8px" onclick="closeModal()">Fermer</button></div><div class="print-area">
-<div class="ticket-print">
+function printTickets(o){let dt=new Date(o.date),date=dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}),time=dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),wait=waitingClients(o.id),items=o.lines.reduce((a,x)=>a+Number(x.qty||0),0);document.getElementById('sheet').innerHTML=`<div class="no-print"><h2>🧾 Tickets #${o.ticket}</h2><p class="muted">اختار شنوّة تحب تطبع • ${date} ${time}</p><div><button class="btn gold" onclick="window.print()">🖨 Imprimer les 2</button><button class="btn light" onclick="printOnly('client')">🧾 Ticket client فقط</button></div><button class="btn light" onclick="printOnly('cuisine')">👨‍🍳 Ticket cuisine فقط</button><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><div class="print-area">
+<div class="ticket-print ticket-client">
 <img class="ticket-logo" src="logo.jpg"><div class="ticket-brand">${esc(s.settings.name)}</div><div class="ticket-sub">RESTAURANT</div><div class="ticket-auth">GOÛT AUTHENTIQUE</div>
 <div class="ticket-rule"></div><div class="ticket-meta"><span>Date : ${date}</span><span>Heure : ${time}</span></div>
 <div class="ticket-client-grid">
@@ -839,7 +828,7 @@ function printTickets(o){let dt=new Date(o.date),date=dt.toLocaleDateString('fr-
 </div>
 <div class="ticket-phone">☎ 48048118</div><div class="ticket-thanks">شكراً على ثقتكم</div><div class="ticket-ar">نتمنى لكم وجبة شهية</div><div class="ticket-heart">♥</div><div class="ticket-footer">— &nbsp; À TRÈS BIENTÔT &nbsp; —</div>
 </div>
-<div class="ticket-print">
+<div class="ticket-print ticket-kitchen">
 <div class="cuisine-head"><div class="cuisine-brand"><img class="ticket-logo" src="logo.jpg"><div class="ticket-brand">${esc(s.settings.name)}</div><div class="ticket-sub">RESTAURANT</div><div class="ticket-auth">GOÛT AUTHENTIQUE</div></div><div class="cuisine-title"><strong>CUISINE</strong><small>TICKET DE COMMANDE</small><div class="cuisine-date">▣ &nbsp; Date : ${date}<br>◷ &nbsp; Heure : ${time}</div></div></div>
 <div class="ticket-rule"></div><div class="cuisine-info"><div class="cuisine-box"><div class="ticket-label">N° COMMANDE</div><div class="num">${o.ticket}</div></div><div class="cuisine-box"><div class="ticket-label">N° CLIENT</div><div class="num">${o.ticket}</div><div class="serve">À SERVIR : ${wait}</div></div></div>
 <div class="cuisine-items"><div class="cuisine-table-head"><div>QTÉ</div><div>PLAT / ARTICLE</div><div>NOTES</div></div>${o.lines.map(x=>`<div class="cuisine-item"><div class="qty">${x.qty}</div><div class="name">${esc(x.name)}</div><div class="note">${x.note?esc(x.note):'—'}</div></div>`).join('')}</div>
@@ -902,8 +891,8 @@ function securityManager(){document.getElementById('sheet').innerHTML=`<div clas
 function saveSecurity(){let op=document.getElementById('op').value.trim(),sp=document.getElementById('sp').value.trim(),svp=document.getElementById('svp').value.trim();if(op.length<4||sp.length<4||svp.length<4){alert('PIN لازم يكون 4 أرقام على الأقل');return}s.security.ownerPin=op;s.security.staffPin=sp;s.security.serverPin=svp;s.security.setup=true;audit('Sécurité','PIN modifiés');closeModal();save();lockApp()}
 function fondCaisseToday(){return fondCaisseForDate(today())}
 function needsFondCaisse(){return !fondCaisseToday()}
-function openFondCaisse(){
-  if(!currentRole||!needsFondCaisse())return;
+function openFondCaisse(force=false){
+  if(!currentRole||(!force&&!needsFondCaisse()))return;
   const roleName=currentRole==='owner'?'Aziz':currentRole==='staff'?'Gérant':'Serveur';
   document.getElementById('sheet').innerHTML=`<div class="fond-caisse-modal">
     <img class="fond-brand-logo" src="logo_header_pro.png" alt="Chez Jalel">
