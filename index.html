@@ -611,7 +611,7 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 <button id="cjPushBtn" type="button" onclick="enableUpdatePush()">🔔 تفعيل إشعارات التحديث</button>
 <div id="cjPushStatus"></div>
 <div class="login-footer">CHEZ JALEL POS</div>
-<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V64</div>
+<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V66</div>
 </div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1016,7 +1016,7 @@ function refreshPushButton(){
 async function boot(){
   updateOfflineUI();
   setTimeout(refreshPushButton,250);
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=64',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=66',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
   // Splash first, then always start locked on the login screen.
   currentRole=null;
   const splash=document.getElementById('cjSplash');
@@ -1031,7 +1031,7 @@ async function boot(){
   if(lock) lock.classList.add('show');
 }
 /* V54 — automatic app-update notice across installed/open devices */
-const CJ_APP_VERSION='65';
+const CJ_APP_VERSION='66';
 let cjUpdateTimer=null;
 function showAppUpdateNotice(remoteVersion){
   if(document.getElementById('cjUpdateNotice')) return;
@@ -1054,11 +1054,11 @@ async function applyAppUpdate(){
   try{localStorage.removeItem('cjUpdateDismissedVersion')}catch(e){}
   try{
     if('serviceWorker' in navigator){
-      const reg=await navigator.serviceWorker.register('./sw.js?version=65&ts='+Date.now(),{updateViaCache:'none'});
+      const reg=await navigator.serviceWorker.register('./sw.js?version=66&ts='+Date.now(),{updateViaCache:'none'});
       await reg.update();
     }
   }catch(e){console.warn('SW update',e)}
-  const u=new URL(location.href); u.searchParams.set('update',Date.now()); u.searchParams.set('v',remoteVersionForUpdate||'64'); u.searchParams.set('fresh','1'); location.replace(u.toString());
+  const u=new URL(location.href); u.searchParams.set('update',Date.now()); u.searchParams.set('v',remoteVersionForUpdate||'66'); u.searchParams.set('fresh','1'); location.replace(u.toString());
 }
 function startAppUpdateChecker(){
   checkAppUpdate();

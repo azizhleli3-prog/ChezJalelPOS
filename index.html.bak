@@ -8,9 +8,19 @@
 <meta name="apple-mobile-web-app-title" content="ChezJalelPOS">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ChezJalelPOS</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
+<style id="v52-update-notice">
+#cjUpdateNotice{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:100000;display:flex;align-items:center;gap:10px;width:min(620px,calc(100vw - 24px));padding:12px 13px;background:#17191b;color:#fff;border:1px solid rgba(196,20,44,.55);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:inherit}
+#cjUpdateNotice .cj-update-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#c4142c;font-size:21px;font-weight:900;flex:none}
+#cjUpdateNotice .cj-update-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+#cjUpdateNotice .cj-update-copy b{font-size:13px}
+#cjUpdateNotice .cj-update-copy span{font-size:11px;color:#c7c9cc;line-height:1.35}
+#cjUpdateNotice button{border:0;border-radius:11px;background:#c4142c;color:#fff;padding:10px 13px;font-weight:900;cursor:pointer;white-space:nowrap}
+@media(max-width:520px){#cjUpdateNotice{top:10px;padding:10px;gap:8px}#cjUpdateNotice .cj-update-icon{width:34px;height:34px;font-size:18px}#cjUpdateNotice .cj-update-copy b{font-size:12px}#cjUpdateNotice .cj-update-copy span{font-size:10px}#cjUpdateNotice button{padding:9px 10px;font-size:11px}}
+</style>
+
 <style>
 :root{--brand:#c4142c;--dark:#211d16;--bg:#f5efe6;--card:#fffdf9;--muted:#776f67;--danger:#9f1720;--ok:#276749;--line:#ded3c5;--gold:#c49a4a;--wood:#6b302b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#171717;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -37,7 +47,26 @@ h2{margin:7px 0 14px;font-size:23px}h3{margin:5px 0 8px}
 .empty{padding:35px 15px;text-align:center;color:#777}.small{font-size:12px}
 .modal{display:none;position:fixed;inset:0;background:#0008;z-index:50;align-items:flex-end}.modal.show{display:flex}.sheet{background:#fff;width:100%;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}
 @media(min-width:760px){.grid4{grid-template-columns:repeat(4,1fr)}.products{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:repeat(4,1fr)}.nav{left:50%;transform:translateX(-50%);max-width:900px;border-radius:16px 16px 0 0}.wrap{padding:20px}}
+.printer-note{padding:12px 14px;border:1px solid rgba(196,20,44,.25);border-radius:12px;background:rgba(196,20,44,.06);margin-bottom:12px}.printer-list{display:grid;gap:8px}.printer-option{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:13px;border:1px solid rgba(0,0,0,.12);border-radius:14px;background:var(--card,#fff);color:var(--text,#111);cursor:pointer}.printer-option.selected{border:2px solid var(--brand,#c4142c);padding:12px}.printer-icon{font-size:25px;width:34px;text-align:center}.printer-copy{display:flex;flex-direction:column;gap:3px;flex:1}.printer-copy b{font-size:14px}.printer-copy small{font-size:11px;opacity:.72}.printer-check{font-size:20px;font-weight:900;color:var(--brand,#c4142c)}.printer-details{margin-top:12px;padding:12px;border-radius:12px;background:rgba(0,0,0,.045);font-size:12px;line-height:1.55}.printer-details small{opacity:.7}
 @media print{
+body:has(.print-area.paper-58) #modal .sheet>.print-area{width:58mm!important;max-width:58mm!important}
+body:has(.print-area.paper-58) .ticket-print{width:58mm!important;max-width:58mm!important;padding:3mm 2.5mm!important;min-height:120mm!important;height:120mm!important;max-height:120mm!important}
+body:has(.print-area.paper-58) .ticket-logo{width:16mm!important;height:16mm!important}
+body:has(.print-area.paper-58) .ticket-brand{font-size:5.5mm!important}
+body:has(.print-area.paper-58) .ticket-sub{font-size:2.3mm!important;letter-spacing:.9mm!important}
+body:has(.print-area.paper-58) .ticket-auth{font-size:2.1mm!important;letter-spacing:1mm!important}
+body:has(.print-area.paper-58) .ticket-meta{font-size:2.3mm!important;gap:1mm!important}
+body:has(.print-area.paper-58) .ticket-client-grid{grid-template-columns:34% 66%!important}
+body:has(.print-area.paper-58) .ticket-label{font-size:2.3mm!important}
+body:has(.print-area.paper-58) .ticket-big{font-size:8.5mm!important;margin:2mm 0!important}
+body:has(.print-area.paper-58) .ticket-lines .trow{grid-template-columns:5mm minmax(0,1fr) 13mm!important;gap:1mm!important;padding:1.7mm 0!important;font-size:2.25mm!important}
+body:has(.print-area.paper-58) .ticket-lines .trow>b:first-child,body:has(.print-area.paper-58) .ticket-lines .trow>b:last-child{font-size:2.25mm!important}
+body:has(.print-area.paper-58) .ticket-lines .trow small{font-size:1.9mm!important}
+body:has(.print-area.paper-58) .ticket-total{font-size:3.2mm!important;padding:2mm!important;margin-top:2mm!important}
+body:has(.print-area.paper-58) .ticket-phone{font-size:2.2mm!important;padding:2mm 0!important;margin-top:2mm!important}
+body:has(.print-area.paper-58) .ticket-thanks{font-size:2.5mm!important;margin-top:2.5mm!important}
+body:has(.print-area.paper-58) .ticket-footer{font-size:2.2mm!important;margin-top:2mm!important}
+
 @page{size:80mm auto;margin:0}
 html,body{background:#fff!important;margin:0!important;padding:0!important;color:#000!important;font-family:Arial,Helvetica,sans-serif!important}
 .no-print,.nav,.top{display:none!important}.print-hide{display:none!important}
@@ -97,7 +126,7 @@ html,body{background:#fff!important;margin:0!important;padding:0!important;color
 }
 
 
-.app-signature{margin-top:22px;text-align:center;font-family:"Brush Script MT","Segoe Script",cursive;font-size:17px;font-style:italic;font-weight:600;letter-spacing:.2px;color:#8f8a84;opacity:.9}.app-signature::before{content:"";display:block;width:54px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#c9c1b7,transparent)}
+.app-version-label{margin-top:8px;text-align:center;font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;color:#777;opacity:.9}.app-signature{margin-top:22px;text-align:center;font-family:"Brush Script MT","Segoe Script",cursive;font-size:17px;font-style:italic;font-weight:600;letter-spacing:.2px;color:#8f8a84;opacity:.9}.app-signature::before{content:"";display:block;width:54px;height:1px;margin:0 auto 8px;background:linear-gradient(90deg,transparent,#c9c1b7,transparent)}
 .lock{position:fixed;inset:0;background:rgba(33,29,22,.72);backdrop-filter:blur(12px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}.lock.show{display:flex}.lockbox{width:min(420px,100%);background:#fffdf9;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 80px #0005}.locklogo{width:90px;height:90px;border-radius:50%;object-fit:cover;border:5px solid var(--brand);margin-bottom:10px}.rolechip{display:inline-block;background:#f8e4e5;color:var(--brand);font-weight:800;border-radius:99px;padding:6px 10px;font-size:12px;margin:5px}.readonly{opacity:.62;pointer-events:none}.audit{font-size:12px;color:#665f57;padding:7px 0;border-bottom:1px dashed #ddd}.cloudbox{border-left:4px solid var(--brand);padding-left:12px}.image-preview{width:84px;height:84px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
 .note-input{width:100%;border:1px dashed #cfc6bb;border-radius:8px;padding:7px;background:#fff;font-size:12px;margin-top:6px}.wait-badge{background:#111;color:#fff;font-weight:900}.product .pbody{min-height:65px}.modalhead{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:var(--card);padding-bottom:10px;z-index:2}.modalhead h2{margin:0}.modalhead .btn{white-space:nowrap}
 /* V10 professional UI */
@@ -189,7 +218,7 @@ body{overscroll-behavior-y:none}
 .category-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 1px 3px}
 .category-scroll::-webkit-scrollbar{display:none}
 .cat-btn{flex:0 0 auto;min-width:96px;border:1px solid var(--line);background:var(--soft);color:var(--text);border-radius:14px;padding:9px 12px;text-align:center;font-weight:850;font-size:12px;box-shadow:0 2px 7px rgba(0,0,0,.04)}
-.cat-btn .cat-icon{display:block;font-size:20px;line-height:1;margin-bottom:5px}
+.cat-btn .cat-icon{display:block;width:25px;height:25px;margin:0 auto 5px;line-height:1}.cat-btn .cat-icon svg{width:25px;height:25px;display:block;margin:auto}
 .cat-btn.on{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 7px 18px rgba(196,20,44,.2)}
 .category-search{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:12px;padding:9px 11px;margin-top:8px;outline:none}
 .category-search::placeholder{color:var(--muted)}
@@ -451,6 +480,10 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 .lockbox .login-footer{margin:18px 0 0!important;text-align:center!important;color:#8e8e8e!important;font-size:12px!important;letter-spacing:1px!important}
 .lockbox .app-signature{color:#ddd!important;margin-top:7px!important;font-size:12px!important}
 @media(max-width:500px){.lockbox{padding:22px 15px 16px!important;border-radius:24px!important}.lockbox .login-brand-logo{width:104px!important;height:104px!important}.lockbox .login-title{font-size:26px!important}.lockbox .tabs button{min-height:64px!important;font-size:12px!important}}
+
+<style>
+#cjOffline{position:fixed;left:50%;bottom:14px;transform:translateX(-50%) translateY(120px);z-index:9999;background:#c4142c;color:#fff;padding:10px 16px;border-radius:999px;font-weight:900;box-shadow:0 12px 30px #0005;transition:.25s;pointer-events:none}#cjOffline.show{transform:translateX(-50%) translateY(0)}
+</style>
 </style>
 <style id="v25-final-fixes">:root{--brand:#c4142c!important}.btn.gold{background:#c4142c!important;color:#fff!important;border-color:#c4142c!important}.mini-bar{height:6px;background:rgba(196,20,44,.12);border-radius:99px;overflow:hidden;margin-top:7px}.mini-bar i{display:block;height:100%;background:#c4142c;border-radius:99px}.top-theme-toggle{touch-action:manipulation;pointer-events:auto}.top-theme-toggle:active{transform:scale(.96)}.header-brand img{object-fit:cover;object-position:center;border-radius:0!important;background:transparent!important;box-shadow:none!important}@media(max-width:680px){.header-brand{min-width:0!important;flex:1}.header-brand img{width:58px!important;height:58px!important}.header-brand .brand-name{max-width:125px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.header-actions{flex-shrink:0!important}.top-theme-toggle{width:46px!important;min-width:46px!important;padding:0!important}}</style>
 <style id="v28-home-fix">
@@ -488,6 +521,12 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 @media(max-width:520px){.cj-splash-logo{width:118px;height:118px}.cj-splash-title{font-size:25px}.cj-splash-welcome{font-size:16px}.cj-splash-rights{margin-top:25px}}
 </style>
 
+
+<style id="cj-push-v61">
+#cjPushBtn{margin:12px auto 0;display:block;width:100%;height:46px;border:1px solid rgba(255,255,255,.14);border-radius:13px;background:#202328;color:#fff;font-weight:800;cursor:pointer}
+#cjPushBtn:hover{background:#2a2e34}
+#cjPushStatus{text-align:center;font-size:11px;color:#999;margin-top:7px;min-height:16px}
+</style>
 </head>
 <body>
 <div class="app">
@@ -532,6 +571,7 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
       <button class="owner-drawer-item" onclick="ownerDrawerAction('security')"><span class="od-icon">🔐</span><span>Accès employés & PIN</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerAction('brand')"><span class="od-icon">🎨</span><span>Identité & apparence</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerAction('tickets')"><span class="od-icon">🎫</span><span>Numérotation des tickets</span><span class="od-arrow">›</span></button>
+      <button class="owner-drawer-item" onclick="ownerDrawerAction('printers')"><span class="od-icon">🖨️</span><span>Imprimantes tickets</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerAction('cloud')"><span class="od-icon">☁️</span><span>Cloud & Realtime</span><span class="od-arrow">›</span></button>
       <button class="owner-drawer-item" onclick="ownerDrawerAction('audit')"><span class="od-icon">📋</span><span>Historique des actions</span><span class="od-arrow">›</span></button>
     </div>
@@ -565,11 +605,13 @@ html[data-theme="light"] .owner-drawer-panel{background:linear-gradient(180deg,#
 <button id="serverTab" onclick="setLoginRole('server')">🧑‍🍳 Serveur</button>
 </div>
 <label class="login-label">Code PIN</label>
-<input class="input" id="pinInput" inputmode="numeric" type="password" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')unlockApp">
+<input class="input" id="pinInput" inputmode="numeric" type="password" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')unlockApp()">
 <button class="login-submit" onclick="unlockApp()">Se connecter&nbsp; →</button>
 <p id="firstSetup" class="small muted" style="margin-top:12px;text-align:center"></p>
+<button id="cjPushBtn" type="button" onclick="enableUpdatePush()">🔔 تفعيل إشعارات التحديث</button>
+<div id="cjPushStatus"></div>
 <div class="login-footer">CHEZ JALEL POS</div>
-<div class="app-signature">App By Aziz Hleli</div>
+<div class="app-signature">App By Aziz Hleli</div><div class="app-version-label">Version V64</div>
 </div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -579,27 +621,125 @@ const blank={settings:{name:'Chez Jalel',subtitle:'Restaurant POS',brand:'#c4142
 let s=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(blank);
 s.security.serverPin=s.security.serverPin||s.security.staffPin||'';s.employees=s.employees||[];s.salaryPayments=s.salaryPayments||[];s.expenses=s.expenses||[];s.audit=s.audit||[];
 // Robust data migration for older local saves.
-s.security=s.security||{};s.settings=s.settings||{};s.caisseSession=s.caisseSession||null;s.caisseSessions=Array.isArray(s.caisseSessions)?s.caisseSessions:[];if(s.caisseSession&&!s.caisseSessions.some(x=>x.date===s.caisseSession.date)){s.caisseSessions.push(s.caisseSession);}s.orders=Array.isArray(s.orders)?s.orders:[];s.products=Array.isArray(s.products)?s.products:[];s.categories=Array.isArray(s.categories)?s.categories:[];s.stock=Array.isArray(s.stock)?s.stock:[];s.expenses=Array.isArray(s.expenses)?s.expenses:[];s.employees=Array.isArray(s.employees)?s.employees:[];s.salaryPayments=Array.isArray(s.salaryPayments)?s.salaryPayments:[];s.audit=Array.isArray(s.audit)?s.audit:[];s.orders.forEach(o=>{o.lines=Array.isArray(o.lines)?o.lines:[];o.total=Number(o.total||0);o.customers=Math.max(1,Number(o.customers||1));o.date=o.date||new Date().toISOString()});
+s.security=s.security||{};s.settings=s.settings||{};s.settings.printer=s.settings.printer||{id:'mpt-ii',name:'MPT-II',paper:'58mm',connection:'Bluetooth',cut:'auto'};s.caisseSession=s.caisseSession||null;s.caisseSessions=Array.isArray(s.caisseSessions)?s.caisseSessions:[];if(s.caisseSession&&!s.caisseSessions.some(x=>x.date===s.caisseSession.date)){s.caisseSessions.push(s.caisseSession);}s.orders=Array.isArray(s.orders)?s.orders:[];s.products=Array.isArray(s.products)?s.products:[];s.categories=Array.isArray(s.categories)?s.categories:[];s.stock=Array.isArray(s.stock)?s.stock:[];s.expenses=Array.isArray(s.expenses)?s.expenses:[];s.employees=Array.isArray(s.employees)?s.employees:[];s.salaryPayments=Array.isArray(s.salaryPayments)?s.salaryPayments:[];s.audit=Array.isArray(s.audit)?s.audit:[];
+s.orders.forEach(o=>{o.lines=Array.isArray(o.lines)?o.lines:[];o.total=Number(o.total||0);o.customers=Math.max(1,Number(o.customers||1));o.date=o.date||new Date().toISOString()});
+
+// Chez Jalel starter menu — editable later from Owner > Plus > Menu.
+function svgImg(kind){
+  const map={
+    plate:'🍽️',kaft:'🥘',sandwich:'🥪',tuna:'🐟',drink:'🥤',water:'💧',lemon:'🍋',strawberry:'🍓',merguez:'🌭',chab:'🍢',bones:'🍖',tajine:'🍳',pack:'📦',platepack:'🍱'
+  };
+  const e=map[kind]||'🍽️';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420"><rect width="640" height="420" rx="42" fill="#f6f1eb"/><circle cx="320" cy="205" r="145" fill="#fff" stroke="#c4142c" stroke-width="8"/><text x="320" y="240" text-anchor="middle" font-size="132">${e}</text><path d="M150 345h340" stroke="#c4142c" stroke-width="8" stroke-linecap="round" opacity=".7"/></svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
+function seedChezJalelMenu(){
+  const defs=[
+    {name:'Kafteji',icon:'plate',products:[['كفتاجي عادي',3,'kaft'],['كفتاجي دوبل عظام',3.5,'bones'],['خبزة كفتاجي',5,'sandwich'],['صحن عادي',5,'plate'],['صحن دوبل عظام',6,'bones']]},
+    {name:'Thon',icon:'tuna',products:[['كسكروت تن',3.5,'tuna'],['خبزة تن',6.5,'sandwich'],['صحن تونسي',7,'plate']]},
+    {name:'Soda',icon:'drink',products:[['Gazouz Bellar 30CL',1.5,'drink'],['Canette',2,'drink'],['Citron',1.5,'lemon'],['Fraise',2.5,'strawberry'],['Eau 1.5L',1.5,'water'],['Eau 0.5L',1,'water']]},
+    {name:'Extra',icon:'extra',products:[['مرقاز',1,'merguez'],['كعبة شبتية',0.5,'chab'],['كعبة عظام',0.5,'bones'],['برج طاجين',2,'tajine']]},
+    {name:'Gros/Emballage',icon:'pack',products:[['كيلو كفتاجي تعليب',10,'pack'],['Plat Emballage',2,'platepack']]}
+  ];
+  const iconSvg=(kind)=>{const em={plate:'🍽️',tuna:'🐟',drink:'🥤',extra:'➕',pack:'📦'}[kind]||'•';return `<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><text x="24" y="32" text-anchor="middle" font-size="22">${em}</text></svg>`};
+  defs.forEach((d,ci)=>{
+    let c=s.categories.find(x=>String(x.name).trim().toLowerCase()===d.name.toLowerCase());
+    if(!c){c={id:'cat-'+Date.now()+'-'+ci,name:d.name,icon:iconSvg(d.icon)};s.categories.push(c)} else if(!c.icon){c.icon=iconSvg(d.icon)}
+    d.products.forEach(([name,price,img],pi)=>{
+      let p=s.products.find(x=>String(x.name).trim()===name);
+      if(!p){p={id:'prod-'+Date.now()+'-'+ci+'-'+pi,name,price,cat:c.id,image:svgImg(img),stockControl:false};s.products.push(p)}
+      else {p.cat=p.cat||c.id;if(!p.image)p.image=svgImg(img)}
+    });
+  });
+  localStorage.setItem(KEY,JSON.stringify(s));
+}
+seedChezJalelMenu();
 let page='dashboard',cart={},customers=1,filterCat='all',loginRole='owner',currentRole=null,serverTable='',dashboardDate=today();
-let cloudClient=null,cloudChannel=null,cloudBusy=false,cloudTimer=null;
+let cloudClient=null,cloudChannel=null,cloudBusy=false,cloudTimer=null,cloudPollTimer=null,cloudPushQueued=false;
 function cloudCfg(){return JSON.parse(localStorage.getItem('chezJalelCloudConfig')||'null')}
 function cloudStatus(){return localStorage.getItem('chezJalelCloudStatus')||'offline'}
 function setCloudStatus(v){localStorage.setItem('chezJalelCloudStatus',v);const el=document.getElementById('cloudStatus');if(el)el.textContent=v==='online'?'🟢 متصل':v==='connecting'?'🟡 جاري الاتصال':'⚪ غير متصل'}
 function save(){localStorage.setItem(KEY,JSON.stringify(s));render();scheduleCloudPush()}
-function scheduleCloudPush(){const c=cloudCfg();if(!c?.enabled||cloudBusy)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>cloudPush(),350)}
+function scheduleCloudPush(){const c=cloudCfg();if(!c?.enabled||!navigator.onLine)return;cloudPushQueued=true;clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>cloudPush(),450)}
+function updateOfflineUI(){const el=document.getElementById('cjOffline');if(!el)return;el.classList.toggle('show',!navigator.onLine)}
+window.addEventListener('online',()=>{updateOfflineUI();showToast('🟢 Internet رجع — synchronisation...');const c=cloudCfg();if(c?.enabled){setTimeout(()=>cloudPull().then(()=>cloudPush()),500)}});
+window.addEventListener('offline',updateOfflineUI);
+
 function makeCloudClient(c){if(!window.supabase)return null;return window.supabase.createClient(c.url,c.key,{global:{headers:{'x-chez-key':c.accessKey,'x-chez-device':c.device||'device'}}})}
-async function cloudPull(){const c=cloudCfg();if(!c?.enabled)return false;try{cloudBusy=true;setCloudStatus('connecting');if(!cloudClient)cloudClient=makeCloudClient(c);const {data,error}=await cloudClient.from('cloud_state').select('state,updated_at').eq('restaurant_id',c.restaurantId).maybeSingle();if(error)throw error;if(data?.state){s=Object.assign(structuredClone(blank),data.state);localStorage.setItem(KEY,JSON.stringify(s));}else{await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:new Date().toISOString(),updated_by:c.device||'device'},{onConflict:'restaurant_id'});}setCloudStatus('online');cloudSubscribe();render();return true}catch(e){console.error(e);setCloudStatus('offline');return false}finally{cloudBusy=false}}
-async function cloudPush(){const c=cloudCfg();if(!c?.enabled||cloudBusy||!cloudClient)return;try{cloudBusy=true;const {error}=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:new Date().toISOString(),updated_by:c.device||'device'},{onConflict:'restaurant_id'});if(error)throw error;setCloudStatus('online')}catch(e){console.error(e);setCloudStatus('offline')}finally{cloudBusy=false}}
-function cloudSubscribe(){const c=cloudCfg();if(!c?.enabled||!cloudClient)return;if(cloudChannel)cloudClient.removeChannel(cloudChannel);cloudChannel=cloudClient.channel('chezjalel-'+c.restaurantId).on('postgres_changes',{event:'*',schema:'public',table:'cloud_state',filter:'restaurant_id=eq.'+c.restaurantId},payload=>{if(payload.eventType==='DELETE')return;const incoming=payload.new?.state;if(!incoming)return;if(payload.new?.updated_by===(c.device||'device'))return;const previousIds=new Set((s.orders||[]).map(o=>o.id));const newServerOrders=(incoming.orders||[]).filter(o=>o.source==='server'&&!previousIds.has(o.id));s=Object.assign(structuredClone(blank),incoming);localStorage.setItem(KEY,JSON.stringify(s));setCloudStatus('online');render();if(currentRole==='staff'&&newServerOrders.length){newServerOrders.slice(-3).forEach(notifyNewServerOrder)}else showToast('☁️ Mise à jour reçue')}).subscribe(status=>{if(status==='SUBSCRIBED')setCloudStatus('online');if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setCloudStatus('offline')})}
+function stateHasMenu(x){return !!(x&&((x.categories||[]).length||(x.products||[]).length))}
+async function cloudPull(opts={}){const c=cloudCfg();if(!c?.enabled)return false;try{cloudBusy=true;setCloudStatus('connecting');if(!cloudClient)cloudClient=makeCloudClient(c);const {data,error}=await cloudClient.from('cloud_state').select('state,updated_at,updated_by').eq('restaurant_id',c.restaurantId).maybeSingle();if(error)throw error;const remoteState=data?.state||null;const localHas=stateHasMenu(s);const remoteHas=stateHasMenu(remoteState);
+if(remoteHas && (!localHas || opts.forcePull)){s=Object.assign(structuredClone(blank),remoteState);localStorage.setItem(KEY,JSON.stringify(s));if(data?.updated_at)localStorage.setItem('chezJalelLastCloudSync',data.updated_at);}
+else if(localHas && !remoteHas){const now=new Date().toISOString();const up=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:now,updated_by:c.device||'device'},{onConflict:'restaurant_id'});if(up.error)throw up.error;localStorage.setItem('chezJalelLastCloudSync',now);}
+else if(!remoteState){const now=new Date().toISOString();const up=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:now,updated_by:c.device||'device'},{onConflict:'restaurant_id'});if(up.error)throw up.error;localStorage.setItem('chezJalelLastCloudSync',now);}
+setCloudStatus('online');cloudSubscribe();render();return true}catch(e){console.error(e);setCloudStatus('offline');return false}finally{cloudBusy=false}}
+async function mirrorStructuredCloud(){
+  const c=cloudCfg(); if(!c?.enabled||!cloudClient) return;
+  const rid=c.restaurantId;
+  const up=(table,rows)=>rows?.length?cloudClient.from(table).upsert(rows,{onConflict:'id'}):Promise.resolve({error:null});
+  const categories=(s.categories||s.sections||[]).map((x,i)=>({id:String(x.id||('cat-'+i)),restaurant_id:rid,name:String(x.name||x.title||''),sort_order:i,data:x,updated_at:new Date().toISOString()}));
+  const products=(s.products||[]).map((x,i)=>({id:String(x.id||('prod-'+i)),restaurant_id:rid,category_id:x.categoryId||x.category_id||null,name:String(x.name||''),price:Number(x.price||0),stock:x.stock==null?null:Number(x.stock),data:x,updated_at:new Date().toISOString()}));
+  const orders=(s.orders||[]).map((x,i)=>({id:String(x.id||('ord-'+i)),restaurant_id:rid,ticket_no:Number(x.ticket||x.ticketNo||x.number||0),source:x.source||null,status:x.status||null,total:Number(x.total||0),order_time:x.date||x.createdAt||null,data:x,updated_at:new Date().toISOString()}));
+  const lines=[]; (s.orders||[]).forEach((o,oi)=>{(o.items||o.lines||[]).forEach((x,i)=>lines.push({id:String(x.id||((o.id||('ord-'+oi))+'-'+i)),restaurant_id:rid,order_id:String(o.id||('ord-'+oi)),product_id:x.productId||x.product_id||null,quantity:Number(x.qty||x.quantity||1),data:x,updated_at:new Date().toISOString()}));});
+  const expenses=(s.expenses||[]).map((x,i)=>({id:String(x.id||('exp-'+i)),restaurant_id:rid,amount:Number(x.amount||0),expense_date:x.date||null,data:x,updated_at:new Date().toISOString()}));
+  const employees=(s.employees||[]).map((x,i)=>({id:String(x.id||('emp-'+i)),restaurant_id:rid,name:String(x.name||''),data:x,updated_at:new Date().toISOString()}));
+  const payments=[]; employees.forEach(()=>{}); (s.salaryPayments||s.salary_payments||[]).forEach((x,i)=>payments.push({id:String(x.id||('pay-'+i)),restaurant_id:rid,employee_id:x.employeeId||x.employee_id||null,amount:Number(x.amount||0),payment_date:x.date||null,data:x,updated_at:new Date().toISOString()}));
+  const sessions=(s.cashOpenings||s.caisseSessions||[]).map((x,i)=>({id:String(x.id||x.date||('cash-'+i)),restaurant_id:rid,session_date:x.date||null,opening_amount:Number(x.amount||x.opening||0),data:x,updated_at:new Date().toISOString()}));
+  const audit=(s.audit||[]).map((x,i)=>({id:String(x.id||('audit-'+i)),restaurant_id:rid,action:x.action||'',role:x.role||'',event_time:x.date||null,data:x,updated_at:new Date().toISOString()}));
+  for(const [t,rows] of [['categories',categories],['products',products],['orders',orders],['order_lines',lines],['expenses',expenses],['employees',employees],['salary_payments',payments],['caisse_sessions',sessions],['audit_logs',audit]]){const r=await up(t,rows);if(r.error)throw r.error;}
+}
+
+async function cloudPush(){const c=cloudCfg();if(!c?.enabled||!cloudClient||!navigator.onLine)return;if(cloudBusy){cloudPushQueued=true;return}try{cloudBusy=true;cloudPushQueued=false;setCloudStatus('connecting');const remote=await cloudClient.from('cloud_state').select('updated_at,updated_by').eq('restaurant_id',c.restaurantId).maybeSingle();if(remote.error)throw remote.error;const last=localStorage.getItem('chezJalelLastCloudSync')||'';if(remote.data?.updated_at&&last&&remote.data.updated_at>last&&remote.data.updated_by!==(c.device||'device')){await cloudPull();return}const now=new Date().toISOString();const {error}=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:s,updated_at:now,updated_by:c.device||'device'},{onConflict:'restaurant_id'});if(error)throw error;localStorage.setItem('chezJalelLastCloudSync',now);try{await mirrorStructuredCloud()}catch(e){console.warn('Structured mirror skipped',e)}setCloudStatus('online')}catch(e){console.error(e);setCloudStatus('offline')}finally{cloudBusy=false;if(cloudPushQueued){clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>cloudPush(),250)}}}
+function applyIncomingState(incoming,updatedAt,updatedBy){if(!incoming)return false;if(updatedBy===(cloudCfg()?.device||'device'))return false;const previousIds=new Set((s.orders||[]).map(o=>o.id));const newServerOrders=(incoming.orders||[]).filter(o=>o.source==='server'&&!previousIds.has(o.id));s=Object.assign(structuredClone(blank),incoming);localStorage.setItem(KEY,JSON.stringify(s));if(updatedAt)localStorage.setItem('chezJalelLastCloudSync',updatedAt);setCloudStatus('online');render();if(currentRole==='staff'&&newServerOrders.length){newServerOrders.slice(-3).forEach(notifyNewServerOrder)}else showToast('☁️ Mise à jour reçue');return true}
+function cloudSubscribe(){const c=cloudCfg();if(!c?.enabled||!cloudClient)return;if(cloudChannel)cloudClient.removeChannel(cloudChannel);cloudChannel=cloudClient.channel('chezjalel-'+c.restaurantId).on('postgres_changes',{event:'*',schema:'public',table:'cloud_state',filter:'restaurant_id=eq.'+c.restaurantId},payload=>{if(payload.eventType==='DELETE')return;applyIncomingState(payload.new?.state,payload.new?.updated_at,payload.new?.updated_by)}).subscribe(status=>{if(status==='SUBSCRIBED')setCloudStatus('online');if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setCloudStatus('online')});
+  // Realtime is supplemented by polling so it keeps working even when a Supabase Realtime/RLS setup does not deliver postgres_changes to the browser.
+  clearInterval(cloudPollTimer);
+  cloudPollTimer=setInterval(()=>cloudCheckRemote(),1000);
+}
+async function cloudCheckRemote(){const c=cloudCfg();if(!c?.enabled||!cloudClient||!navigator.onLine)return;try{const {data,error}=await cloudClient.from('cloud_state').select('state,updated_at,updated_by').eq('restaurant_id',c.restaurantId).maybeSingle();if(error)throw error;const remote=data?.state;if(!remote)return;const localIds=new Set((s.orders||[]).map(o=>String(o.id)));const incomingOrders=Array.isArray(remote.orders)?remote.orders:[];const newServerOrders=incomingOrders.filter(o=>o&&o.source==='server'&&o.status==='pending'&&!localIds.has(String(o.id)));if(newServerOrders.length){const merged=Object.assign(structuredClone(blank),s);const existing=new Set((merged.orders||[]).map(o=>String(o.id)));merged.orders=[...newServerOrders.filter(o=>!existing.has(String(o.id))),...(merged.orders||[])];s=merged;localStorage.setItem(KEY,JSON.stringify(s));newServerOrders.slice(-5).forEach(notifyNewServerOrder);render();}else if((data.updated_at||'')>(localStorage.getItem('chezJalelLastCloudSync')||'')&&data.updated_by!==(c.device||'device')){applyIncomingState(remote,data.updated_at,data.updated_by)}if(data.updated_at)localStorage.setItem('chezJalelLastCloudSync',data.updated_at);setCloudStatus('online')}catch(e){console.warn('Cloud polling',e)}}
 function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;top:90px;left:50%;transform:translateX(-50%);z-index:200;background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-weight:800;box-shadow:0 8px 25px #0005';document.body.appendChild(t)}t.textContent=msg;t.style.display='block';clearTimeout(t._tm);t._tm=setTimeout(()=>t.style.display='none',1800)}
 function beepNewOrder(){try{const C=window.AudioContext||window.webkitAudioContext;if(C){const ctx=new C();const now=ctx.currentTime;[0,.16,.32].forEach((d,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=i===1?880:660;g.gain.setValueAtTime(.0001,now+d);g.gain.exponentialRampToValueAtTime(.22,now+d+.02);g.gain.exponentialRampToValueAtTime(.0001,now+d+.13);o.connect(g);g.connect(ctx.destination);o.start(now+d);o.stop(now+d+.14)})}}catch(e){}try{navigator.vibrate?.([180,80,180])}catch(e){}}
 function notifyNewServerOrder(o){beepNewOrder();updateServerBadge();const el=document.getElementById('newOrderAlert');const sub=document.getElementById('newOrderAlertSub');if(sub)sub.textContent=`Table ${o.table||'—'} • Ticket #${o.ticket} • ${money(o.total)}`;if(el){el.classList.add('show');clearTimeout(window._orderAlertTimer);window._orderAlertTimer=setTimeout(()=>el.classList.remove('show'),7000)}showToast(`🔔 Nouvelle commande • Table ${o.table||'—'}`);try{printTickets(o);setTimeout(()=>window.print(),450)}catch(e){}}
 function hideOrderAlert(){document.getElementById('newOrderAlert')?.classList.remove('show')}
 
-async function connectCloud(){const url=document.getElementById('cloudUrl').value.trim().replace(/\/$/,''),key=document.getElementById('cloudKey').value.trim(),rid=document.getElementById('cloudRid').value.trim()||'chezjalel',access=document.getElementById('cloudAccess').value.trim(),device=document.getElementById('cloudDevice').value.trim()||('device-'+Math.random().toString(36).slice(2,7));if(!url||!key||!rid||!access){alert('كمّل URL + Publishable key + Restaurant ID + Access key');return}localStorage.setItem('chezJalelCloudConfig',JSON.stringify({enabled:true,url,key,restaurantId:rid,accessKey:access,device}));cloudClient=makeCloudClient({url,key,restaurantId:rid,accessKey:access,device});const ok=await cloudPull();if(ok){closeModal();showToast('☁️ Realtime connecté');more()}else alert('ما نجّمش نتصل. تأكد من Supabase و SQL والـ keys.')} 
-function disconnectCloud(){if(cloudClient&&cloudChannel)cloudClient.removeChannel(cloudChannel);cloudClient=null;cloudChannel=null;localStorage.removeItem('chezJalelCloudConfig');setCloudStatus('offline');closeModal();showToast('Cloud déconnecté');more()}
+async function connectCloud(){const url=document.getElementById('cloudUrl').value.trim().replace(/\/$/,''),key=document.getElementById('cloudKey').value.trim(),rid=document.getElementById('cloudRid').value.trim()||'chezjalel',access=document.getElementById('cloudAccess').value.trim(),device=document.getElementById('cloudDevice').value.trim()||('device-'+Math.random().toString(36).slice(2,7));if(!url||!key||!rid||!access){alert('كمّل URL + Publishable key + Restaurant ID + Access key');return}localStorage.setItem('chezJalelCloudConfig',JSON.stringify({enabled:true,url,key,restaurantId:rid,accessKey:access,device}));cloudClient=makeCloudClient({url,key,restaurantId:rid,accessKey:access,device});const ok=await cloudPull();if(ok){closeModal();showToast('☁️ Realtime connecté — البيانات المحلية محفوظة في Cloud إذا كان Cloud فارغ');more()}else alert('ما نجّمش نتصل. تأكد من Supabase و SQL والـ keys.')} 
+function disconnectCloud(){if(cloudClient&&cloudChannel)cloudClient.removeChannel(cloudChannel);clearInterval(cloudPollTimer);cloudClient=null;cloudChannel=null;localStorage.removeItem('chezJalelCloudConfig');setCloudStatus('offline');closeModal();showToast('Cloud déconnecté');more()}
 function cloudManager(){if(!canEdit())return;const c=cloudCfg()||{};document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>☁️ Cloud & Realtime</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><div class="card"><div class="row"><b>État</b><b id="cloudStatus">${cloudStatus()==='online'?'🟢 متصل':cloudStatus()==='connecting'?'🟡 جاري الاتصال':'⚪ غير متصل'}</b></div><p class="muted">نفس المعلومات تتحط في تليفون الـ Caisse والـ Serveur باش يتزامنوا مع بعضهم.</p></div><label class="small">Supabase Project URL</label><input class="input" id="cloudUrl" value="${esc(c.url||'')}" placeholder="https://xxxx.supabase.co"><br><br><label class="small">Publishable key</label><input class="input" id="cloudKey" value="${esc(c.key||'')}" placeholder="sb_publishable_..."><br><br><label class="small">Restaurant ID</label><input class="input" id="cloudRid" value="${esc(c.restaurantId||'chezjalel')}"><br><br><label class="small">Access key</label><input class="input" id="cloudAccess" type="password" value="${esc(c.accessKey||'')}" placeholder="Code commun للمطعم"><br><br><label class="small">Nom الجهاز</label><input class="input" id="cloudDevice" value="${esc(c.device||'')}" placeholder="Caisse / Serveur 1 / Owner"><button class="btn gold" style="width:100%;margin-top:14px" onclick="connectCloud()">🔗 Connecter & synchroniser</button>${c.enabled?'<button class="btn danger" style="width:100%;margin-top:8px" onclick="disconnectCloud()">Déconnecter Cloud</button>':''}<p class="small muted" style="margin-top:12px">ملاحظة: الـ Publishable key ينجم يكون في التطبيق؛ ممنوع تحط Service Role/Secret key هنا.</p>`;document.getElementById('modal').classList.add('show')}
 
+function printerConfig(){
+  s.settings=s.settings||{};
+  s.settings.printer=s.settings.printer||{id:'mpt-ii',name:'MPT-II',paper:'58mm',connection:'Bluetooth',cut:'auto'};
+  return s.settings.printer;
+}
+function printerManager(){
+  if(!canEdit())return;
+  const p=printerConfig();
+  const opts=[
+    {id:'mpt-ii',name:'MPT-II',desc:'Thermique 58mm • Bluetooth / USB',paper:'58mm',connection:'Bluetooth',icon:'🖨️'},
+    {id:'thermal-58-usb',name:'Imprimante thermique 58mm USB',desc:'Thermique 58mm • USB / pilote Windows',paper:'58mm',connection:'USB',icon:'🔌'},
+    {id:'thermal-80',name:'Imprimante thermique 80mm',desc:'Thermique 80mm • USB / réseau',paper:'80mm',connection:'USB / Réseau',icon:'🧾'},
+    {id:'system',name:'Imprimante système',desc:'Utiliser l’imprimante choisie dans Windows / navigateur',paper:'80mm',connection:'Système',icon:'💻'},
+  ];
+  document.getElementById('sheet').innerHTML=`<div class="modalhead"><div><h2>🖨️ Imprimantes tickets</h2><p class="muted">اختار الطابعة اللي باش تستعملها للتذاكر.</p></div><button class="btn light" onclick="closeModal()">✕ Fermer</button></div>
+  <div class="printer-note"><b>الطابعة الحالية:</b> ${esc(p.name)} • ${esc(p.paper)} • ${esc(p.connection)}</div>
+  <div class="printer-list">${opts.map(x=>`<button class="printer-option ${p.id===x.id?'selected':''}" onclick="selectPrinter('${x.id}')"><span class="printer-icon">${x.icon}</span><span class="printer-copy"><b>${esc(x.name)}</b><small>${esc(x.desc)}</small></span><span class="printer-check">${p.id===x.id?'✓':''}</span></button>`).join('')}</div>
+  <div class="printer-details"><b>MPT-II</b><br>Model: MPT-II • Papier: 58mm • Bluetooth: <b>MPT-II</b> • Code: <b>0000</b><br><small>La sélection règle le format du ticket. La connexion Bluetooth/USB directe dépend du système ou d’un pilote/app d’impression.</small></div>
+  <button class="btn gold" style="width:100%;margin-top:12px" onclick="printerTestPage()">🧪 Tester l’impression</button>`;
+  document.getElementById('modal').classList.add('show');
+}
+function selectPrinter(id){
+  const map={
+    'mpt-ii':{id:'mpt-ii',name:'MPT-II',paper:'58mm',connection:'Bluetooth',cut:'auto'},
+    'thermal-58-usb':{id:'thermal-58-usb',name:'Imprimante thermique 58mm USB',paper:'58mm',connection:'USB',cut:'auto'},
+    'thermal-80':{id:'thermal-80',name:'Imprimante thermique 80mm',paper:'80mm',connection:'USB / Réseau',cut:'auto'},
+    'system':{id:'system',name:'Imprimante système',paper:'80mm',connection:'Système',cut:'auto'}
+  };
+  const next=map[id]||map['mpt-ii'];
+  s.settings.printer=next; audit('Imprimante',`Sélection: ${next.name} • ${next.paper} • ${next.connection}`); save(); printerManager(); showToast(`🖨️ ${next.name} sélectionnée`);
+}
+function printerTestPage(){
+  const fake={id:'printer-test',ticket:999,customers:1,date:new Date().toISOString(),lines:[{id:'test',name:'Test impression',price:1,qty:1,note:'Ticket test'}],total:1,status:'pending'};
+  closeModal(); printTickets(fake); setTimeout(()=>window.print(),250);
+}
 function money(n){return Number(n||0).toFixed(3)+' DT'}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -629,7 +769,7 @@ function nextTicket(){let max=Number(s.settings.maxTicket||50),all=ordersToday()
 function openOwnerDrawer(){if(currentRole!=='owner')return;document.getElementById('ownerDrawer')?.classList.add('show');document.getElementById('ownerDrawer')?.setAttribute('aria-hidden','false')}
 function closeOwnerDrawer(){document.getElementById('ownerDrawer')?.classList.remove('show');document.getElementById('ownerDrawer')?.setAttribute('aria-hidden','true')}
 function ownerDrawerGo(p){closeOwnerDrawer();go(p)}
-function ownerDrawerAction(a){closeOwnerDrawer();if(a==='menu')menuManager();else if(a==='payroll')payrollManager();else if(a==='security')securityManager();else if(a==='brand')brandManager();else if(a==='tickets')ticketManager();else if(a==='cloud')cloudManager();else if(a==='audit')auditManager()}
+function ownerDrawerAction(a){closeOwnerDrawer();if(a==='menu')menuManager();else if(a==='payroll')payrollManager();else if(a==='security')securityManager();else if(a==='brand')brandManager();else if(a==='tickets')ticketManager();else if(a==='printers')printerManager();else if(a==='cloud')cloudManager();else if(a==='audit')auditManager()}
 function go(p){if(currentRole==='staff' && !['pos','orders'].includes(p))return;if(currentRole==='server' && p!=='pos')return;page=p;render()}
 function openHeaderNav(){if(currentRole==='owner')openOwnerDrawer();else go('pos')}
 function render(){applyTheme();document.body.classList.toggle('staff-mode',currentRole==='staff');document.body.classList.toggle('serveur-mode',currentRole==='server');document.documentElement.style.setProperty('--brand',s.settings.brand||'#c4142c');document.getElementById('brandName').textContent=s.settings.name||'Chez Jalel';document.getElementById('ticketBadge').textContent='Ticket #'+nextTicket();document.getElementById('roleBadge').textContent=currentRole==='owner'?'👑 Aziz':currentRole==='staff'?'🧾 Gérant':'🧑‍🍳 Serveur';const serverPending=(currentRole==='staff'||currentRole==='owner')?s.orders.filter(o=>o.source==='server'&&o.status==='pending').length:0;const sb=document.getElementById('serverHeaderBtn'),bell=document.getElementById('serverBellBtn'),sc=document.getElementById('serverCount');if(sb)sb.classList.toggle('show',currentRole==='staff'||currentRole==='owner');if(bell)bell.style.display=(currentRole==='staff'||currentRole==='owner')?'inline-block':'none';if(sc){sc.textContent=serverPending;sc.classList.toggle('show',serverPending>0)}document.getElementById('headerContext').textContent=(page==='pos'?'CAISSE • VENTE':page==='orders'?'TICKETS • SUIVI':page==='stock'?'STOCK • INVENTAIRE':page==='reports'?'RECETTE • RAPPORTS':page==='more'?'PARAMÈTRES • PLUS':'TABLEAU DE BORD');const ts=document.getElementById('topCloudStatus');if(ts){const cs=cloudStatus();ts.innerHTML=`<span class="status-dot" style="background:${cs==='online'?'#39c96e':cs==='connecting'?'#e0b52e':'#8b8f94'};box-shadow:0 0 9px ${cs==='online'?'rgba(57,201,110,.7)':cs==='connecting'?'rgba(224,181,46,.55)':'transparent'}"></span><span class="status-label">${cs==='online'?'Connecté':cs==='connecting'?'Connexion…':'Hors ligne'}</span>`}const tm=document.getElementById('topMenuBtn');if(tm)tm.style.display=currentRole?'flex':'none';// Bottom navigation was removed; Owner navigation lives in the header drawer.
@@ -682,16 +822,7 @@ function dashboard(){
   app.innerHTML=`<div class="dashboard-wrap"><div class="page-head"><div><h2>Tableau de bord</h2><p>Vue d'ensemble de votre activité.</p></div><div class="page-meta"><label class="dash-date-label">Journée<br><input class="dash-date-input" type="date" value="${selected}" max="${today()}" onchange="setDashboardDate(this.value)"></label><div class="dash-date-caption">${label}</div></div></div>${caisseControlCardForDate(selected)}<div class="dashboardAccounts"><button class="dashCard dashCardBtn" onclick="dashboardDetail('revenue','${selected}')"><div class="l">RECETTE</div><div class="v">${money(rev)}</div><span class="dash-more">Voir le détail →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('sales','${selected}')"><div class="l">VENTES / TICKETS</div><div class="v">${od.length}</div><span class="dash-more">Voir les tickets →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('clients','${selected}')"><div class="l">CLIENTS</div><div class="v">${od.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+Number(o.customers||0),0)}</div><span class="dash-more">Voir les clients →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('expenses','${selected}')"><div class="l">DÉPENSES</div><div class="v">${money(ex)}</div><span class="dash-more">Voir les dépenses →</span></button><button class="dashCard dashCardBtn" onclick="dashboardDetail('net','${selected}')"><div class="l">NET</div><div class="v">${money(net)}</div><span class="dash-more">Voir le calcul →</span></button>${f?`<button class="dashCard dashCardBtn" onclick="dashboardDetail('caisse','${selected}')"><div class="l">CAISSE THÉORIQUE</div><div class="v">${money(theoretical)}</div><span class="dash-more">Contrôler la caisse →</span></button>`:''}</div><div class="dashCharts"><div class="dashChart card dashChartBtn" onclick="dashboardDetail('top','${selected}')"><div class="row"><h3>Produits les plus vendus</h3><span class="badge">${esc(selected===today()?'Aujourd’hui':label)}</span></div>${tops.length?tops.map(x=>`<div class="listrow"><div class="row"><span>${esc(x[0])}</span><b>${x[1]}</b></div><div class="mini-bar"><i style="width:${Math.max(6,Math.round(x[1]/Math.max(1,tops[0][1])*100))}%"></i></div></div>`).join(''):'<div class="empty">Pas encore de ventes.</div>'}</div><div class="dashChart card dashChartBtn" onclick="dashboardDetail('nosales','${selected}')"><div class="row"><h3>Ce qui ne sort pas</h3><span class="badge">À surveiller</span></div><p class="muted">Produits sans vente pour cette journée.</p>${s.products.filter(p=>!top[p.name]).slice(0,8).map(p=>`<div class="listrow"><div class="row"><span>${esc(p.name)}</span><span class="muted">0 vente</span></div></div>`).join('')||'<div class="empty">Tous les produits ont été vendus.</div>'}</div></div></div>`
 }
 
-function catIcon(name){
-  const n=(name||'').toLowerCase();
-  if(/boisson|drink|jus|soda|eau|café|cafe/.test(n)) return '🥤';
-  if(/sandwich|burger|tacos|panini/.test(n)) return '🥪';
-  if(/plat|repas|keftaji|cuisine/.test(n)) return '🍽️';
-  if(/brik|salade|entrée|entree/.test(n)) return '🥗';
-  if(/dessert|sucré|sucre|gateau|gâteau/.test(n)) return '🍰';
-  if(/extra|ajout|supp/.test(n)) return '➕';
-  return '•';
-}
+function catIcon(name){const c=s.categories.find(x=>String(x.name).trim().toLowerCase()===String(name).trim().toLowerCase());if(c&&c.icon)return c.icon;const n=(name||'').toLowerCase();if(/boisson|drink|jus|soda|eau|café|cafe/.test(n))return '🥤';if(/sandwich|burger|tacos|panini/.test(n))return '🥪';if(/plat|repas|keftaji|cuisine/.test(n))return '🍽️';if(/brik|salade|entrée|entree/.test(n))return '🥗';if(/dessert|sucré|sucre|gateau|gâteau/.test(n))return '🍰';if(/extra|ajout|supp/.test(n))return '➕';return '•'}
 function startStaffOrder(){cart={};customers=1;filterCat='all';page='pos';render()}
 function pos(){
   if(currentRole==='server'){return serverHome()}
@@ -736,7 +867,8 @@ function renderServerOrder(){
 }
 function serverAddProduct(id){let p=s.products.find(x=>x.id===id);if(!p)return;cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1}:{id:p.id,name:p.name,price:p.price,qty:1,note:''};renderServerOrder()}
 function serverQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)delete cart[id];renderServerOrder()}
-function acceptServerOrder(){if(!serverTable){alert('اختار رقم الطاولة أولاً');return}let lines=Object.values(cart).map(x=>({...x}));if(!lines.length){alert('اختار الطلبية أولاً');return}let total=lines.reduce((a,x)=>a+x.price*x.qty,0),o={id:uid(),ticket:nextTicket(),customers:customers||1,date:new Date().toISOString(),lines,total,payment:'cash',status:'pending',source:'server',table:String(serverTable)};s.orders.unshift(o);lines.forEach(l=>{let st=s.stock.find(x=>x.productId===l.id);if(st&&st.control)st.qty=Math.max(0,Number(st.qty)-l.qty)});audit('Commande serveur',`Table ${o.table} • Ticket #${o.ticket} • ${money(o.total)}`);cart={};customers=1;serverTable='';page='pos';save();showToast(`✓ Commande table ${o.table} envoyée à la caisse`);pos()}
+async function pushServerOrderNow(order){const c=cloudCfg();if(!c?.enabled||!cloudClient||!navigator.onLine)return;try{const {data,error}=await cloudClient.from('cloud_state').select('state').eq('restaurant_id',c.restaurantId).maybeSingle();if(error)throw error;const remote=Object.assign(structuredClone(blank),data?.state||{});const byId=new Map((remote.orders||[]).map(x=>[String(x.id),x]));byId.set(String(order.id),order);remote.orders=Array.from(byId.values()).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));remote.settings=s.settings;remote.security=s.security;remote.categories=s.categories;remote.products=s.products;remote.stock=s.stock;remote.expenses=s.expenses;remote.employees=s.employees;remote.salaryPayments=s.salaryPayments;remote.caisseSession=s.caisseSession;remote.caisseSessions=s.caisseSessions;remote.audit=s.audit;const now=new Date().toISOString();const up=await cloudClient.from('cloud_state').upsert({restaurant_id:c.restaurantId,access_key:c.accessKey,state:remote,updated_at:now,updated_by:c.device||'serveur'},{onConflict:'restaurant_id'});if(up.error)throw up.error;localStorage.setItem('chezJalelLastCloudSync',now);setCloudStatus('online')}catch(e){console.warn('Server order push',e);scheduleCloudPush()}}
+async function acceptServerOrder(){if(!serverTable){alert('اختار رقم الطاولة أولاً');return}let lines=Object.values(cart).map(x=>({...x}));if(!lines.length){alert('اختار الطلبية أولاً');return}let total=lines.reduce((a,x)=>a+x.price*x.qty,0),o={id:uid(),ticket:nextTicket(),customers:customers||1,date:new Date().toISOString(),lines,total,payment:'cash',status:'pending',source:'server',table:String(serverTable)};s.orders.unshift(o);lines.forEach(l=>{let st=s.stock.find(x=>x.productId===l.id);if(st&&st.control)st.qty=Math.max(0,Number(st.qty)-l.qty)});audit('Commande serveur',`Table ${o.table} • Ticket #${o.ticket} • ${money(o.total)}`);cart={};customers=1;serverTable='';page='pos';save();showToast(`✓ Commande table ${o.table} envoyée à la caisse`);if(cloudCfg()?.enabled&&navigator.onLine){setTimeout(()=>pushServerOrderNow(o),80)}pos()}
 function renderProductSearch(q){
   q=(q||'').trim().toLowerCase();
   document.querySelectorAll('#productGrid .product').forEach(el=>el.style.display=(!q||el.dataset.name.includes(q))?'':'none');
@@ -748,7 +880,7 @@ function changeQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)
 function finishOrder(){let lines=Object.values(cart).map(x=>({...x}));if(!lines.length)return;let total=lines.reduce((a,x)=>a+x.price*x.qty,0),o={id:uid(),ticket:nextTicket(),customers,date:new Date().toISOString(),lines,total,payment:'cash',status:'pending',source:currentRole||'staff',table:serverTable||''};s.orders.unshift(o);lines.forEach(l=>{let st=s.stock.find(x=>x.productId===l.id);if(st&&st.control)st.qty=Math.max(0,Number(st.qty)-l.qty)});audit('Vente',`Ticket #${o.ticket} • ${money(o.total)}`);cart={};customers=1;save();printTickets(o)}
 
 function printOnly(type){let all=document.querySelectorAll('.ticket-print');all.forEach((el,i)=>el.classList.toggle('print-hide',type==='client'?i!==0:i!==1));window.print();setTimeout(()=>all.forEach(el=>el.classList.remove('print-hide')),500)}
-function printTickets(o){let dt=new Date(o.date),date=dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}),time=dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),wait=waitingClients(o.id),items=o.lines.reduce((a,x)=>a+Number(x.qty||0),0);document.getElementById('sheet').innerHTML=`<div class="no-print"><h2>Tickets #${o.ticket}</h2><p class="muted">Ticket client + ticket cuisine • ${date} ${time}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn gold" onclick="window.print()">🖨 Imprimer les 2</button><button class="btn light" onclick="printOnly('client')">Ticket client</button></div><button class="btn light" style="width:100%;margin-top:8px" onclick="printOnly('cuisine')">👨‍🍳 Ticket cuisine فقط</button><button class="btn light" style="width:100%;margin-top:8px" onclick="closeModal()">Fermer</button></div><div class="print-area">
+function printTickets(o){let dt=new Date(o.date),date=dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}),time=dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),wait=waitingClients(o.id),items=o.lines.reduce((a,x)=>a+Number(x.qty||0),0),pc=printerConfig(),paperClass=pc.paper==='58mm'?'paper-58':'paper-80';document.getElementById('sheet').innerHTML=`<div class="no-print"><h2>Tickets #${o.ticket}</h2><p class="muted">Ticket client + ticket cuisine • ${date} ${time}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn gold" onclick="window.print()">🖨 Imprimer les 2</button><button class="btn light" onclick="printOnly('client')">Ticket client</button></div><button class="btn light" style="width:100%;margin-top:8px" onclick="printOnly('cuisine')">👨‍🍳 Ticket cuisine فقط</button><button class="btn light" style="width:100%;margin-top:8px" onclick="closeModal()">Fermer</button></div><div class="print-area ${paperClass}>
 <div class="ticket-print">
 <img class="ticket-logo" src="logo.jpg"><div class="ticket-brand">${esc(s.settings.name)}</div><div class="ticket-sub">RESTAURANT</div><div class="ticket-auth">GOÛT AUTHENTIQUE</div>
 <div class="ticket-rule"></div><div class="ticket-meta"><span>Date : ${date}</span><span>Heure : ${time}</span></div>
@@ -789,7 +921,9 @@ function addStock(){let pid=document.getElementById('stp').value,q=Number(docume
 function reports(){if(!canEdit()){document.getElementById('app').innerHTML='<div class="card"><h2>Accès limité</h2><p>Les recettes et rapports sont visibles uniquement par le propriétaire.</p></div>';return}let od=ordersToday(),rev=revenueToday(),ex=expensesToday(),net=rev-ex,pay={cash:0,card:0,other:0};od.forEach(o=>pay[o.payment||'cash']=(pay[o.payment||'cash']||0)+o.total);let top={};od.forEach(o=>o.lines.forEach(l=>top[l.name]=(top[l.name]||0)+l.qty));let topRows=Object.entries(top).sort((a,b)=>b[1]-a[1]);document.getElementById('app').innerHTML=`<h2>Recette</h2><div class="grid4"><div class="card stat"><span class="muted">Recette</span><b>${money(rev)}</b></div><div class="card stat"><span class="muted">Tickets</span><b>${od.length}</b></div><div class="card stat"><span class="muted">Dépenses</span><b>${money(ex)}</b></div><div class="card stat"><span class="muted">Net</span><b>${money(net)}</b></div></div><div class="card"><h3>👷 Salaires — ${monthKey()}</h3><div class="grid4"><div class="stat"><span class="muted">Salaires payés</span><b>${money(salariesPaidThisMonth())}</b></div><div class="stat"><span class="muted">Reste à payer</span><b>${money(salariesDueThisMonth())}</b></div></div><button class="btn light" style="width:100%;margin-top:10px" onclick="payrollManager()">Gérer les salaires</button></div><div class="card"><h3>Articles vendus</h3>${topRows.map(x=>`<div class="row listrow"><span>${esc(x[0])}</span><b>${x[1]}</b></div>`).join('')||'<div class="empty">Pas encore de ventes.</div>'}</div><div class="card"><button class="btn light" style="width:100%" onclick="addExpense()">＋ Ajouter une dépense</button></div><div class="card"><h3>Dépenses du jour</h3>${s.expenses.filter(x=>x.date===today()).map(x=>`<div class="row listrow"><span>${esc(x.name)}</span><b>${money(x.amount)}</b></div>`).join('')||'<div class="empty">Aucune dépense.</div>'}</div>`}
 function addExpense(){document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>Dépense</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div><input class="input" id="exn" placeholder="Ex: achat pain"><br><br><input class="input" id="exa" type="number" step="0.001" placeholder="Montant DT"><br><br><button class="btn gold" style="width:100%" onclick="saveExpense()">Enregistrer</button>`;document.getElementById('modal').classList.add('show')}
 function saveExpense(){let n=document.getElementById('exn').value.trim(),a=Number(document.getElementById('exa').value);if(!n||!a)return;s.expenses.push({id:uid(),name:n,amount:a,date:today()});audit('Dépense',`${n} • ${money(a)}`);closeModal();save()}
-function more(){if(!canEdit()){document.getElementById('app').innerHTML='<div class="card"><h2>Accès propriétaire</h2><p>Le gérant/caisse ne peut ni ajouter, ni supprimer, ni modifier le menu ou le stock.</p><button class="btn primary" style="width:100%" onclick="lockApp()">Changer de compte</button></div>';return}document.getElementById('app').innerHTML=`<h2>Plus</h2><div class="card"><h3>Menu & sections</h3><p class="muted">Ajoute tes produits, prix, sections et photos.</p><button class="btn primary" onclick="menuManager()">Ouvrir le menu</button></div><div class="card"><h3>💵 Salaires des employés</h3><p class="muted">سجّل الخلاصات، التسبيقات والمدفوعات باش حساباتك تخرج واضحة.</p><div class="row"><span><b>${(s.employees||[]).filter(e=>e.active!==false).length}</b> employés • <b>${money(salariesPaidThisMonth())}</b> payés ce mois</span><button class="btn gold" onclick="payrollManager()">Gérer</button></div></div><div class="card"><h3>🔐 Accès employés</h3><p class="muted">Le gérant/caisse peut vendre et modifier ou annuler les tickets. Le serveur peut prendre les commandes par table. Ils ne peuvent pas modifier le menu, les prix, le stock, les recettes ou les réglages.</p><button class="btn light" onclick="securityManager()">Gérer les PIN</button></div><div class="card"><h3>🎨 Identité</h3><button class="btn light" onclick="brandManager()">Personnaliser</button></div><div class="card"><h3>🎫 Numérotation</h3><button class="btn light" onclick="ticketManager()">1 → ${s.settings.maxTicket} → 1</button></div><div class="card"><h3>☁️ Cloud & Realtime</h3><div class="row"><div><b id="cloudStatus">${cloudStatus()==='online'?'🟢 متصل':cloudStatus()==='connecting'?'🟡 جاري الاتصال':'⚪ غير متصل'} </b><p class="muted">Caisse ↔ Serveur ↔ Owner en temps réel.</p></div><button class="btn light" onclick="cloudManager()">Configurer</button></div></div><div class="card"><h3>Journal des actions</h3>${s.audit.slice(0,20).map(a=>`<div class="audit"><b>${esc(a.action)}</b> • ${esc(a.role)}<br>${new Date(a.date).toLocaleString('fr-FR')}<br>${esc(a.details)}</div>`).join('')||'<div class="empty">Aucune action.</div>'}</div>`}
+function exportBackup(){const payload={app:'ChezJalelPOS',version:46,exportedAt:new Date().toISOString(),data:s};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ChezJalelPOS-backup-${today()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('💾 Backup محفوظ');}
+function importBackup(input){const file=input.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const payload=JSON.parse(r.result);if(!payload?.data?.orders||!payload?.data?.security){throw new Error('invalid backup')}if(!confirm('باش يتم تعويض البيانات الحالية بالـ backup. متأكد؟'))return;s=Object.assign(structuredClone(blank),payload.data);s.security.serverPin=s.security.serverPin||s.security.staffPin||'';localStorage.setItem(KEY,JSON.stringify(s));render();scheduleCloudPush();showToast('✅ Backup تم استرجاعه')}catch(e){alert('الـ backup غير صالح أو تالف.')}};r.readAsText(file);input.value=''}
+function more(){if(!canEdit()){document.getElementById('app').innerHTML='<div class="card"><h2>Accès propriétaire</h2><p>Le gérant/caisse ne peut ni ajouter, ni supprimer, ni modifier le menu ou le stock.</p><button class="btn primary" style="width:100%" onclick="lockApp()">Changer de compte</button></div>';return}document.getElementById('app').innerHTML=`<h2>Plus</h2><div class="card"><h3>Menu & sections</h3><p class="muted">Ajoute tes produits, prix, sections et photos.</p><button class="btn primary" onclick="menuManager()">Ouvrir le menu</button></div><div class="card"><h3>💵 Salaires des employés</h3><p class="muted">سجّل الخلاصات، التسبيقات والمدفوعات باش حساباتك تخرج واضحة.</p><div class="row"><span><b>${(s.employees||[]).filter(e=>e.active!==false).length}</b> employés • <b>${money(salariesPaidThisMonth())}</b> payés ce mois</span><button class="btn gold" onclick="payrollManager()">Gérer</button></div></div><div class="card"><h3>🔐 Accès employés</h3><p class="muted">Le gérant/caisse peut vendre et modifier ou annuler les tickets. Le serveur peut prendre les commandes par table. Ils ne peuvent pas modifier le menu, les prix, le stock, les recettes ou les réglages.</p><button class="btn light" onclick="securityManager()">Gérer les PIN</button></div><div class="card"><h3>🎨 Identité</h3><button class="btn light" onclick="brandManager()">Personnaliser</button></div><div class="card"><h3>🎫 Numérotation</h3><button class="btn light" onclick="ticketManager()">1 → ${s.settings.maxTicket} → 1</button></div><div class="card"><h3>💾 Backup & restauration</h3><p class="muted">نسخة احتياطية محلية لكل بيانات المطعم. تنجم ترجعها على جهاز آخر.</p><div class="row"><button class="btn light" onclick="exportBackup()">⬇️ Export Backup</button><button class="btn light" onclick="document.getElementById('backupFile').click()">⬆️ Import Backup</button></div><input id="backupFile" type="file" accept="application/json" style="display:none" onchange="importBackup(this)"></div><div class="card"><h3>☁️ Cloud & Realtime</h3><div class="row"><div><b id="cloudStatus">${cloudStatus()==='online'?'🟢 متصل':cloudStatus()==='connecting'?'🟡 جاري الاتصال':'⚪ غير متصل'} </b><p class="muted">Caisse ↔ Serveur ↔ Owner en temps réel.</p></div><button class="btn light" onclick="cloudManager()">Configurer</button></div></div><div class="card"><h3>Journal des actions</h3>${s.audit.slice(0,20).map(a=>`<div class="audit"><b>${esc(a.action)}</b> • ${esc(a.role)}<br>${new Date(a.date).toLocaleString('fr-FR')}<br>${esc(a.details)}</div>`).join('')||'<div class="empty">Aucune action.</div>'}</div>`}
 function payrollManager(){
   const emps=s.employees||[], pays=s.salaryPayments||[];
   document.getElementById('sheet').innerHTML=`<div class="modalhead"><h2>💵 Salaires des employés</h2><button class="btn light" onclick="closeModal()">✕ Fermer</button></div>
@@ -845,23 +979,96 @@ function saveFondCaisse(){
 }
 function caisseControlCard(){return caisseControlCardForDate(today())}
 function caisseControlCardForDate(d){const f=fondCaisseForDate(d);if(!f)return `<div class="card fond-dashboard"><div class="row"><div><span class="muted">FOND DE CAISSE</span><h3 style="margin:4px 0 0">Aucune ouverture</h3><div class="muted">Aucune caisse enregistrée pour cette journée.</div></div><div class="fond-mini" style="background:#2a2d31;color:#c8cbd0">—</div></div></div>`;const rev=revenueForDate(d),ex=expensesForDate(d),theoretical=Number(f.amount||0)+rev-ex;return `<div class="card fond-dashboard"><div class="row"><div><span class="muted">FOND DE CAISSE • ${d===today()?'AUJOURD’HUI':new Date(d+'T12:00:00').toLocaleDateString('fr-FR')}</span><h3 style="margin:4px 0 0">${money(f.amount)}</h3><div class="muted">Ouverte le ${new Date(f.openedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})} • ${f.openedBy==='owner'?'Aziz':f.openedBy==='staff'?'Gérant':'Serveur'}</div></div><div class="fond-mini">✓ Ouverte</div></div><div class="fond-control-row"><span>Caisse théorique</span><b>${money(theoretical)}</b></div></div>`}
-function setLoginRole(r){loginRole=r;document.getElementById('ownerTab').classList.toggle('on',r==='owner');document.getElementById('staffTab').classList.toggle('on',r==='staff');document.getElementById('serverTab')?.classList.toggle('on',r==='server');document.getElementById('lockRole').textContent=r==='owner'?'👑 Aziz':r==='staff'?'🧾 Gérant':'🧑‍🍳 Serveur'}
+function setLoginRole(r){loginRole=r;document.getElementById('ownerTab')?.classList.toggle('on',r==='owner');document.getElementById('staffTab')?.classList.toggle('on',r==='staff');document.getElementById('serverTab')?.classList.toggle('on',r==='server');const roleEl=document.getElementById('lockRole');if(roleEl)roleEl.textContent=r==='owner'?'👑 Aziz':r==='staff'?'🧾 Gérant':'🧑‍🍳 Serveur'}
 function unlockApp(){let pin=document.getElementById('pinInput').value.trim();if(!s.security.setup){if(pin.length<4){alert('أول مرة: اختار PIN من 4 أرقام على الأقل');return}s.security.ownerPin=pin;s.security.staffPin=pin;s.security.serverPin=pin;s.security.setup=true;save()}let ok=(loginRole==='owner'&&pin===s.security.ownerPin)||(loginRole==='staff'&&pin===s.security.staffPin)||(loginRole==='server'&&pin===s.security.serverPin);if(!ok){alert('PIN غالط');return}currentRole=loginRole;document.getElementById('lock').classList.remove('show');page=(currentRole==='staff'||currentRole==='server')?'pos':'dashboard';serverTable='';document.getElementById('pinInput').value='';render();setTimeout(()=>openFondCaisse(),80)}
 function lockApp(){currentRole=null;document.getElementById('pinInput').value='';document.getElementById('lock').classList.add('show')}
+const CJ_PUSH_VAPID_PUBLIC='BE0VrdcimqmAtxkNn9Rt-tUHbj4Qj4rEhKqqMXPt-pZfcWyRYcPRFr9hD-EjJDyMs9vmEcrIiBy6ZCOFr9q2WSk';
+function cjPushStatus(t){const el=document.getElementById('cjPushStatus');if(el)el.textContent=t||''}
+function urlBase64ToUint8Array(base64String){const padding='='.repeat((4-base64String.length%4)%4);const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(base64);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)))}
+async function enableUpdatePush(){
+  const btn=document.getElementById('cjPushBtn');
+  try{
+    if(!('serviceWorker' in navigator)||!('PushManager' in window)){cjPushStatus('⚠️ هذا المتصفح ما يدعمش Web Push.');return}
+    if(location.protocol!=='https:'){cjPushStatus('⚠️ يلزم HTTPS.');return}
+    if(Notification.permission==='denied'){cjPushStatus('⚠️ الإشعارات مرفوضة من إعدادات المتصفح.');return}
+    if(btn)btn.disabled=true; cjPushStatus('جاري تفعيل الإشعارات...');
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(CJ_PUSH_VAPID_PUBLIC)});
+    localStorage.setItem('chezJalelPushSubscription',JSON.stringify(sub.toJSON?sub.toJSON():sub));
+    const c=cloudCfg();
+    if(c?.enabled&&cloudClient){
+      const row={id:btoa(unescape(encodeURIComponent(sub.endpoint))).replace(/[^a-zA-Z0-9]/g,'').slice(0,80),restaurant_id:c.restaurantId,device:c.device||'device',access_key:c.accessKey,subscription:sub.toJSON?sub.toJSON():sub,updated_at:new Date().toISOString()};
+      const r=await cloudClient.from('push_subscriptions').upsert(row,{onConflict:'id'});
+      if(r.error) throw r.error;
+    }
+    cjPushStatus('✅ إشعارات التحديث مفعّلة على هذا الجهاز');
+  }catch(e){console.error('Push setup',e);cjPushStatus('❌ ما تمش تفعيل الإشعارات: '+(e?.message||e));}
+  finally{if(btn)btn.disabled=false}
+}
+function refreshPushButton(){
+  const btn=document.getElementById('cjPushBtn'); if(!btn)return;
+  if(!('Notification' in window)||!('PushManager' in window)){btn.style.display='none';return}
+  const sub=localStorage.getItem('chezJalelPushSubscription');
+  if(sub&&Notification.permission==='granted'){btn.textContent='🔔 إشعارات التحديث مفعّلة';cjPushStatus('جاهز لاستقبال تحديثات التطبيق');}
+}
+
 async function boot(){
+  updateOfflineUI();
+  setTimeout(refreshPushButton,250);
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?version=64',{updateViaCache:'none'}).then(reg=>reg.update()).catch(e=>console.warn('SW',e));}
   // Splash first, then always start locked on the login screen.
   currentRole=null;
+  const splash=document.getElementById('cjSplash');
+  setTimeout(()=>splash?.classList.add('hide'),1700);
   const lock=document.getElementById('lock');
   if(lock) lock.classList.add('show');
   setLoginRole('owner');
   const c=cloudCfg();
-  if(c?.enabled){try{await cloudPull()}catch(e){console.error('Cloud boot error',e)}}
+  if(c?.enabled){try{await cloudPull(); if(cloudClient) cloudSubscribe()}catch(e){console.error('Cloud boot error',e)}}
   if(!s.security.setup){document.getElementById('firstSetup').textContent='أول دخول: حط PIN المالك. بعد ذلك اعمل PIN للـ Caisse وPIN للـ Serveur من Sécurité.'}
   else document.getElementById('firstSetup').textContent='';
   if(lock) lock.classList.add('show');
-  const splash=document.getElementById('cjSplash');
-  setTimeout(()=>splash?.classList.add('hide'),1700);
 }
+/* V54 — automatic app-update notice across installed/open devices */
+const CJ_APP_VERSION='65';
+let cjUpdateTimer=null;
+function showAppUpdateNotice(remoteVersion){
+  if(document.getElementById('cjUpdateNotice')) return;
+  const n=document.createElement('div'); n.id='cjUpdateNotice'; n.dataset.version=String(remoteVersion||'');
+  n.innerHTML=`<div class="cj-update-icon">↻</div><div class="cj-update-copy"><b>تحديث جديد لـ ChezJalelPOS</b><span>نسخة جديدة متوفرة. اعمل تحديث باش تستعمل آخر نسخة.</span></div><button onclick="applyAppUpdate()">تحديث الآن</button>`;
+  document.body.appendChild(n);
+}
+async function checkAppUpdate(){
+  try{
+    const r=await fetch('./app-version.json?ts='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+    if(!r.ok)return;
+    const v=await r.json();
+    const remote=String(v.version||'').trim();
+    const dismissed=localStorage.getItem('cjUpdateDismissedVersion')||'';
+    if(remote && remote!==CJ_APP_VERSION && Number(remote)>Number(CJ_APP_VERSION) && dismissed!==remote) showAppUpdateNotice(remote);
+  }catch(e){/* offline or version file unavailable */}
+}
+async function applyAppUpdate(){
+  const n=document.getElementById('cjUpdateNotice'); const remoteVersionForUpdate=n?.dataset?.version||''; if(n)n.remove();
+  try{localStorage.removeItem('cjUpdateDismissedVersion')}catch(e){}
+  try{
+    if('serviceWorker' in navigator){
+      const reg=await navigator.serviceWorker.register('./sw.js?version=65&ts='+Date.now(),{updateViaCache:'none'});
+      await reg.update();
+    }
+  }catch(e){console.warn('SW update',e)}
+  const u=new URL(location.href); u.searchParams.set('update',Date.now()); u.searchParams.set('v',remoteVersionForUpdate||'64'); u.searchParams.set('fresh','1'); location.replace(u.toString());
+}
+function startAppUpdateChecker(){
+  checkAppUpdate();
+  clearInterval(cjUpdateTimer);
+  cjUpdateTimer=setInterval(checkAppUpdate,5000);
+  window.addEventListener('focus',checkAppUpdate);
+  window.addEventListener('pageshow',checkAppUpdate);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkAppUpdate();});
+}
+
 applyTheme();document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 boot().catch(err=>{
   console.error('chezJalel boot error',err);
@@ -871,6 +1078,7 @@ boot().catch(err=>{
   if(lock) lock.classList.add('show');
   setTimeout(()=>document.getElementById('cjSplash')?.classList.add('hide'),1700);
 });
+startAppUpdateChecker();
 </script>
 
 <style>
@@ -886,6 +1094,7 @@ boot().catch(err=>{
 
 })();
 </script>
+<div id="cjOffline">📴 Hors connexion — les données locales continuent de fonctionner</div>
 </body>
 </html><style id="v37-login-responsive">
 /* V37 — Login fully responsive on phones and tablets, portrait + landscape */
